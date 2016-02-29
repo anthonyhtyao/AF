@@ -10,8 +10,8 @@ class UserProfile(models.Model):
         return self.user.username
 
 class Article(models.Model):
-    author = models.ForeignKey(UserProfile, null=True)
-    date = models.DateTimeField(auto_now_add=True, auto_now=False, null=True)
+    author = models.ForeignKey(UserProfile, null = True)
+    date = models.DateTimeField(auto_now_add = True, auto_now = False, null = True)
     
 
 class ArticleContent(models.Model):
@@ -19,9 +19,10 @@ class ArticleContent(models.Model):
         ('fr', 'Français'),
         ('tw', '繁體中文'),
     )
-    title = models.CharField(max_length=128)
-    content = models.TextField(null=True)
-    language = models.CharField(max_length=2, choices=LANGUAGES, default='fr')
+    article = models.ForeignKey(Article, null = True)
+    title = models.CharField(max_length = 128)
+    content = models.TextField(null = True)
+    language = models.CharField(max_length = 2, choices = LANGUAGES, default = 'fr')
 
 
     def __str__(self):

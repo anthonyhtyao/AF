@@ -8,11 +8,34 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+class Numero(models.Model):
+    numero = models.PositiveIntegerField()
+
+    def __str__(self):
+        return self.numero
+
+class Category(models.Model):
+    TITLES = (
+        ('Politique', 'Politique'),
+        ('Recette', 'Recette'),
+        ('Societe', 'Société'),
+        ('Arts', 'Arts'),
+        ('Culture', 'Culture'),
+        ('Jeux', 'Jeux de mots'),
+        ('Dessin', 'Bande dessinée'),
+        ('Vies', 'Vies-à-vies'),
+        ('Actualite', 'Actualité')
+    )
+    title = models.CharField(max_length = 10, choices = TITLES)
+
+    def __str__(self):
+        return self.title
 
 class Article(models.Model):
     author = models.ForeignKey(UserProfile, null = True)
     date = models.DateTimeField(auto_now_add = True, auto_now = False, null = True)
-    
+    category = models.ForeignKey(Category)
+    numero = models.ForeignKey(Numero, null=True)
 
 class ArticleContent(models.Model):
     LANGUAGES = (
@@ -28,7 +51,7 @@ class ArticleContent(models.Model):
     def __str__(self):
         return self.title
 
-class Category(models.Model):
+class CategoryDetail(models.Model):
     LANGUAGES = (
         ('fr', 'Français'),
         ('tw', '繁體中文'),
@@ -44,6 +67,7 @@ class Category(models.Model):
         ('Vies', 'Vies-à-vies'),
         ('Actualite', 'Actualité')
     )
+    category = models.ForeignKey(Category)
     title = models.CharField(max_length = 10, choices = TITLES)
     language = models.CharField(max_length = 2, choices = LANGUAGES, default = 'fr')
 

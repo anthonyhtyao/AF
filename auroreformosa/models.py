@@ -44,6 +44,7 @@ class ArticleContent(models.Model):
     )
     article = models.ForeignKey(Article, null = True)
     title = models.CharField(max_length = 128)
+    abstract = models.TextField(null = True)
     content = models.TextField(null = True)
     language = models.CharField(max_length = 2, choices = LANGUAGES, default = 'fr')
 

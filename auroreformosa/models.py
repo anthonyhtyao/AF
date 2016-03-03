@@ -15,21 +15,7 @@ class Numero(models.Model):
         return self.numero
 
 class Category(models.Model):
-    TITLES = (
-        ('Politique', 'Politique'),
-        ('Recette', 'Recette'),
-        ('Societe', 'Société'),
-        ('Arts', 'Arts'),
-        ('Culture', 'Culture'),
-        ('Jeux', 'Jeux de mots'),
-        ('Dessin', 'Bande dessinée'),
-        ('Vies', 'Vies-à-vies'),
-        ('Actualite', 'Actualité')
-    )
-    title = models.CharField(max_length = 10, choices = TITLES)
-
-    def __str__(self):
-        return self.title
+    pass
 
 class Article(models.Model):
     author = models.ForeignKey(UserProfile, null = True)

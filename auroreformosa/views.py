@@ -15,3 +15,10 @@ def uploadImg(request):
     else:
         form = ImgForm()
     return render(request,'AF/upload.html',{'form':form})
+
+def createarticle(request):
+    articleForm = ArticleForm()
+    numeros = Numero.objects.all()
+    categoryFR = CategoryDetail.objects.filter(language='fr')
+    categoryTW = CategoryDetail.objects.filter(language='tw')
+    return render(request, 'AF/createArticle.html', {'form':articleForm, 'numeros':numeros, 'categoryFR':categoryFR, 'categoryTW':categoryTW})

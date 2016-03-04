@@ -22,5 +22,4 @@ from django.conf.urls.static import static
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'', include('auroreformosa.urls'))
-    url(r'^uploadimg', 'auroreformosa.views.uploadImg', name='uploading')
 ] + static(settings.MEDIA_URL, img_root = settings.MEDIA_ROOT)

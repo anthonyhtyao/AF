@@ -10,6 +10,8 @@ def uploadImg(request):
     if request.method == 'POST':
         form = ImgForm(request.POST, request.FILES)
         if form.is_valid():
-            newImg = Img(imgfile = request.FILEs['imgfile'])
+            newImg = Img(imgfile = request.FILES['imgfile'])
             newImg.save()
-    return HttpResponseRedirect('/')
+    else:
+        form = ImgForm()
+    return render(request,'AF/upload.html',{'form':form})

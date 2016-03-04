@@ -52,3 +52,6 @@ class CategoryDetail(models.Model):
 
     def __str__(self):
         return self.title
+
+class Img(models.Model):
+    imgfile = models.FileField(upload_to='img')

@@ -8,6 +8,11 @@
     Title : <input id="title" type="text" name="title" maxlength="128" value="{{article.title}}"> 
     Language : <select> <option value='fr' selected> FR </option><option value='tw'>TW</option></select>
     Numéro : 
+    <select>
+    {% for numero in numeros %}
+      <option> {{ numero.numero }}</option>
+    {% endfor %}
+    </select>
     Catégorie :
     <p>Abstract :</p>     
     <textarea id="newAbstract" type="text" name="content" cols ="80" rows="20"} >{{article.abstract}} </textarea>

@@ -44,6 +44,7 @@
 
   <!-- Custom Theme JavaScript -->
   <script src="{% static "js/creative.js" %}"></script>
+  <script src="{% static "js/jquerysession.js" %}"></script>
   
   <script src="{% static "js/tinymce/tinymce.min.js" %}"></script>
   {{ form.media }}
@@ -52,6 +53,33 @@
         selector: ['#newContent','#newAbstract']
     });
     </script>
+
+    <script>
+     $(document).ready(function(){
+       $("#buttonFR").click(function(){
+         $.ajax({
+            type:"POST",
+            url:"/session_language/",
+            data: { language:'fr', csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success: function(){
+              $("#loading").hide();
+              document.location.reload();
+            }
+         });
+        });
+      $("#buttonTW").click(function(){
+        $.ajax({
+            type:"POST",
+            url:"/session_language/",
+            data: { 'language':'tw', csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success: function(){
+              $("#loading").hide();
+              document.location.reload();
+            }
+        });
+     });
+   });
+</script>
 
 </head>
 

@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from auroreformosa.models import *
 from auroreformosa.forms import *
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 
 def index(request):
-	return render(request, 'AF/index.html')
+    if not('language' in request.session):
+        request.session['language'] = 'fr'
+    return render(request, 'AF/index.html')
 
 def uploadImg(request):
     if request.method == 'POST':
@@ -38,3 +40,8 @@ def category(request, category):
         return render(request, 'AF/category.html', {'categoryFR':categoryFR, 'categoryTW':categoryTW, 'articleFR':articleFR, 'articleTW':articleTW})
     else:
         return HttpResponseRedirect('/')
+
+def session_language(request):
+    if request.method == 'POST':
+        request.session['language'] = request.POST['language']
+        return HttpResponse('123')

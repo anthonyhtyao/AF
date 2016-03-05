@@ -114,11 +114,10 @@
             <a href="\library">Bibliothèque</a>
           </li>
           <li>
-            <div>
-              <a href="">法</a>
-              <a href="">中</a>
-              <a href="">英</a>
-            </div>
+            <p class="navbar-btn">
+              <a><img src="{% static "img/languages/fr.png" %}"></a>
+              <a><img src="{% static "img/languages/tw.png" %}"></a>
+            </p>
           </li>
         </ul>
       </div>
@@ -136,10 +135,10 @@
 
   <div class="container">
     <ul class="nav navbar-nav">
-      <li class="col-lg-4">
+      <li class="col-lg-1">
         <a href="">歷史</a>
       </li>
-      <li class="col-lg-4">
+      <li class="col-lg-1">
         <a href="">文化</a>
       </li>
       <li class="col-lg-1">
@@ -166,9 +165,15 @@
     </ul>
   </div>
 
+
   <div class="container" id="body_block">
     {% block body_block %}{% endblock %}
   </div>
+
+  <section class="bg-primary">
+    <p class="col-lg-8 col-lg-offset-2 text-center">Ici les slides</p>
+  </section>
+
 
 </body>
 

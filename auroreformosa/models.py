@@ -47,6 +47,8 @@ class ArticleContent(models.Model):
     content = models.TextField(null = True)
     language = models.CharField(max_length = 2, choices = LANGUAGES, default = 'fr')
 
+    def inCategory(self,category):
+        return self.article.category == category
 
     def __str__(self):
         return self.title

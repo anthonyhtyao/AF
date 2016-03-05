@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block body_block %}
+123
+{{ categoryFR.title }}
+{{ categoryTW.title }}
+
+{% for a in articleFR %}
+{{a.title}}
+{% endfor %}
+{% for a in articleTW %}
+{{a.title}}
+{% endfor %}
+
+
+{% endblock %}

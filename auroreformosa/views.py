@@ -54,3 +54,23 @@ def add_categories(request, return_form):
     categories = CategoryDetail.objects.filter(language=request.session['language'])
     return_form['categories'] = categories
 
+def article(request, category, slg):
+    try:
+        article = Article.objects.get(slg=slg)
+        try:
+            cat = Category.objects.get(category = category)
+        except:
+            cat = None
+        if article.category == cat:
+            categoryFR = CategoryDetail.objects.get(language='fr', category=cat)
+            categoryTW = CategoryDetail.objects.get(language='tw', category=cat)
+            articleFR = ArticleContent.objects.get(language='fr', article = article)
+            try:
+                articleTW = ArticleContent.objects.get(language='tw', article = article)
+            except:
+                articleTW = None
+            return render(request, 'AF/article.html', {'categoryFR':categoryFR, 'categoryTW':categoryTW, 'articleFR':articleFR, 'articleTW':articleTW})
+        else:
+            return HttpResponseRedirect('/'+str(article.category)+'/article/'+slg)
+    except:
+            return HttpResponseRedirect('/')

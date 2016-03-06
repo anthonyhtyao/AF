@@ -1,9 +1,13 @@
 {% extends 'base.html' %}
 {% block body_block %}
-{{categoryFR.title}}
-{{categoryTW.title}}
-
-{{articleFR.title}}
-{{articleTW.title}}
-
+{% load static %}
+<div>
+  <h1><img src="{% static "img/logo_small.png" %}" width=`"25px" height="50px"><a href="../">{{category.title}}</a></h1>
+  <br>
+  <h2>{{article.title}}</h2>
+  <h4><span class="glyphicon glyphicon-time"></span> Posted on {{article.article.date}}  by <a href="#">{{article.article.author.name}}</a></h4>
+  <div>
+    {{article.content|safe}}
+  </div>
+</div>
 {% endblock %}

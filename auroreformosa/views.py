@@ -2,10 +2,13 @@ from django.shortcuts import render
 from auroreformosa.models import *
 from auroreformosa.forms import *
 from django.http import HttpResponseRedirect, HttpResponse
-
-def index(request):
+def sessionLanguage(request):
     if not('language' in request.session):
         request.session['language'] = 'fr'
+    return request.session['language']
+
+def index(request):
+    sessionLanguage(request)
     return render(request, 'AF/index.html')
 
 def uploadImg(request):
@@ -47,6 +50,7 @@ def session_language(request):
         return HttpResponse('123')
 
 def article(request, category, slg):
+    language = sessionLanguage(request) 
     try:
         article = Article.objects.get(slg=slg)
         try:
@@ -54,14 +58,12 @@ def article(request, category, slg):
         except:
             cat = None
         if article.category == cat:
-            categoryFR = CategoryDetail.objects.get(language='fr', category=cat)
-            categoryTW = CategoryDetail.objects.get(language='tw', category=cat)
-            articleFR = ArticleContent.objects.get(language='fr', article = article)
+            category = CategoryDetail.objects.get(language=language, category=cat)
             try:
-                articleTW = ArticleContent.objects.get(language='tw', article = article)
+                article = ArticleContent.objects.get(language=language, article = article)
             except:
-                articleTW = None
-            return render(request, 'AF/article.html', {'categoryFR':categoryFR, 'categoryTW':categoryTW, 'articleFR':articleFR, 'articleTW':articleTW})
+                article = None
+            return render(request, 'AF/article.html', {'category':category, 'article':article})
         else:
             return HttpResponseRedirect('/'+str(article.category)+'/article/'+slg)
     except:

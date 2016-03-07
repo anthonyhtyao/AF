@@ -57,6 +57,9 @@ class ArticleContent(models.Model):
     def inCategory(self,category):
         return self.article.category == category
 
+    def inNumero(self, numero):
+        return self.article.numero == numero
+    
     def __str__(self):
         return self.title
 

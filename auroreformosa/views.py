@@ -129,3 +129,11 @@ def comics(request, slg):
         return render(request, 'AF/comics.html', {'category':category, 'comic':comic, 'nextComic':nextComic, 'beforeComic':beforeComic})
     except:
         return HttpResponseRedirect('/')    
+
+def archive(request, numero):
+    try:
+        no = Numero.objects.get(numero=int(numero))
+        articles = [ a for a in ArticleContent.objects.all() if a.language=='fr' and  a.inNumero(no)]
+        return render(request, 'AF/archiveArticle.html', {'numero':no, 'articles':articles})
+    except:
+        return HttpResponseRedirect('/')

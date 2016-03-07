@@ -48,7 +48,7 @@ class ArticleContent(models.Model):
         ('fr', 'Français'),
         ('tw', '繁體中文'),
     )
-    article = models.ForeignKey(Article, null = True)
+    article = models.ForeignKey(Article, null = True, related_name='parent')
     title = models.CharField(max_length = 128)
     abstract = models.TextField(null = True)
     content = models.TextField(null = True)

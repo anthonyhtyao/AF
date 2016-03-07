@@ -71,7 +71,10 @@ def article(request, category, slg):
                 article = ArticleContent.objects.get(language=language, article = article)
             except:
                 article = None
-            return render(request, 'AF/article.html', {'category':category, 'article':article})
+            articleRelated = [ a for a in ArticleContent.objects.all() if a.language==language and a.inCategory(cat) and a !=article]
+            if len(articleRelated) >= 4:
+                articleRelated = articleRelated[:3]
+            return render(request, 'AF/article.html', {'category':category, 'article':article, 'articleRelated':articleRelated })
         else:
             return HttpResponseRedirect('/'+str(article.category)+'/article/'+slg)
     except:

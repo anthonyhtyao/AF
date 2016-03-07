@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block body_block %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-9">
+        {% block article_content %} {% endblock %}
+      </div>
+      <div class="col-md-3">
+        <ul class="list-unstyled">
+        {% for article in articleRelated %}
+          <li><a href="#">{{ article.title }}</a><img src="{{ article.article.image.imgfile.url }}"></li></ul>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

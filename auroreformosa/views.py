@@ -5,7 +5,6 @@ from django.http import HttpResponseRedirect, HttpResponse
 def sessionLanguage(request):
     if not('language' in request.session):
         request.session['language'] = 'fr'
-    return request.session['language']
 
 def index(request):
     sessionLanguage(request)
@@ -15,6 +14,8 @@ def index(request):
     comicArticleP = Article.objects.filter(category=comic).order_by('-date')[0]
     comicArticle = comicArticleP.comic.get(language=request.session['language'])
     return_form['comicArticle'] = comicArticle
+    numeros = Numero.objects.order_by('numero')
+    return_form['numeros'] = numeros
     return render(request, 'AF/index.html', return_form)
 
 def about(request):

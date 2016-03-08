@@ -6,8 +6,9 @@ from django.http import HttpResponseRedirect, HttpResponse
 def index(request):
     if not('language' in request.session):
         request.session['language'] = 'fr'
-    categories = CategoryDetail.objects.filter(language=request.session['language'])
-    return render(request, 'AF/index.html', {'categories': categories})
+    return_form={}
+    add_categories(request, return_form)
+    return render(request, 'AF/index.html', return_form)
 
 def uploadImg(request):
     if request.method == 'POST':
@@ -27,6 +28,7 @@ def createarticle(request):
     return render(request, 'AF/createArticle.html', {'form':articleForm, 'numeros':numeros, 'categoryFR':categoryFR, 'categoryTW':categoryTW})
 
 def category(request, category):
+    categories = CategoryDetail.objects.filter(language=request.session['language'])
     categoryList = Category.objects.all()
     inList = False
     for c in categoryList:
@@ -38,7 +40,7 @@ def category(request, category):
         categoryTW = CategoryDetail.objects.get(language='tw', category=cat)
         articleFR = [ a for a in ArticleContent.objects.all() if a.language=='fr' and  a.inCategory(cat)]
         articleTW = [ a for a in ArticleContent.objects.all() if a.language=='tw' and  a.inCategory(cat)]
-        return render(request, 'AF/category.html', {'categoryFR':categoryFR, 'categoryTW':categoryTW, 'articleFR':articleFR, 'articleTW':articleTW})
+        return render(request, 'AF/category.html', {'categoryFR':categoryFR, 'categoryTW':categoryTW, 'articleFR':articleFR, 'articleTW':articleTW, 'categories':categories})
     else:
         return HttpResponseRedirect('/')
 
@@ -46,3 +48,9 @@ def session_language(request):
     if request.method == 'POST':
         request.session['language'] = request.POST['language']
         return HttpResponse('123')
+
+def add_categories(request, return_form):
+    #Add categories in return_form for the category navbar for each view
+    categories = CategoryDetail.objects.filter(language=request.session['language'])
+    return_form['categories'] = categories
+

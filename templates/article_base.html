@@ -2,10 +2,10 @@
 {% block body_block %}
   <div class="container">
     <div class="row">
-      <div class="col-md-9">
+      <div class="col-md-offset-2 col-md-8">
         {% block article_content %} {% endblock %}
       </div>
-      <div class="col-md-3">
+      <div class="col-md-9">
         <ul class="list-unstyled">
         {% for article in articleRelated %}
           <li><a href="#">{{ article.title }}</a><img src="{{ article.article.image.imgfile.url }}"></li></ul>

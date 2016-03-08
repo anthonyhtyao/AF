@@ -2,10 +2,14 @@
 {% block article_content %}
 {% load static %}
 <div>
-  <h1><img src="{% static "img/logo_small.png" %}" width=`"25px" height="50px"><a href="../">{{category.title}}</a></h1>
+  <center><h1>{{article.title}}</h1></center>
+  <center>
+    <a href="/"><img src="{% static "img/logo_small.png" %}" width="10px" height="20px"></a> | 
+    <a href="../">{{category.title}}</a> | 
+    by <a href="#">{{article.article.author.name}}</a> | 
+    <span class="glyphicon glyphicon-time"></span> Posted on {{article.article.date}} 
+ </center>
   <br>
-  <h2>{{article.title}}</h2>
-  <h4><span class="glyphicon glyphicon-time"></span> Posted on {{article.article.date}}  by <a href="#">{{article.article.author.name}}</a></h4>
   <div>
     {{article.content|safe}}
   </div>

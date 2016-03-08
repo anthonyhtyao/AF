@@ -9,6 +9,12 @@ from auroreformosa.models import *
 def populate():
 	add_category('History', 'Histoire', '歷史')
 	add_category('Culture', 'Culture', '文化')
+	add_category('Politic', 'Politique', '政治')
+	add_category('Society', 'Société', '社會')
+	add_category('Recipe', 'Recette', '食譜')
+	add_category('Recipe', 'Recette', '食譜')
+	add_category('Art', 'Art', '藝術')
+	add_category('News', 'Nouvelles', '最新消息')
 
 def add_category(category_, category_fr, category_tw):
 	c = Category.objects.get_or_create(category = category_)

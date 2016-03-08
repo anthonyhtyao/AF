@@ -6,10 +6,11 @@
         {% block article_content %} {% endblock %}
       </div>
       <div class="col-md-9">
-        <ul class="list-unstyled">
+        <ul class="list-unstyled list-inline">
         {% for article in articleRelated %}
-          <li><a href="#">{{ article.title }}</a><img src="{{ article.article.image.imgfile.url }}"></li></ul>
+          <li><a href="#">{{ article.title }}</a><img src="{{ article.article.image.imgfile.url }}"></li>
         {% endfor %}
+        </ul>
       </div>
     </div>
   </div>

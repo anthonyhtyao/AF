@@ -16,18 +16,18 @@ def populate():
 	add_category('news', 'Nouvelles', '最新消息')
 
 def add_category(category_, category_fr, category_tw):
-	c = Category.objects.get_or_create(category = category_)
-	c[0].save()
+	[c,c_bool] = Category.objects.get_or_create(category = category_)
+	c.save()
 
-	c_tw = CategoryDetail.objects.get_or_create(title=category_tw)
-	c_tw[0].category=c[0]
-	c_tw[0].language='tw'
-	c_tw[0].save()
+	[c_tw, c_tw_bool] = CategoryDetail.objects.get_or_create(title=category_tw)
+	c_tw.category=c
+	c_tw.language='tw'
+	c_tw.save()
 	
-	c_fr = CategoryDetail.objects.get_or_create(title=category_fr)
-	c_fr[0].category=c[0]
-	c_fr[0].language='fr'
-	c_fr[0].save()
+	[c_fr, c_fr_bool] = CategoryDetail.objects.get_or_create(title=category_fr)
+	c_fr.category=c
+	c_fr.language='fr'
+	c_fr.save()
 
 
 if __name__=='__main__':

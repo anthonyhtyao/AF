@@ -6,7 +6,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 def index(request):
     if not('language' in request.session):
         request.session['language'] = 'fr'
-    return render(request, 'AF/index.html')
+    categories = CategoryDetail.objects.filter(language=request.session['language'])
+    return render(request, 'AF/index.html', {'categories': categories})
 
 def uploadImg(request):
     if request.method == 'POST':

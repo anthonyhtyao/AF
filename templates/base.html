@@ -142,33 +142,11 @@
 
   <div class="container">
     <ul class="nav navbar-nav">
-      <li class="col-lg-1">
-        <a href="">歷史</a>
-      </li>
-      <li class="col-lg-1">
-        <a href="">文化</a>
-      </li>
-      <li class="col-lg-1">
-        <a href="">政治</a>
-      </li>
-      <li class="col-lg-1">
-        <a href="">社會</a>
-      </li>
-      <li class="col-lg-1">
-        <a href="">食譜</a>
-      </li>
-      <li class="col-lg-1">
-        <a href="">藝術</a>
-      </li>
-      <li class="col-lg-1">
-        <a href="">活動</a>
-      </li>
-      <li class="col-lg-1">
-        <a href="">語言</a>
-      </li>
-      <li class="col-lg-1">
-        <a href="">最新文章</a>
-      </li>
+      {% for category in categories %}
+        <li class="col-lg-12">
+          <a href=""> {{category.title}} </a>
+        </li>
+      {% endfor %}
     </ul>
   </div>
   <div class="container">

@@ -12,7 +12,7 @@
   <title>Aurore Formosa {% block title_block %}{% endblock %}</title>
 
   <!-- Bootstrap Core CSS -->
-  <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}" type="text/css">
+  <link rel="stylesheet" href="{% static "css/bootstrap.css" %}" type="text/css">
 
   <!-- Custom Fonts -->
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
@@ -85,86 +85,77 @@
 
 <body id="page-top">
 
-  <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
-    <div class="container-fluid">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand page-scroll" href="#page-top">Home page</a>
-      </div>
 
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul class="nav navbar-nav navbar-right">
-          <li>
-            <a href="\about">About</a>
-          </li>
-          <li>
-            <a href="\follow">S'abboner</a>
-          </li>
-          <li>
-            <a href="\contact">Contacter nous</a>
-          </li>
-          <li>
-            <a href="\library">Bibliothèque</a>
-          </li>
-          <li>
-            <a href="">中法英</a>
-          </li>
-        </ul>
-      </div>
-      <!-- /.navbar-collapse -->
-    </div>
-    <!-- /.container-fluid -->
-  </nav>
+{% block header_block %}
+  <header> 
+{% endblock header_block %}
+    <nav id="mainNav" class="navbar navbar-default">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-inner">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand page-scroll" href="/">Home page</a>
+        </div>
 
-  <header>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+            <li>
+              <a href="\upload">About</a>
+            </li>
+            <li>
+              <a href="\follow">S'abboner</a>
+            </li>
+            <li>
+              <a href="\contact">Contacter nous</a>
+            </li>
+            <li>
+              <a href="\library">Bibliothèque</a>
+            </li>
+            <li>
+              <p class="navbar-btn">
+                <a id="buttonFR" class="btn"><img src="{% static "img/languages/fr.png" %}"></a>
+                <a id="buttonTW" class="btn"><img src="{% static "img/languages/logo_small.jpg" %}" width="10px" height="20px"></a>
+              </p>
+            </li>
+          </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+      </div>
+      <!-- /.container-fluid -->
+    </nav> 
     <div class="header-content">
+
       <div class="header-content-inner">
+
       </div>
     </div>
+
   </header>
+
+
 
   <div class="container">
     <ul class="nav navbar-nav">
-      <li class="col-lg-4">
-        <a href="">歷史</a>
-      </li>
-      <li class="col-lg-4">
-        <a href="">文化</a>
-      </li>
-      <li class="col-lg-1">
-        <a href="">政治</a>
-      </li>
-      <li class="col-lg-1">
-        <a href="">社會</a>
-      </li>
-      <li class="col-lg-1">
-        <a href="">食譜</a>
-      </li>
-      <li class="col-lg-1">
-        <a href="">藝術</a>
-      </li>
-      <li class="col-lg-1">
-        <a href="">活動</a>
-      </li>
-      <li class="col-lg-1">
-        <a href="">語言</a>
-      </li>
-      <li class="col-lg-1">
-        <a href="">最新文章</a>
-      </li>
+      {% for category in categories %}
+        <li class="col-lg-12">
+          <a href="/{{category.category}}"> {{category.title}} </a>
+        </li>
+      {% endfor %}
     </ul>
   </div>
-
-  <div class="container" id="body_block">
-    {% block body_block %}{% endblock %}
+  <div class="container">
+        {% block body_block %} {% endblock %}
   </div>
+{% block downpage_block %}
+  
+{% endblock downpage_block %}
+
 </body>
 
 </html>

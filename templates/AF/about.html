@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block body_block %}
+{% load static %}
+<div class="col-md-8 col-md-offset-2">
+
+{% if request.session.language == "fr" %}
+<h1><a href="/"><img src="{% static "img/logo_small.png" %}" height="50px"></a> | À propos</h1>
+<p><em>Aurore Formosane</em> est un journal francophone trimestriel consacré à Taïwan et animé par un groupe de Taïwanais vivant à Paris, en France ou en Europe. Nous créons ce périodique pour vous conter des histoires inédites, vous faire découvrir des paysages incroyables, des héros inconnus, et une foule de personnes anonymes qui font de notre terre natale un endroit où il fait bon vivre.
+</p>
+<p>
+Peu nombreux dans le monde, nous sommes hardis, enthousiastes, accueillants, et formons un peuple bienveillant originaire d’une petite île peu connue. En publiant ce journal, nous souhaiterions démontrer qu’un authentique échange entre peuples ne relève pas de la seule action diplomatique, qui pour être utile ne se caractérise pas toujours par sa vertu.
+</p>
+<p>
+Étudiants, chercheurs, artistes ou salariés, nous ne sommes en effet pas des gens de pouvoir mais des femmes et des hommes de bonne volonté, inspirés par l’idéal démocratique, et qui agissons à des fins honorables : faire mieux connaître notre patrie, et participer activement aux débats qui agitent les sociétés francophones en nourrissant vos réflexions et opinions sur Taïwan et l’Asie.
+</p>
+<p style="text-align: right;">Rédaction d’AF</p>
+
+{% elif request.session.language == "tw" %}
+<h1><a href="/"><img src="{% static "img/logo_small.png" %}" height="50px"></a> | 關於黎島</h1>
+<p>《黎島》是由旅居歐洲台灣人所創辦的法語季刊，旨在介紹福爾摩沙這塊土地上所發生的一切：不曾訴說的故事、令人詫異的天景、抑或默默耕耘的無名英雄，我們出生的故土因此而美麗。</p>
+
+<p>台灣人島嶼性格出身，勇敢、熱情、好客是小國小民的本質。發行刊物，目的是要搭起交流的橋樑，我們要證明國與國之間的相處，不該流於外交算計，而在於誠摯尊重、了解並互識。</p>
+
+<p>我們之中有些人是學生，有些是學者、藝術家，有些則已步入職場，儘管無影響力卻仍抱有赤子之心。帶著民主社會的價值，我們要讓法語社會認識美麗島，且以不同的角度，思索東亞社會的歷史與文化脈動。</p>
+<p style="text-align: right;">黎島編輯室</p>
+{% endif %}
+</div>
+
+{% endblock %}

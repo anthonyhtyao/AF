@@ -1,0 +1,17 @@
+{% extends 'article_base.html' %}
+{% block article_content %}
+{% load static %}
+<div>
+  <center><h1>{{article.title}}</h1></center>
+  <center>
+    <a href="/"><img src="{% static "img/logo_small.png" %}" width="10px" height="20px"></a> | 
+    <a href="../">{{category.title}}</a> | 
+    by <a href="#">{{article.article.author.name}}</a> | 
+    <span class="glyphicon glyphicon-time"></span> Posted on {{article.article.date}} 
+ </center>
+  <br>
+  <div>
+    {{article.content|safe}}
+  </div>
+</div>
+{% endblock %}

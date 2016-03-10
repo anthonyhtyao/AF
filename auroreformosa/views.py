@@ -13,6 +13,12 @@ def index(request):
     add_categories(request, return_form)
     return render(request, 'AF/index.html', return_form)
 
+def about(request):
+    sessionLanguage(request)
+    return_form={}
+    add_categories(request, return_form)
+    return render(request, 'AF/about.html', return_form)
+
 def uploadImg(request):
     if request.method == 'POST':
         form = ImgForm(request.POST, request.FILES)

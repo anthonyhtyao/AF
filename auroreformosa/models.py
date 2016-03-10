@@ -21,6 +21,12 @@ class Category(models.Model):
     def __str__(self):
         return self.category
 
+class Img(models.Model):
+    imgfile = models.FileField(upload_to='img')
+
+    def __str__(self):
+        return self.imgfile.url
+
 class Article(models.Model):
     author = models.ForeignKey(UserProfile, null = True)
     date = models.DateTimeField(auto_now_add = True, auto_now = False, null = True)
@@ -28,6 +34,7 @@ class Article(models.Model):
     numero = models.ForeignKey(Numero, null=True)
     title = models.CharField(max_length=128)
     slg = models.SlugField()
+    image = models.ForeignKey(Img)
 
     def __str__(self):
         return self.title
@@ -41,7 +48,7 @@ class ArticleContent(models.Model):
         ('fr', 'Français'),
         ('tw', '繁體中文'),
     )
-    article = models.ForeignKey(Article, null = True)
+    article = models.ForeignKey(Article, null = True, related_name='article')
     title = models.CharField(max_length = 128)
     abstract = models.TextField(null = True)
     content = models.TextField(null = True)
@@ -65,5 +72,3 @@ class CategoryDetail(models.Model):
     def __str__(self):
         return self.title
 
-class Img(models.Model):
-    imgfile = models.FileField(upload_to='img')

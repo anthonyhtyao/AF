@@ -60,20 +60,26 @@ def add_categories(request, return_form):
 def article(request, category, slg):
     language = sessionLanguage(request) 
     try:
-        article = Article.objects.get(slg=slg)
+        articleParent = Article.objects.get(slg=slg)
         try:
             cat = Category.objects.get(category = category)
         except:
             cat = None
-        if article.category == cat:
+        if articleParent.category == cat:
             category = CategoryDetail.objects.get(language=language, category=cat)
             try:
-                article = ArticleContent.objects.get(language=language, article = article)
+                article = articleParent.article.get(language=language)
             except:
                 article = None
-            articleRelated = [ a for a in ArticleContent.objects.all() if a.language==language and a.inCategory(cat) and a !=article]
-            if len(articleRelated) >= 4:
-                articleRelated = articleRelated[:3]
+            i = 1
+            articleRelated = []
+            for a in Article.objects.filter(category=cat).order_by('-date'):
+                if i > 4:
+                    break
+                articleGet = a.article.get(language = language)
+                if article != articleGet:
+                    articleRelated.append(articleGet)
+                    i += 1
             return render(request, 'AF/article.html', {'category':category, 'article':article, 'articleRelated':articleRelated })
         else:
             return HttpResponseRedirect('/'+str(article.category)+'/article/'+slg)

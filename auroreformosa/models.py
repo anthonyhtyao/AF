@@ -34,7 +34,7 @@ class Article(models.Model):
     numero = models.ForeignKey(Numero, null=True)
     title = models.CharField(max_length=128)
     slg = models.SlugField()
-    image = models.ForeignKey(Img)
+    image = models.ForeignKey(Img, null = True)
 
     def __str__(self):
         return self.title
@@ -57,6 +57,20 @@ class ArticleContent(models.Model):
     def inCategory(self,category):
         return self.article.category == category
 
+    def __str__(self):
+        return self.title
+
+class Comic(models.Model):
+    LANGUAGES = (
+        ('fr', 'Français'),
+        ('tw', '繁體中文'),
+    )
+    article = models.ForeignKey(Article, null = True, related_name='comic')
+    title = models.CharField(max_length = 128)
+    image = models.ForeignKey(Img, null=True)
+    content = models.TextField(null = True)
+    language = models.CharField(max_length = 2, choices = LANGUAGES, default = 'fr')
+    
     def __str__(self):
         return self.title
 

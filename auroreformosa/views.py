@@ -11,6 +11,10 @@ def index(request):
     sessionLanguage(request)
     return_form={}
     add_categories(request, return_form)
+    comic = Category.objects.filter(category="comics")[:1]
+    comicArticleP = Article.objects.get(category=comic)
+    comicArticle = comicArticleP.comic.get(language=request.session['language'])
+    return_form['comicArticle'] = comicArticle
     return render(request, 'AF/index.html', return_form)
 
 def about(request):

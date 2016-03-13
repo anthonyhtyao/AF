@@ -77,21 +77,14 @@
 
         <!-- 近期文章列表 well -->
         <div class="well">
-            <h4>臉書連結</h4>
+          {% if request.session.language = "fr" %}
+            <h4>Bande Dessinée</h4>
+          {% elif request.session.language = "tw" %}
+            <h4>漫畫</h4>
+          {% endif %}
             <div class="row">
               <div class="col-lg-6">
-                <ul class="list-unstyled">
-                  <li><a href="#">Lien 1</a>
-                  </li>
-                  <li><a href="#">Lien 2</a>
-                  </li>
-                  <li><a href="#">Lien 3</a>
-                  </li>
-                  <li><a href="#">Lien 4</a>
-                  </li>
-                  <li><a href="#">Lien 5</a>
-                  </li>
-                </ul>
+              <img src="{{comicArticle.image.imgfile.url}}" width="100%">
               </div>
             </div>
             <!-- /.row -->

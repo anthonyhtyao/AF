@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block body_block %}
+{% load static %}
+<div>
+  <center><h1>{{comic.title}}</h1></center>
+  <center>
+    <a href="/"><img src="{% static "img/logo_small.png" %}" width="10px" height="20px"></a> |
+    <a href="../">{{category.title}}</a> |
+    <span class="glyphicon glyphicon-time"></span> Posted on {{comic.article.date}}
+  </center>
+  <br>
+  <div class="col-md-8 col-md-offset-2">
+    <img src="{{comic.image.imgfile.url}}" width="100%">
+  </div>
+</div>
+{% endblock %}
+

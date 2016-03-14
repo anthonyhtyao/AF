@@ -11,8 +11,8 @@ def index(request):
     sessionLanguage(request)
     return_form={}
     add_categories(request, return_form)
-    comic = Category.objects.filter(category="comics")[:1]
-    comicArticleP = Article.objects.get(category=comic)
+    comic = Category.objects.get(category="comics")
+    comicArticleP = Article.objects.filter(category=comic).order_by('-numero')[0]
     comicArticle = comicArticleP.comic.get(language=request.session['language'])
     return_form['comicArticle'] = comicArticle
     return render(request, 'AF/index.html', return_form)
@@ -95,3 +95,17 @@ def article(request, category, slg):
             return HttpResponseRedirect('/'+str(article.category)+'/article/'+slg)
     except:
             return HttpResponseRedirect('/')
+
+def comics(request, slg):
+    language = sessionLanguage(request) 
+    try:
+        articleParent = Article.objects.get(slg=slg)
+        cat = Category.objects.get(category="comics")
+        category = CategoryDetail.objects.get(language=language, category=cat)
+        try:
+            comic = articleParent.comic.get(language=language)
+        except:
+            comic = None
+        return render(request, 'AF/comics.html', {'category':category, 'comic':comic})
+    except:
+        return HttpResponseRedirect('/')    

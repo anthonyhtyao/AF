@@ -30,7 +30,7 @@ class Img(models.Model):
 class Article(models.Model):
     author = models.ForeignKey(UserProfile, null = True)
     date = models.DateTimeField(auto_now_add = True, auto_now = False, null = True)
-    category = models.ForeignKey(Category)
+    category = models.ForeignKey(Category, related_name="article")
     numero = models.ForeignKey(Numero, null=True)
     title = models.CharField(max_length=128)
     slg = models.SlugField()

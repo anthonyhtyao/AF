@@ -11,6 +11,10 @@ def index(request):
     sessionLanguage(request)
     return_form={}
     add_categories(request, return_form)
+    comic = Category.objects.get(category="comics")
+    comicArticleP = Article.objects.filter(category=comic).order_by('-date')[0]
+    comicArticle = comicArticleP.comic.get(language=request.session['language'])
+    return_form['comicArticle'] = comicArticle
     return render(request, 'AF/index.html', return_form)
 
 def about(request):
@@ -37,21 +41,26 @@ def createarticle(request):
     return render(request, 'AF/createArticle.html', {'form':articleForm, 'numeros':numeros, 'categoryFR':categoryFR, 'categoryTW':categoryTW})
 
 def category(request, category):
-    categories = CategoryDetail.objects.filter(language=request.session['language'])
-    categoryList = Category.objects.all()
-    inList = False
-    for c in categoryList:
-        if str(c) == category:
-            inList = True
-            cat = c
-    if inList:
-        categoryFR = CategoryDetail.objects.get(language='fr', category=cat)
-        categoryTW = CategoryDetail.objects.get(language='tw', category=cat)
-        articleFR = [ a for a in ArticleContent.objects.all() if a.language=='fr' and  a.inCategory(cat)]
-        articleTW = [ a for a in ArticleContent.objects.all() if a.language=='tw' and  a.inCategory(cat)]
-        return render(request, 'AF/category.html', {'categoryFR':categoryFR, 'categoryTW':categoryTW, 'articleFR':articleFR, 'articleTW':articleTW, 'categories':categories})
+    if category == "comics":
+        comicCat = Category.objects.get(category=category)
+        comic = comicCat.article.order_by('-date')[0]
+        return HttpResponseRedirect('/comics/' + comic.slg) 
     else:
-        return HttpResponseRedirect('/')
+        categories = CategoryDetail.objects.filter(language=request.session['language'])
+        categoryList = Category.objects.all()
+        inList = False
+        for c in categoryList:
+            if str(c) == category:
+                inList = True
+                cat = c
+        if inList:
+            categoryFR = CategoryDetail.objects.get(language='fr', category=cat)
+            categoryTW = CategoryDetail.objects.get(language='tw', category=cat)
+            articleFR = [ a for a in ArticleContent.objects.all() if a.language=='fr' and  a.inCategory(cat)]
+            articleTW = [ a for a in ArticleContent.objects.all() if a.language=='tw' and  a.inCategory(cat)]
+            return render(request, 'AF/category.html', {'categoryFR':categoryFR, 'categoryTW':categoryTW, 'articleFR':articleFR, 'articleTW':articleTW, 'categories':categories})
+        else:
+            return HttpResponseRedirect('/')
 
 def session_language(request):
     if request.method == 'POST':
@@ -91,3 +100,31 @@ def article(request, category, slg):
             return HttpResponseRedirect('/'+str(article.category)+'/article/'+slg)
     except:
             return HttpResponseRedirect('/')
+
+def comics(request, slg):
+    language = sessionLanguage(request) 
+    try:
+        articleParent = Article.objects.get(slg=slg)
+        cat = Category.objects.get(category="comics")
+        category = CategoryDetail.objects.get(language=language, category=cat)
+        comics = cat.article.order_by('-date')
+        try:
+            comic = articleParent.comic.get(language=language)
+            l = len(comics)
+            for i in range(l):
+                if comics[i] == articleParent:
+                    break
+            if i == 0:
+                beforeComic = comics[l-1]
+            else:
+                beforeComic = comics[i-1]
+            if i == l-1:
+                nextComic = comics[0]
+            else:
+                nextComic = comics[i+1]  
+        except:
+            comic = None
+            return HttpResponseRedirect("/")
+        return render(request, 'AF/comics.html', {'category':category, 'comic':comic, 'nextComic':nextComic, 'beforeComic':beforeComic})
+    except:
+        return HttpResponseRedirect('/')    

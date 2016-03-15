@@ -2,6 +2,8 @@ from django.shortcuts import render
 from auroreformosa.models import *
 from auroreformosa.forms import *
 from django.http import HttpResponseRedirect, HttpResponse
+from django.core.mail import send_mail
+import urllib
 
 def init(request):
     # Set default language to fr
@@ -166,3 +168,11 @@ def archive(request, numero):
         return render(request, 'AF/archiveArticle.html', returnForm)
     except:
         return HttpResponseRedirect('/')
+
+def abonnement(request):
+    if request.method=="POST":
+        form = AbonnementForm(request.POST)
+        if form.is_valid():
+            send_mail('test email', form.data.urlencode(), 'anthonyhtyao@gmail.com', ['anthonyhtyao@gmail.com','yulinhuang23@gmail.com'])
+    form = AbonnementForm()
+    return render(request,'AF/abonnement.html',{'form':form})

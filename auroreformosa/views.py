@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 def sessionLanguage(request):
     if not('language' in request.session):
         request.session['language'] = 'fr'
+    return request.session['language']
 
 def index(request):
     sessionLanguage(request)
@@ -133,7 +134,15 @@ def comics(request, slg):
 def archive(request, numero):
     try:
         no = Numero.objects.get(numero=int(numero))
-        articles = [ a for a in ArticleContent.objects.all() if a.language=='fr' and  a.inNumero(no)]
-        return render(request, 'AF/archiveArticle.html', {'numero':no, 'articles':articles})
+        comicCat = Category.objects.get(category="comics")
+        editoP = no.article.get(edito=True)
+        edito = editoP.article.get(language=request.session['language'])
+        articles = []
+        for a in  no.article.filter(edito = False):
+            if a.category == comicCat:
+                comic = a.comic.get(language=request.session['language'])
+            else:
+                articles.append(a.article.get(language=request.session['language']))
+        return render(request, 'AF/archiveArticle.html', {'numero':no, 'articles':articles, "edito":edito, "comic":comic})
     except:
         return HttpResponseRedirect('/')

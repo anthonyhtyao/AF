@@ -71,7 +71,8 @@ def session_language(request):
 
 def add_categories(request, return_form):
     #Add categories in return_form for the category navbar for each view
-    categories = CategoryDetail.objects.filter(language=request.session['language'])
+    edito = Category.objects.get(category="edito")
+    categories = CategoryDetail.objects.filter(language=request.session['language']).exclude(category = edito)
     return_form['categories'] = categories
 
 def article(request, category, slg):

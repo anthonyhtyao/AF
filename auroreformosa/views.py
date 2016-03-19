@@ -46,7 +46,9 @@ def category(request, category):
     if category == "comics":
         comicCat = Category.objects.get(category=category)
         comic = comicCat.article.order_by('-date')[0]
-        return HttpResponseRedirect('/comics/' + comic.slg) 
+        return HttpResponseRedirect('/comics/' + comic.slg)
+    elif category == "edito":
+        return HttpResponseRedirect("/") 
     else:
         categories = CategoryDetail.objects.filter(language=request.session['language'])
         categoryList = Category.objects.all()

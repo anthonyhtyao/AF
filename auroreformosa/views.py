@@ -46,22 +46,24 @@ def category(request, category):
     if category == "comics":
         comicCat = Category.objects.get(category=category)
         comic = comicCat.article.order_by('-date')[0]
-        return HttpResponseRedirect('/comics/' + comic.slg) 
+        return HttpResponseRedirect('/comics/' + comic.slg)
+    elif category == "edito":
+        return HttpResponseRedirect("/") 
     else:
-        categories = CategoryDetail.objects.filter(language=request.session['language'])
-        categoryList = Category.objects.all()
-        inList = False
-        for c in categoryList:
-            if str(c) == category:
-                inList = True
-                cat = c
-        if inList:
-            categoryFR = CategoryDetail.objects.get(language='fr', category=cat)
-            categoryTW = CategoryDetail.objects.get(language='tw', category=cat)
-            articleFR = [ a for a in ArticleContent.objects.all() if a.language=='fr' and  a.inCategory(cat)]
-            articleTW = [ a for a in ArticleContent.objects.all() if a.language=='tw' and  a.inCategory(cat)]
-            return render(request, 'AF/category.html', {'categoryFR':categoryFR, 'categoryTW':categoryTW, 'articleFR':articleFR, 'articleTW':articleTW, 'categories':categories})
-        else:
+        edito = Category.objects.get(category="edito")
+        categoryList = Category.objects.exclude(category="edito")
+        categories = [c.detail.get(language=request.session['language']) for c in categoryList]
+        try:
+            cat = Category.objects.get(category=category)
+            category = cat.detail.get(language=request.session['language'])
+            articles = []
+            for a in Article.objects.filter(category=cat):
+                try:
+                    articles.append(a.article.get(language=request.session['language']))
+                except:
+                    pass
+            return render(request, 'AF/category.html', {'category':category, 'articles':articles, 'categories':categories})
+        except:
             return HttpResponseRedirect('/')
 
 def session_language(request):
@@ -71,7 +73,8 @@ def session_language(request):
 
 def add_categories(request, return_form):
     #Add categories in return_form for the category navbar for each view
-    categories = CategoryDetail.objects.filter(language=request.session['language'])
+    edito = Category.objects.get(category="edito")
+    categories = CategoryDetail.objects.filter(language=request.session['language']).exclude(category = edito)
     return_form['categories'] = categories
 
 def article(request, category, slg):

@@ -15,6 +15,8 @@ def index(request):
     comicArticleP = Article.objects.filter(category=comic).order_by('-date')[0]
     comicArticle = comicArticleP.comic.get(language=request.session['language'])
     return_form['comicArticle'] = comicArticle
+    numeros = Numero.objects.order_by('numero')
+    return_form['numeros'] = numeros
     return render(request, 'AF/index.html', return_form)
 
 def about(request):
@@ -128,3 +130,19 @@ def comics(request, slg):
         return render(request, 'AF/comics.html', {'category':category, 'comic':comic, 'nextComic':nextComic, 'beforeComic':beforeComic})
     except:
         return HttpResponseRedirect('/')    
+
+def archive(request, numero):
+    try:
+        no = Numero.objects.get(numero=int(numero))
+        comicCat = Category.objects.get(category="comics")
+        editoP = no.article.get(edito=True)
+        edito = editoP.article.get(language=request.session['language'])
+        articles = []
+        for a in  no.article.filter(edito = False):
+            if a.category == comicCat:
+                comic = a.comic.get(language=request.session['language'])
+            else:
+                articles.append(a.article.get(language=request.session['language']))
+        return render(request, 'AF/archiveArticle.html', {'numero':no, 'articles':articles, "edito":edito, "comic":comic})
+    except:
+        return HttpResponseRedirect('/')

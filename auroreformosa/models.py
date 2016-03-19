@@ -9,9 +9,19 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+
+class Img(models.Model):
+    imgfile = models.FileField(upload_to='img')
+
+    def __str__(self):
+        return self.imgfile.url
+
 class Numero(models.Model):
     numero = models.PositiveIntegerField()
-
+    image = models.ForeignKey(Img, null=True)
+    titleFR = models.CharField(max_length=128, null=True)
+    titleTW = models.CharField(max_length=128, null=True)
+    
     def __str__(self):
         return str(self.numero)
 
@@ -21,20 +31,15 @@ class Category(models.Model):
     def __str__(self):
         return self.category
 
-class Img(models.Model):
-    imgfile = models.FileField(upload_to='img')
-
-    def __str__(self):
-        return self.imgfile.url
-
 class Article(models.Model):
     author = models.ForeignKey(UserProfile, null = True)
     date = models.DateTimeField(auto_now_add = True, auto_now = False, null = True)
-    category = models.ForeignKey(Category, related_name="article")
-    numero = models.ForeignKey(Numero, null=True)
+    category = models.ForeignKey(Category, related_name="article", null=True)
+    numero = models.ForeignKey(Numero, null=True, related_name="article")
     title = models.CharField(max_length=128)
     slg = models.SlugField()
     image = models.ForeignKey(Img, null = True)
+    edito = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
@@ -57,6 +62,9 @@ class ArticleContent(models.Model):
     def inCategory(self,category):
         return self.article.category == category
 
+    def inNumero(self, numero):
+        return self.article.numero == numero
+    
     def __str__(self):
         return self.title
 

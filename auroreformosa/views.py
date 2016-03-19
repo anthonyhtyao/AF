@@ -56,7 +56,12 @@ def category(request, category):
         try:
             cat = Category.objects.get(category=category)
             category = cat.detail.get(language=request.session['language'])
-            articles = [ a.article.get(language=request.session['language']) for a in Article.objects.filter(category=cat)]
+            articles = []
+            for a in Article.objects.filter(category=cat):
+                try:
+                    articles.append(a.article.get(language=request.session['language']))
+                except:
+                    pass
             return render(request, 'AF/category.html', {'category':category, 'articles':articles, 'categories':categories})
         except:
             return HttpResponseRedirect('/')

@@ -87,7 +87,7 @@ class CategoryDetail(models.Model):
         ('fr', 'Français'),
         ('tw', '繁體中文'),
     )
-    category = models.ForeignKey(Category, null = True)
+    category = models.ForeignKey(Category, null = True, related_name="detail")
     title = models.CharField(max_length = 20)
     language = models.CharField(max_length = 2, choices = LANGUAGES, default = 'fr')
 

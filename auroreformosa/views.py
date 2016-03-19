@@ -50,20 +50,15 @@ def category(request, category):
     elif category == "edito":
         return HttpResponseRedirect("/") 
     else:
-        categories = CategoryDetail.objects.filter(language=request.session['language'])
-        categoryList = Category.objects.all()
-        inList = False
-        for c in categoryList:
-            if str(c) == category:
-                inList = True
-                cat = c
-        if inList:
-            categoryFR = CategoryDetail.objects.get(language='fr', category=cat)
-            categoryTW = CategoryDetail.objects.get(language='tw', category=cat)
-            articleFR = [ a for a in ArticleContent.objects.all() if a.language=='fr' and  a.inCategory(cat)]
-            articleTW = [ a for a in ArticleContent.objects.all() if a.language=='tw' and  a.inCategory(cat)]
-            return render(request, 'AF/category.html', {'categoryFR':categoryFR, 'categoryTW':categoryTW, 'articleFR':articleFR, 'articleTW':articleTW, 'categories':categories})
-        else:
+        edito = Category.objects.get(category="edito")
+        categoryList = Category.objects.exclude(category="edito")
+        categories = [c.detail.get(language=request.session['language']) for c in categoryList]
+        try:
+            cat = Category.objects.get(category=category)
+            category = cat.detail.get(language=request.session['language'])
+            articles = [ a.article.get(language=request.session['language']) for a in Article.objects.filter(category=cat)]
+            return render(request, 'AF/category.html', {'category':category, 'articles':articles, 'categories':categories})
+        except:
             return HttpResponseRedirect('/')
 
 def session_language(request):

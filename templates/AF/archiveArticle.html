@@ -1,10 +1,27 @@
 {% extends 'base.html' %}
 {% block body_block %}
 {% load static %}
-<!-- url of this page: /no/:id-->
+<!-- This page presents information of given numero, url for this page: /no/:id-->
 <div class="col-md-8 col-md-offset-2">
-  <h1><a href="/"><img src="{% static "img/logo_small.png" %}" height="50px"></a> | {{numero}}</h1>
-  
+<!-- title for this numero depends on language -->
+  <center>
+    <h1>
+      {% if request.session.language == "fr" %}{{numero.titleFR}}
+      {% elif request.session.language == "tw" %}{{numero.titleTW}}
+      {% endif %}
+    </h1>
+  </center>
+
+  <center><a href="/"><img src="{% static "img/logo_small.png" %}" width="10px" height="20px"></a> | no {{numero}}</center>
+ 
+</div>
+
+<div class="col-md-12">
+  <img src="{{numero.image.imgfile.url}}" width="100%">
+</div>
+
+<div class="col-md-8 col-md-offset-2">
+<!-- Articles list of given numero, need CSS, model is http://auroreformosane.org/category/dernier-numero-fr/-->  
   <div>
     <dl class="dl-horizontal">
         <dt><a href="/comics/{{comic.article.slg}}">{{comic}}</a></dt>
@@ -15,7 +32,7 @@
       {% endfor %}
     </dl>
   </div>
-
+<!-- Edito of given numero-->
 <div class="col-md-12">
   <center>
     <h2>

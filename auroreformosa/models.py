@@ -19,6 +19,9 @@ class Img(models.Model):
 class Numero(models.Model):
     numero = models.PositiveIntegerField()
     image = models.ForeignKey(Img, null=True)
+    titleFR = models.CharField(max_length=128, null=True)
+    titleTW = models.CharField(max_length=128, null=True)
+    
     def __str__(self):
         return str(self.numero)
 

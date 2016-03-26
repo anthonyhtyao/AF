@@ -1,15 +1,109 @@
 {% extends 'base.html' %}
 {% block body_block %}
-<form id ="abonnementForm" method="post" action="/abonnement">
-  {% csrf_token %}
-  Name : <input type="text" name="name" maxlength="128">
-  Email : <input type="email" name="email">
-  Action : <select name="action">
-           <option value="don"> Don </option>
-           <option value="abonnement"> Abonnement </option>
-           </select>
-  Message : <textarea type="text" name="message" cols="80" rows="10"></textarea>
+{% load static %}
 
-  <input type="submit" name="submit" value="envoyer">
-</form>
+<div class="col-md-8 col-md-offset-2">
+  <h1><a href="/"><img src="{% static "img/logo_small.png" %}" height="50px"></a> | Abonnement / Soutien</h1>
+</div>
+
+<div class="col-md-12">
+  <div class="media">
+    <div class="media-body">
+      <p style="text-align: left;"><em>Aurore Formosane</em> aurait besoin des soutiens financiers pour assurer son bon fonctionnement.</p>
+      <p style="text-align: left;">
+        <strong>Abonnement<br /></strong>
+        Abonnez-vous pour <strong>15 €</strong> par an et nous vous enverrons les 4 prochains numéros par voie postale (prix pour la France métropolitaine, d&rsquo;autres pays avec un supplément postal sur demande).
+      </p>
+      <p style="text-align: left;">
+        <strong>Don<br /></strong>
+        Vous pouvez également nous verser des dons à votre gré pour soutenir notre action.
+      </p>
+    </div>
+    
+    <div class="media-right">
+      <p><img class="media-object" src="{% static "img/abonnement.jpg" %}" alt="1" width="277" height="233" /></a></p>
+    </div>
+  </div>
+
+  <div>
+    <p>Nous vous remercions infiniment de votre geste. Nous ferons de notre mieux pour améliorer notre journal.</p>
+    <p>&nbsp;</p>
+    <p>Ci-dessous se trouve le formulaire de don et d&rsquo;abonnement. Une fois que vous aurez rempli le formulaire et que ce dernier sera validé par nous, vous recevrez un e-mail de confirmation avec les détails du virement à votre adresse électronique.</p>
+    <p>&nbsp;</p>
+
+    <div class="col-md-12">
+      <form id ="abonnementForm" method="post" action="/abonnement">
+      {% csrf_token %}
+ 
+      <div class="col-md-12">
+        <label class="radio-inline">
+          <input type="radio" name="title" id="inlineRadio1" value="Mlle"> Mlle
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="title" id="inlineRadio2" value="Mme"> Mme
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="title" id="inlineRadio3" value="M."> M.
+        </label>
+  
+        <div class ="form-inline">
+          <div class="form-group">
+            <label class="sr-only" for="InputName">Nom</label>
+            <input type="text" class="form-control" id="InputName" placeholder="Nom" name="name">
+          </div>
+        </div>
+        <br>
+  
+        <div class="form-group">
+          <label class="sr-only" for="exampleInputEmail1">Email address</label>
+          <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email" name="email">
+        </div>
+
+        Je veux
+        <label class="checkbox-inline">
+          <input type="checkbox" id="inlineCheckbox1" value="True" name="abonnement"> m'abonner
+        </label>
+        <label class="checkbox-inline">
+          <input type="checkbox" id="inlineCheckbox2" value="True" name="don"> faire un don de
+        </label>
+          <input type="text" id="exampleInputAmount" placeholder="Amount" size="5">€
+        <label class="checkbox-inline">
+          <input type="checkbox" id="inlineCheckbox3" value="True" name="informer"> être informé(e)
+        </label>
+      </div>
+      <!--For client's adresse-->
+      <div class="col-md-12">
+      <br>
+        <div class="col-md-5">
+          <label class="" for="InputAdresse">Adresse</label>
+          <input type="text" class="form-control" id="InputAdresse" placeholder="Adresse" name="adresse">
+        </div>
+        <div class="col-md-2">
+          <label class="" for="InputCodePostal">Code Postal</label>
+          <input type="text" class="form-control" id="InputCodePostal" placeholder="00000" name="codepostal">
+        </div>
+        <div class="col-md-2">
+          <label class="" for="InputCity">Ville</label>
+          <input type="text" class="form-control" id="InputCity" placeholder="Ville" name="city">
+        </div>
+        <div class="col-md-2">
+          <label class="" for="InputCountry">Pays</label>
+          <input type="text" class="form-control" id="InputCountry" placeholder="France" name="country">
+        </div>
+      </div>
+
+      <!--For client's message -->
+      <div class="col-md-12">
+      <br>
+        <div>
+          <label for="InputMessage">Laissez un message</label>
+          <textarea class="form-control" rows="3" id="InputMessage" placeholder="Hello World!" name="message"></textarea>
+        </div>
+        <br>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+
+    </form>
+  </div>
+</div>
 {% endblock %}

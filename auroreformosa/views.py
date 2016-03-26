@@ -4,6 +4,9 @@ from auroreformosa.forms import *
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.mail import send_mail
 import urllib
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template
+from django.template import Context
 
 def init(request):
     # Set default language to fr
@@ -173,6 +176,21 @@ def abonnement(request):
     if request.method=="POST":
         form = AbonnementForm(request.POST)
         if form.is_valid():
-            send_mail('test email', form.data.urlencode(), 'anthonyhtyao@gmail.com', ['anthonyhtyao@gmail.com','yulinhuang23@gmail.com'])
+            emailTxt = get_template('template/email.txt')
+            emailHtml = get_template('template/email.html')
+            adresse = request.POST['adresse'] + " " + request.POST['city'] + " " + request.POST['country'] + " " + request.POST['codepostal']
+            action =""
+            if request.POST['abonnement']:
+                action += "s'abonner et "
+            if request.POST['don']:
+                action += "faire un don et "
+            if request.POST['informer']:
+                action += "être informé(e)"
+            d = Context({'title':request.POST['title'], 'name':request.POST['name'], 'email':request.POST['email'], 'adresse':adresse, 'action':action})
+            textContent = emailTxt.render(d)
+            htmlContent = emailHtml.render(d)
+            send_mail("Hello", textContent, 'anthonyhtyao@gmail.com', ['anthonyhtyao@gmail.com'],html_message=htmlContent)
+            #print(urllib.parse.unquote(form.data.urlencode()))
+            #send_mail('test email', urllib.parse.unquote(form.data.urlencode()) + "<br>123456", 'anthonyhtyao@gmail.com', ['anthonyhtyao@gmail.com'])
     form = AbonnementForm()
     return render(request,'AF/abonnement.html',{'form':form})

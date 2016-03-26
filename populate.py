@@ -7,13 +7,18 @@ django.setup()
 from auroreformosa.models import *
 
 def populate():
-	add_category('history', 'Histoire', '歷史')
-	add_category('culture', 'Culture', '文化')
-	add_category('politic', 'Politique', '政治')
-	add_category('society', 'Société', '社會')
-	add_category('recipe', 'Recette', '食譜')
-	add_category('art', 'Art', '藝術')
-	add_category('news', 'Nouvelles', '最新消息')
+    category()
+
+def category():
+    add_category('history', 'Histoire', '歷史')
+    add_category('culture', 'Culture', '文化')
+    add_category('politic', 'Politique', '政治')
+    add_category('society', 'Société', '社會')
+    add_category('recipe', 'Recette', '食譜')
+    add_category('art', 'Art', '藝術')
+    add_category('news', 'Nouvelles', '最新消息')
+    add_category('edito', 'edito', '編者言')
+    add_category('comics', 'Bande dessinée', '漫畫')
 
 def add_category(category_, category_fr, category_tw):
 	[c,c_bool] = Category.objects.get_or_create(category = category_)

@@ -8,6 +8,7 @@ from auroreformosa.models import *
 
 def populate():
     category()
+    numero()
 
 def category():
     add_category('history', 'Histoire', '歷史')
@@ -21,20 +22,31 @@ def category():
     add_category('comics', 'Bande dessinée', '漫畫')
 
 def add_category(category_, category_fr, category_tw):
-	[c,c_bool] = Category.objects.get_or_create(category = category_)
-	c.save()
+    [c,c_bool] = Category.objects.get_or_create(category = category_)
+    c.save()
+    [c_tw, c_tw_bool] = CategoryDetail.objects.get_or_create(title=category_tw)
+    c_tw.category=c
+    c_tw.language='tw'
+    c_tw.save()
+    [c_fr, c_fr_bool] = CategoryDetail.objects.get_or_create(title=category_fr)
+    c_fr.category=c
+    c_fr.language='fr'
+    c_fr.save()
 
-	[c_tw, c_tw_bool] = CategoryDetail.objects.get_or_create(title=category_tw)
-	c_tw.category=c
-	c_tw.language='tw'
-	c_tw.save()
-	
-	[c_fr, c_fr_bool] = CategoryDetail.objects.get_or_create(title=category_fr)
-	c_fr.category=c
-	c_fr.language='fr'
-	c_fr.save()
+def numero():
+    add_numero(1, "Taïwan, un carrefour culturel", "台灣，文化的十字路口")
+    add_numero(2, "L’An arrive", "年來了")
+    add_numero(3, "Le Riz", "米")
+    add_numero(4, "", "")
+    add_numero(5, "", "")
+    add_numero(6, "", "")
 
+def add_numero(numero_, titleFR, titleTW):
+    n, b = Numero.objects.get_or_create(numero = numero_)
+    n.titleFR = titleFR
+    n.titleTW = titleTW
+    n.save()
 
 if __name__=='__main__':
-	populate()
-	print('okey')
+    populate()
+    print('okey')

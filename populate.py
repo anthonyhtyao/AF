@@ -5,10 +5,14 @@ import django
 django.setup()
 
 from auroreformosa.models import *
+import glob
+from django.core.files import File
+import urllib.parse
 
 def populate():
     category()
     numero()
+    image()
 
 def category():
     add_category('history', 'Histoire', '歷史')
@@ -46,6 +50,13 @@ def add_numero(numero_, titleFR, titleTW):
     n.titleFR = titleFR
     n.titleTW = titleTW
     n.save()
+
+def image():
+    imageList = glob.glob("../../Desktop/img/*")
+    for url in imageList:
+        imgTitle = url.split("/")[-1]
+        img, b = Img.objects.get_or_create(title = imgTitle)
+        img.imgfile.save(imgTitle, File(open(url, 'rb')), save = True)
 
 if __name__=='__main__':
     populate()

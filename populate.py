@@ -10,6 +10,7 @@ from django.core.files import File
 import urllib.parse
 
 def populate():
+    user()
     category()
     numero()
     image()
@@ -37,6 +38,16 @@ def add_category(category_, category_fr, category_tw):
     c_fr.language='fr'
     c_fr.save()
 
+def user():
+    add_user("turtlelin", "林皆安", "chieh-an.lin@cea.fr")
+
+def add_user(username, name, email):
+    user, b = User.objects.get_or_create(username = username, email=email)
+    user.save()
+    userProfile, b = UserProfile.objects.get_or_create(user = user)
+    userProfile.name = name
+    userProfile.save()
+
 def numero():
     add_numero(1, "Taïwan, un carrefour culturel", "台灣，文化的十字路口")
     add_numero(2, "L’An arrive", "年來了")
@@ -56,7 +67,8 @@ def image():
     for url in imageList:
         imgTitle = url.split("/")[-1]
         img, b = Img.objects.get_or_create(title = imgTitle)
-        img.imgfile.save(imgTitle, File(open(url, 'rb')), save = True)
+        if b :
+            img.imgfile.save(imgTitle, File(open(url, 'rb')), save = True)
 
 if __name__=='__main__':
     populate()

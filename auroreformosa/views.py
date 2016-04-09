@@ -2,28 +2,33 @@ from django.shortcuts import render
 from auroreformosa.models import *
 from auroreformosa.forms import *
 from django.http import HttpResponseRedirect, HttpResponse
-def sessionLanguage(request):
+
+def init(request):
+    # Set default language to fr
     if not('language' in request.session):
         request.session['language'] = 'fr'
-    return request.session['language']
+    language = request.session['language']
+    returnForm={}
+    # Put categories list in return form
+    edito = Category.objects.get(category="edito")
+    categories = CategoryDetail.objects.filter(language=language).exclude(category = edito)
+    returnForm['categories'] = categories
+    returnForm['language'] = language
+    return returnForm, language
 
 def index(request):
-    sessionLanguage(request)
-    return_form={}
-    add_categories(request, return_form)
+    returnForm, language = init(request)
     comic = Category.objects.get(category="comics")
     comicArticleP = Article.objects.filter(category=comic).order_by('-date')[0]
-    comicArticle = comicArticleP.comic.get(language=request.session['language'])
-    return_form['comicArticle'] = comicArticle
+    comicArticle = comicArticleP.comic.get(language=language)
+    returnForm['comicArticle'] = comicArticle
     numeros = Numero.objects.order_by('numero')
-    return_form['numeros'] = numeros
-    return render(request, 'AF/index.html', return_form)
+    returnForm['numeros'] = numeros
+    return render(request, 'AF/index.html', returnForm)
 
 def about(request):
-    sessionLanguage(request)
-    return_form={}
-    add_categories(request, return_form)
-    return render(request, 'AF/about.html', return_form)
+    returnForm, language = init(request)
+    return render(request, 'AF/about.html', returnForm)
 
 def uploadImg(request):
     if request.method == 'POST':
@@ -78,7 +83,6 @@ def add_categories(request, return_form):
     return_form['categories'] = categories
 
 def article(request, category, slg):
-    language = sessionLanguage(request) 
     try:
         articleParent = Article.objects.get(slg=slg)
         try:
@@ -86,6 +90,7 @@ def article(request, category, slg):
         except:
             cat = None
         if articleParent.category == cat:
+            returnForm, language = init(request) 
             category = CategoryDetail.objects.get(language=language, category=cat)
             try:
                 article = articleParent.article.get(language=language)
@@ -100,17 +105,18 @@ def article(request, category, slg):
                 if article != articleGet:
                     articleRelated.append(articleGet)
                     i += 1
-            categoryList = Category.objects.exclude(category="edito")
-            categories = [c.detail.get(language=request.session['language']) for c in categoryList]
-            return render(request, 'AF/article.html', {'category':category, 'article':article, 'articleRelated':articleRelated, 'categories':categories })
+            returnForm['category'] = category
+            returnForm['article'] = article
+            returnForm['articleRelated'] = articleRelated
+            return render(request, 'AF/article.html', returnForm)
         else:
             return HttpResponseRedirect('/'+str(article.category)+'/article/'+slg)
     except:
             return HttpResponseRedirect('/')
 
 def comics(request, slg):
-    language = sessionLanguage(request) 
     try:
+        returnForm, language = init(request)
         articleParent = Article.objects.get(slg=slg)
         cat = Category.objects.get(category="comics")
         category = CategoryDetail.objects.get(language=language, category=cat)
@@ -132,24 +138,31 @@ def comics(request, slg):
         except:
             comic = None
             return HttpResponseRedirect("/")
-        categoryList = Category.objects.exclude(category="edito")
-        categories = [c.detail.get(language=request.session['language']) for c in categoryList]
-        return render(request, 'AF/comics.html', {'category':category, 'comic':comic, 'nextComic':nextComic, 'beforeComic':beforeComic, 'categories': categories})
+        returnForm['category'] = category
+        returnForm['comic'] = comic
+        returnForm['nextComic'] = nextComic
+        returnForm['beforeComic'] = beforeComic
+        return render(request, 'AF/comics.html', returnForm)
     except:
         return HttpResponseRedirect('/')    
 
 def archive(request, numero):
     try:
+        returnForm, language = init(request)
         no = Numero.objects.get(numero=int(numero))
         comicCat = Category.objects.get(category="comics")
         editoP = no.article.get(edito=True)
-        edito = editoP.article.get(language=request.session['language'])
+        edito = editoP.article.get(language=language)
         articles = []
         for a in  no.article.filter(edito = False):
             if a.category == comicCat:
-                comic = a.comic.get(language=request.session['language'])
+                comic = a.comic.get(language=language)
             else:
-                articles.append(a.article.get(language=request.session['language']))
-        return render(request, 'AF/archiveArticle.html', {'numero':no, 'articles':articles, "edito":edito, "comic":comic})
+                articles.append(a.article.get(language=language))
+        returnForm['numero'] = no
+        returnForm['articles'] = articles
+        returnForm['edito'] = edito
+        returnForm['comic'] = comic
+        return render(request, 'AF/archiveArticle.html', returnForm)
     except:
         return HttpResponseRedirect('/')

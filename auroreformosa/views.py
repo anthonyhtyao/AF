@@ -55,19 +55,19 @@ def category(request, category):
     elif category == "edito":
         return HttpResponseRedirect("/") 
     else:
-        edito = Category.objects.get(category="edito")
-        categoryList = Category.objects.exclude(category="edito")
-        categories = [c.detail.get(language=request.session['language']) for c in categoryList]
+        returnForm, language = init(request)
         try:
             cat = Category.objects.get(category=category)
-            category = cat.detail.get(language=request.session['language'])
+            category = cat.detail.get(language=language)
             articles = []
             for a in Article.objects.filter(category=cat):
                 try:
-                    articles.append(a.article.get(language=request.session['language']))
+                    articles.append(a.article.get(language=language))
                 except:
                     pass
-            return render(request, 'AF/category.html', {'category':category, 'articles':articles, 'categories':categories})
+            returnForm['category'] = category
+            returnForm['articles'] = articles
+            return render(request, 'AF/category.html', returnForm)
         except:
             return HttpResponseRedirect('/')
 

@@ -2,6 +2,11 @@ from django.shortcuts import render
 from auroreformosa.models import *
 from auroreformosa.forms import *
 from django.http import HttpResponseRedirect, HttpResponse
+from django.core.mail import send_mail
+import urllib
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template
+from django.template import Context
 
 def init(request):
     # Set default language to fr
@@ -166,3 +171,41 @@ def archive(request, numero):
         return render(request, 'AF/archiveArticle.html', returnForm)
     except:
         return HttpResponseRedirect('/')
+
+def abonnement(request):
+    if request.method=="POST":
+        form = AbonnementForm(request.POST)
+        if form.is_valid():
+            print(request.POST)
+            emailTxt = get_template('email.txt')
+            emailHtml = get_template('email.html')
+            adresse = request.POST['adresse'] + " " + request.POST['city'] + " " + request.POST['country'] + " " + request.POST['codepostal']
+            action =""
+            try:
+                if request.POST['abonnement']:
+                    action += "s'abonner , "
+            except:
+                pass
+            try:
+                if request.POST['don']:
+                    action += "faire un don de "
+                    try:
+                        action += request.POST['amount']
+                    except:
+                        action += "0"
+                    action += " € , "
+            except:
+                pass
+            try:            
+                if request.POST['informer']:
+                    action += "être informé(e)"
+            except:
+                pass
+            d = Context({'title':request.POST['title'], 'name':request.POST['name'], 'email':request.POST['email'], 'adresse':adresse, 'action':action, 'message':request.POST['message']})
+            textContent = emailTxt.render(d)
+            htmlContent = emailHtml.render(d)
+            msg = EmailMultiAlternatives("New Subscription", textContent, 'anthonyhtyao@gmail.com', ['anthonyhtyao@gmail.com', 'yulinhuang23@gmail.com', 'jhihhuang.li@gmail.com', 'sun.yujung@gmail.com', 'turtlelin1210@gmail.com'])
+            msg.attach_alternative(htmlContent, "text/html")
+            msg.send()
+    form = AbonnementForm()
+    return render(request,'AF/abonnement.html',{'form':form})

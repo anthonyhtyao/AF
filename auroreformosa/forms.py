@@ -15,3 +15,7 @@ class ArticleForm(forms.ModelForm):
     class Meta:
         model = ArticleContent
         fields = ('language','title','abstract', 'content',)
+
+class AbonnementForm(forms.Form):
+    name = forms.CharField(max_length = 64)
+    email = forms.EmailField(max_length = 128)

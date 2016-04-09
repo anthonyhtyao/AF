@@ -176,21 +176,36 @@ def abonnement(request):
     if request.method=="POST":
         form = AbonnementForm(request.POST)
         if form.is_valid():
-            emailTxt = get_template('template/email.txt')
-            emailHtml = get_template('template/email.html')
+            print(request.POST)
+            emailTxt = get_template('email.txt')
+            emailHtml = get_template('email.html')
             adresse = request.POST['adresse'] + " " + request.POST['city'] + " " + request.POST['country'] + " " + request.POST['codepostal']
             action =""
-            if request.POST['abonnement']:
-                action += "s'abonner et "
-            if request.POST['don']:
-                action += "faire un don et "
-            if request.POST['informer']:
-                action += "être informé(e)"
-            d = Context({'title':request.POST['title'], 'name':request.POST['name'], 'email':request.POST['email'], 'adresse':adresse, 'action':action})
+            try:
+                if request.POST['abonnement']:
+                    action += "s'abonner , "
+            except:
+                pass
+            try:
+                if request.POST['don']:
+                    action += "faire un don de "
+                    try:
+                        action += request.POST['amount']
+                    except:
+                        action += "0"
+                    action += " € , "
+            except:
+                pass
+            try:            
+                if request.POST['informer']:
+                    action += "être informé(e)"
+            except:
+                pass
+            d = Context({'title':request.POST['title'], 'name':request.POST['name'], 'email':request.POST['email'], 'adresse':adresse, 'action':action, 'message':request.POST['message']})
             textContent = emailTxt.render(d)
             htmlContent = emailHtml.render(d)
-            send_mail("Hello", textContent, 'anthonyhtyao@gmail.com', ['anthonyhtyao@gmail.com'],html_message=htmlContent)
-            #print(urllib.parse.unquote(form.data.urlencode()))
-            #send_mail('test email', urllib.parse.unquote(form.data.urlencode()) + "<br>123456", 'anthonyhtyao@gmail.com', ['anthonyhtyao@gmail.com'])
+            msg = EmailMultiAlternatives("New Subscription", textContent, 'anthonyhtyao@gmail.com', ['anthonyhtyao@gmail.com', 'yulinhuang23@gmail.com', 'jhihhuang.li@gmail.com', 'sun.yujung@gmail.com', 'turtlelin1210@gmail.com'])
+            msg.attach_alternative(htmlContent, "text/html")
+            msg.send()
     form = AbonnementForm()
     return render(request,'AF/abonnement.html',{'form':form})

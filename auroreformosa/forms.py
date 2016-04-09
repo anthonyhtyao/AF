@@ -19,4 +19,3 @@ class ArticleForm(forms.ModelForm):
 class AbonnementForm(forms.Form):
     name = forms.CharField(max_length = 64)
     email = forms.EmailField(max_length = 128)
-    message = forms.CharField(max_length = 128)

@@ -4,3 +4,4 @@ Name : {{name}}
 Email : {{email}}
 Adress : {{adresse}}
 Action : {{action}}
+Message : {{message}}

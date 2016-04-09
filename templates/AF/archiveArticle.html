@@ -6,8 +6,8 @@
 <!-- title for this numero depends on language -->
   <center>
     <h1>
-      {% if request.session.language == "fr" %}{{numero.titleFR}}
-      {% elif request.session.language == "tw" %}{{numero.titleTW}}
+      {% if language == "fr" %}{{numero.titleFR}}
+      {% elif language == "tw" %}{{numero.titleTW}}
       {% endif %}
     </h1>
   </center>
@@ -36,8 +36,8 @@
 <div class="col-md-12">
   <center>
     <h2>
-      {% if  request.session.language == "fr" %} Édito 
-      {% elif request.session.language == "tw" %} 編者序
+      {% if  language == "fr" %} Édito 
+      {% elif language == "tw" %} 編者序
       {% endif %}
     </h2>
   </center>

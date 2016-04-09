@@ -100,7 +100,9 @@ def article(request, category, slg):
                 if article != articleGet:
                     articleRelated.append(articleGet)
                     i += 1
-            return render(request, 'AF/article.html', {'category':category, 'article':article, 'articleRelated':articleRelated })
+            categoryList = Category.objects.exclude(category="edito")
+            categories = [c.detail.get(language=request.session['language']) for c in categoryList]
+            return render(request, 'AF/article.html', {'category':category, 'article':article, 'articleRelated':articleRelated, 'categories':categories })
         else:
             return HttpResponseRedirect('/'+str(article.category)+'/article/'+slg)
     except:
@@ -130,7 +132,9 @@ def comics(request, slg):
         except:
             comic = None
             return HttpResponseRedirect("/")
-        return render(request, 'AF/comics.html', {'category':category, 'comic':comic, 'nextComic':nextComic, 'beforeComic':beforeComic})
+        categoryList = Category.objects.exclude(category="edito")
+        categories = [c.detail.get(language=request.session['language']) for c in categoryList]
+        return render(request, 'AF/comics.html', {'category':category, 'comic':comic, 'nextComic':nextComic, 'beforeComic':beforeComic, 'categories': categories})
     except:
         return HttpResponseRedirect('/')    
 

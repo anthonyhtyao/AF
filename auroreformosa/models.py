@@ -12,9 +12,10 @@ class UserProfile(models.Model):
 
 class Img(models.Model):
     imgfile = models.FileField(upload_to='img')
+    title = models.CharField(max_length=256, null=True)
 
     def __str__(self):
-        return self.imgfile.url
+        return self.title
 
 class Numero(models.Model):
     numero = models.PositiveIntegerField()

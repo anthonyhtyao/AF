@@ -133,3 +133,5 @@ EMAIL_HOST_USER = 'anthonyhtyao@gmail.com'
 EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+LOGIN_URL = '/login'

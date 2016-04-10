@@ -7,6 +7,8 @@ import urllib
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 from django.template import Context
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 def init(request):
     # Set default language to fr
@@ -214,3 +216,27 @@ def abonnement(request):
 def contact(request):
     returnForm, language = init(request)
     return render(request, 'AF/contact.html', returnForm)
+
+def userLogin(request):
+    if request.POST:
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect('/')
+            else:
+                return index(request, "Wait for activation")
+        else:
+            return index(request, "Login Error")
+    else:
+        return index(request, "Login Error")
+
+@login_required
+def user_logout(request):
+    # Since we know the user is logged in, we can now just log them out.
+    logout(request)
+
+    # Take the user back to the homepage.
+    return HttpResponseRedirect('/')

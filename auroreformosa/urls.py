@@ -4,6 +4,8 @@ from auroreformosa import views
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^about', views.about, name='about'),
+    url(r'^login/$', views.userLogin, name='login'),
+    url(r'^logout/$', views.user_logout, name='logout'),
     url(r'^abonnement', views.abonnement, name="abonnement"),
     url(r'^contact', views.contact, name="contact"),
     url(r'^upload', views.uploadImg, name='upload'),

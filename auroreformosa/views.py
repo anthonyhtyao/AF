@@ -23,7 +23,7 @@ def init(request):
     returnForm['language'] = language
     return returnForm, language
 
-def index(request):
+def index(request, loginMsg=""):
     returnForm, language = init(request)
     comic = Category.objects.get(category="comics")
     comicArticleP = Article.objects.filter(category=comic).order_by('-date')[0]
@@ -31,6 +31,7 @@ def index(request):
     returnForm['comicArticle'] = comicArticle
     numeros = Numero.objects.order_by('numero')
     returnForm['numeros'] = numeros
+    returnForm['loginMsg'] = loginMsg
     return render(request, 'AF/index.html', returnForm)
 
 def about(request):
@@ -39,30 +40,24 @@ def about(request):
 
 @login_required
 def uploadImg(request):
-    try:
-        if request.method == 'POST':
-            form = ImgForm(request.POST, request.FILES)
-            if form.is_valid():
-                title = str(request.FILES['imgfile']).split("/")[-1]
-                newImg = Img(imgfile = request.FILES['imgfile'],title=title)
-                newImg.save()
-        else:
-            form = ImgForm()
-        return render(request,'AF/upload.html',{'form':form})
-    except:
-        return HttpResponseRedirect('/')
+    if request.method == 'POST':
+        form = ImgForm(request.POST, request.FILES)
+        if form.is_valid():
+            title = str(request.FILES['imgfile']).split("/")[-1]
+            newImg = Img(imgfile = request.FILES['imgfile'],title=title)
+            newImg.save()
+    else:
+        form = ImgForm()
+    return render(request,'AF/upload.html',{'form':form})
 
 @login_required
 def createarticle(request):
-    try:
-        articleForm = ArticleForm()
-        numeros = Numero.objects.all()
-        categoryFR = CategoryDetail.objects.filter(language='fr')
-        categoryTW = CategoryDetail.objects.filter(language='tw')
-        return render(request, 'AF/createArticle.html', {'form':articleForm, 'numeros':numeros, 'categoryFR':categoryFR, 'categoryTW':categoryTW})
-    except:
-        return HttpResponseRedirect('/')
-        
+    articleForm = ArticleForm()
+    numeros = Numero.objects.all()
+    categoryFR = CategoryDetail.objects.filter(language='fr')
+    categoryTW = CategoryDetail.objects.filter(language='tw')
+    return render(request, 'AF/createArticle.html', {'form':articleForm, 'numeros':numeros, 'categoryFR':categoryFR, 'categoryTW':categoryTW})
+
 def category(request, category):
     if category == "comics":
         comicCat = Category.objects.get(category=category)

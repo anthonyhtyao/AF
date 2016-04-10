@@ -7,6 +7,8 @@ import urllib
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 from django.template import Context
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 def init(request):
     # Set default language to fr
@@ -21,7 +23,7 @@ def init(request):
     returnForm['language'] = language
     return returnForm, language
 
-def index(request):
+def index(request, loginMsg=""):
     returnForm, language = init(request)
     comic = Category.objects.get(category="comics")
     comicArticleP = Article.objects.filter(category=comic).order_by('-date')[0]
@@ -29,12 +31,14 @@ def index(request):
     returnForm['comicArticle'] = comicArticle
     numeros = Numero.objects.order_by('numero')
     returnForm['numeros'] = numeros
+    returnForm['loginMsg'] = loginMsg
     return render(request, 'AF/index.html', returnForm)
 
 def about(request):
     returnForm, language = init(request)
     return render(request, 'AF/about.html', returnForm)
 
+@login_required
 def uploadImg(request):
     if request.method == 'POST':
         form = ImgForm(request.POST, request.FILES)
@@ -46,6 +50,7 @@ def uploadImg(request):
         form = ImgForm()
     return render(request,'AF/upload.html',{'form':form})
 
+@login_required
 def createarticle(request):
     articleForm = ArticleForm()
     numeros = Numero.objects.all()
@@ -214,3 +219,27 @@ def abonnement(request):
 def contact(request):
     returnForm, language = init(request)
     return render(request, 'AF/contact.html', returnForm)
+
+def userLogin(request):
+    if request.POST:
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect('/')
+            else:
+                return index(request, "Wait for activation")
+        else:
+            return index(request, "Login Error")
+    else:
+        return index(request, "Login Error")
+
+@login_required
+def user_logout(request):
+    # Since we know the user is logged in, we can now just log them out.
+    logout(request)
+
+    # Take the user back to the homepage.
+    return HttpResponseRedirect('/')

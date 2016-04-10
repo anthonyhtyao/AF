@@ -12,22 +12,22 @@
     </h1>
   </center>
 
-  <center><a href="/"><img src="{% static "img/logo_small.png" %}" width="10px" height="20px"></a> | no {{numero}}</center>
+  <center><p><a href="/"><img src="{% static "img/logo_small.png" %}" width="10px" height="20px"></a> | no {{numero}}</p></center>
  
 </div>
 
-<div class="col-md-12">
-  <img src="{{numero.image.imgfile.url}}" width="100%">
+<div class="col-md-8 col-md-offset-2">
+  <p><img src="{{numero.image.imgfile.url}}" width="100%"></p>
 </div>
 
 <div class="col-md-8 col-md-offset-2">
 <!-- Articles list of given numero, need CSS, model is http://auroreformosane.org/category/dernier-numero-fr/-->  
   <div>
     <dl class="dl-horizontal">
-        <dt><a href="/comics/{{comic.article.slg}}">{{comic}}</a></dt>
+        <dt><a href="/comics/{{comic.article.slg}}" title="{{comic.article}}">{{comic}}</a></dt>
         <dd>{{comic.article.category}}</dd>
       {% for article in articles %}
-        <dt><a href="/{{article.article.category}}/article/{{article.article.slg}}">{{article}}</a></dt>
+        <dt><a href="/{{article.article.category}}/article/{{article.article.slg}}" title="{{article.article}}">{{article}}</a></dt>
         <dd>{{article.article.category}}</dd>
       {% endfor %}
     </dl>

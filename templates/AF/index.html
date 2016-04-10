@@ -99,19 +99,19 @@
     </div>
     <!-- /.row -->
 
+    <!-- <p class="col-lg-8 col-lg-offset-2 text-center">Ici les slides</p> -->
+    <div class="row well">
+      {% for numero in numeros.reverse|slice:":6"%}
+      <div class="col-md-2 text-center">
+        <a href="/no/{{numero}}" title="numero {{numero}}">
+          <img width="100%" src="{{numero.image.imgfile.url}}">
+        </a>
+      </div>
+      {% endfor %}
+    </div>
 {% endblock %}
 
 {% block downpage_block %}
-  <section class="bg-primary">
-    <!-- <p class="col-lg-8 col-lg-offset-2 text-center">Ici les slides</p> -->
-    <div class="row">
-      <div class="col-md-2 text-center">block 1</div>
-      <div class="col-md-2 text-center">block 2</div>
-      <div class="col-md-2 text-center">block 3</div>
-      <div class="col-md-2 text-center">block 4</div>
-      <div class="col-md-4 text-center">block 5</div>
-    </div>
-  </section>
   <div class="row">
     <div class="col-md-4 text-center">
       <h4>台灣印象短片</h4>

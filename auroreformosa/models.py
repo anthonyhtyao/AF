@@ -18,13 +18,16 @@ class Img(models.Model):
         return self.title
 
 class Numero(models.Model):
-    numero = models.PositiveIntegerField()
+    numero = models.FloatField()
     image = models.ForeignKey(Img, null=True)
     titleFR = models.CharField(max_length=128, null=True)
     titleTW = models.CharField(max_length=128, null=True)
     
     def __str__(self):
-        return str(self.numero)
+        if self.numero - int(self.numero) == 0:
+            return str(int(self.numero))
+        else:
+            return str(self.numero)
 
 class Category(models.Model):
     category = models.CharField(max_length = 20)

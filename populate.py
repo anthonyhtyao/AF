@@ -55,6 +55,7 @@ def numero():
     add_numero(4, "", "")
     add_numero(5, "", "")
     add_numero(6, "", "")
+    add_numero(6.1, "", "")
 
 def add_numero(numero_, titleFR, titleTW):
     n, b = Numero.objects.get_or_create(numero = numero_)

@@ -209,3 +209,7 @@ def abonnement(request):
             msg.send()
     form = AbonnementForm()
     return render(request,'AF/abonnement.html',{'form':form})
+
+def contact(request):
+    returnForm, language = init(request)
+    return render(request, 'AF/contact.html', returnForm)

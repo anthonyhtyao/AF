@@ -37,24 +37,32 @@ def about(request):
     returnForm, language = init(request)
     return render(request, 'AF/about.html', returnForm)
 
+@login_required
 def uploadImg(request):
-    if request.method == 'POST':
-        form = ImgForm(request.POST, request.FILES)
-        if form.is_valid():
-            title = str(request.FILES['imgfile']).split("/")[-1]
-            newImg = Img(imgfile = request.FILES['imgfile'],title=title)
-            newImg.save()
-    else:
-        form = ImgForm()
-    return render(request,'AF/upload.html',{'form':form})
+    try:
+        if request.method == 'POST':
+            form = ImgForm(request.POST, request.FILES)
+            if form.is_valid():
+                title = str(request.FILES['imgfile']).split("/")[-1]
+                newImg = Img(imgfile = request.FILES['imgfile'],title=title)
+                newImg.save()
+        else:
+            form = ImgForm()
+        return render(request,'AF/upload.html',{'form':form})
+    except:
+        return HttpResponseRedirect('/')
 
+@login_required
 def createarticle(request):
-    articleForm = ArticleForm()
-    numeros = Numero.objects.all()
-    categoryFR = CategoryDetail.objects.filter(language='fr')
-    categoryTW = CategoryDetail.objects.filter(language='tw')
-    return render(request, 'AF/createArticle.html', {'form':articleForm, 'numeros':numeros, 'categoryFR':categoryFR, 'categoryTW':categoryTW})
-
+    try:
+        articleForm = ArticleForm()
+        numeros = Numero.objects.all()
+        categoryFR = CategoryDetail.objects.filter(language='fr')
+        categoryTW = CategoryDetail.objects.filter(language='tw')
+        return render(request, 'AF/createArticle.html', {'form':articleForm, 'numeros':numeros, 'categoryFR':categoryFR, 'categoryTW':categoryTW})
+    except:
+        return HttpResponseRedirect('/')
+        
 def category(request, category):
     if category == "comics":
         comicCat = Category.objects.get(category=category)

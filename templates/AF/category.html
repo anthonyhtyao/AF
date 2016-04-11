@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block body_block %}
+{% load static %}
+<div class="col-md-8 col-md-offset-2">
+  <h1><a href="/"><img src="{% static "img/logo_small.png" %}" height="50px"></a> | {{category}}</h1>
+<br>
+{% for article in articles %}
+<div class="col-sm-12 col-md-12">
+    <div class="thumbnail">
+      <center><h2>{{article}}</h2></center>
+      <a href="/{{article.article.category}}/article/{{article.article.slg}}">
+      <img src="{{article.article.image.imgfile.url}}" alt="test">
+      </a>
+      <div class="caption">
+        <p>{{article.abstract}}</p>
+      </div>
+    </div>
+  </div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

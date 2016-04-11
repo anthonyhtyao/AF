@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% load static %}
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Aurore Formosa {% block title_block %}{% endblock %}</title>
+
+  <!-- Bootstrap Core CSS -->
+  <link rel="stylesheet" href="{% static "css/bootstrap.css" %}" type="text/css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <!-- Custom Fonts -->
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="{% static "font-awesome/css/font-awesome.min.css" %}" type="text/css">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <!-- Plugin CSS -->
+  <link rel="stylesheet" href="{% static "css/animate.min.css" %}" type="text/css">
+  <link href="{% static "css/modern-business.css" %}" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static "css/creative.css" %}" type="text/css">
+  
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+    <!-- jQuery -->
+  <script src="{% static "js/jquery.js" %}"></script>
+
+  <!-- Bootstrap Core JavaScript -->
+  <script src="{% static "js/bootstrap.min.js" %}"></script>
+
+  <!-- Plugin JavaScript -->
+  <script src="{% static "js/jquery.easing.min.js" %}"></script>
+  <script src="{% static "js/jquery.fittext.js" %}"></script>
+  <script src="{% static "js/wow.min.js" %}"></script>
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <!-- Custom Theme JavaScript -->
+  <script src="{% static "js/creative.js" %}"></script>
+  <script src="{% static "js/jquerysession.js" %}"></script>
+  <script src="{% static "js/functions.js" %}"></script>
+  <script src="{% static "js/tinymce/tinymce.min.js" %}"></script>
+  {{ form.media }}
+  <script>
+    tinymce.init({
+        selector: ['#newContent','#newAbstract']
+    });
+    </script>
+
+    <script>
+     $(document).ready(function(){
+       $("#buttonFR").click(function(){
+         $.ajax({
+            type:"POST",
+            url:"/session_language/",
+            data: { language:'fr', csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success: function(){
+              $("#loading").hide();
+              document.location.reload();
+            }
+         });
+        });
+      $("#buttonTW").click(function(){
+        $.ajax({
+            type:"POST",
+            url:"/session_language/",
+            data: { 'language':'tw', csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success: function(){
+              $("#loading").hide();
+              document.location.reload();
+            }
+        });
+     });
+   });
+</script>
+
+</head>
+
+<body id="page-top">
+
+
+{% block header_block %}
+  <header> 
+{% endblock header_block %}
+    <nav id="mainNav" class="navbar navbar-default">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-inner">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand page-scroll" href="/"><img src="{% static "img/logo_small.png" %}" height="30px"></a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+            {% if language == "fr" %}
+            <li>
+              <a href="/about">About</a>
+            </li>
+            <li>
+              <a href="/abonnement">S'abboner</a>
+            </li>
+            <li>
+              <a href="/contact">Contacter nous</a>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Bibliothèque</a>
+            {% elif language == "tw" %}
+            <li>
+              <a href="/about">關於黎島</a>
+            </li>
+            <li>
+              <a href="/abonnement">訂閱/捐款</a>
+            </li>
+            <li>
+              <a href="/contact">聯絡我們</a>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">檔案室</a>
+            {% endif %}
+                <ul class="dropdown-menu">
+                {% for numero in numeros %}
+                  <li><a href="/no/{{numero}}">{{numero}}</a></li>
+                {% endfor %}
+                </ul>
+            </li>
+            <li>
+              <p class="navbar-btn">
+                <a id="buttonFR" class="btn"><img src="{% static "img/languages/fr.png" %}"></a>
+                <a id="buttonTW" class="btn"><img src="{% static "img/languages/logo_small.jpg" %}" width="10px" height="20px"></a>
+              </p>
+            </li>
+          </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+      </div>
+      <!-- /.container-fluid -->
+    </nav> 
+    <div class="header-content">
+
+      <div class="header-content-inner">
+
+      </div>
+    </div>
+
+  </header>
+
+
+
+  <div class="container">
+    <ul class="nav navbar-nav">
+      {% for category in categories %}
+        <li class="">
+          <a href="/{{category.category}}"> {{category.title}} </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="container">
+        {% block body_block %} {% endblock %}
+  </div>
+{% block downpage_block %}
+  
+{% endblock downpage_block %}
+        <footer>
+            <div class="row">
+                <div class="col-lg-12">
+                    <center>
+                        <span>Copyright &copy; AF 2016</span>
+                        {% if user.is_authenticated %}
+                            <a href="/logout"><span class ="glyphicon glyphicon-log-out"></span></a>
+                        {% else %}
+                            <a id="login-btn" href="#"><span class ="glyphicon glyphicon-log-in"></span></a>
+                        {% endif%}
+                    </center>
+                </div>
+            </div>
+        </footer>
+
+    
+    <!-- /.container -->
+
+    
+<div id="dialog" class="login-dialog" title="Log In">
+    <form id="login_form" action="/login/" method="post">
+        {% csrf_token %}
+        <p> User: </p>
+        <input id="username" name="username" type="text">
+        <br/>
+        <p> Password: </p>
+        <input id="password" name="password" type="password">
+        <br/>
+        <input type="submit" value="Log In">
+    </form>
+</div>
+
+
+<script>
+    var loginMsg = "{{loginMsg}}";
+    if (loginMsg != "") {
+        alert(loginMsg);
+        window.location = "/";
+        $("dialog").dialog(open);
+    }
+</script>
+</body>
+
+</html>

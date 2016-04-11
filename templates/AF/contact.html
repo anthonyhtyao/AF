@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block body_block %}
+{% load static %}
+<div class="col-md-8 col-md-offset-2">
+{% if language = "fr" %}
+<h1><a href="/"><img src="{% static "img/logo_small.png" %}" height="50px"></a> | Contact</h1>
+<p>
+Fonder un journal n’est pas chose aisée. Fonder un journal francophone est encore plus difficile pour nous, expatriés taïwanais. C’est pourquoi nous vous invitons à vous joindre à nous pour accomplir ensemble les multiples tâches afférentes à la publication d’une revue : écrire, relire, corriger, photographier, dessiner, distribuer, etc., mais aussi organiser des activités interculturelles.
+</p>
+<p>
+Nous contacter : <strong>auroreformosane (at) gmail.com</strong><br>
+Information : <a href="http://auroreformosane.org">http://auroreformosane.org</a>
+<p>
+<center>
+  <p>
+    <u>Rédactrice en chef</u><br>
+    Sun Yu-Jung
+  </p>
+  <p>
+    <u>Rédacteurs</u><br>
+    Li Jhih-Huang<br>
+    Lin Chieh-An
+  </p>
+  <p>
+    <u>Metteurs en page et graphistes</u><br>
+    Chang Min-Hui<br>
+    Chiu Chieh-Sen<br>
+    Liu Ching-Hsuan<br>
+  </p>
+  <p>
+    <u>Web</u><br>
+    Chen Tsui-Fei<br>
+    Yao Hua-Ting<br>
+  </p>
+</center>
+<p>La rédaction remercie également toutes les personnes qui nous ont apporté leurs aides précieuses sans lesquelles<i> Aurore Formosane</i> n’aurait pu voir le jour.</p>
+
+{% elif language = "tw" %}
+<h1><a href="/"><img src="{% static "img/logo_small.png" %}" height="50px"></a> | 聯絡我們</h1>
+<p>
+在異鄉創辦刊物困難重重，需要遍尋長才。這份刊物探討政經情勢，同時也希望兼具藝文面向，展現台灣的特殊性。在此誠心徵求有興趣一齊編輯、寫作、美工的夥伴，居住地與語言能力均不拘，歡迎有志之士寫信與我們聯絡。
+</p>
+<p>
+聯絡我們 : <strong>auroreformosane (at) gmail.com</strong><br>
+其他資訊 : <a href="http://auroreformosane.org">http://auroreformosane.org</a>
+<p>
+<center>
+  <p>
+    <u>總編輯</u><br>
+    孫有蓉
+  </p>
+  <p>
+    <u>編輯群</u><br>
+    李志煌<br>
+    林皆安<br>
+  </p>
+  <p>
+    <u>美編與排版</u><br>
+    張敏慧<br>
+    邱杰森<br>
+    劉京璇<br>
+  </p>
+  <p>
+    <u>網管</u><br>
+    Chen Tsui-Fei<br>
+    姚驊庭<br>
+  </p>
+</center>
+<p>《黎島》編輯團隊同時感謝在文章撰寫、潤飾、修改、勘誤、繪製插畫與封面、排版以及網站架設與編排過程中提供協助的所有參與人。</p>
+{% endif %}
+</div>
+{% endblock %}

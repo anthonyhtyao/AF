@@ -179,6 +179,7 @@ def archive(request, numero):
         return HttpResponseRedirect('/')
 
 def abonnement(request):
+    returnForm, language = init(request)
     if request.method=="POST":
         form = AbonnementForm(request.POST)
         if form.is_valid():
@@ -214,7 +215,8 @@ def abonnement(request):
             msg.attach_alternative(htmlContent, "text/html")
             msg.send()
     form = AbonnementForm()
-    return render(request,'AF/abonnement.html',{'form':form})
+    returnForm['form'] = form
+    return render(request,'AF/abonnement.html', returnForm)
 
 def contact(request):
     returnForm, language = init(request)

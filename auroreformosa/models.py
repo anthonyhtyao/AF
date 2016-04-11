@@ -39,10 +39,10 @@ class Article(models.Model):
     author = models.ForeignKey(UserProfile, null = True)
     date = models.DateTimeField(auto_now_add = True, auto_now = False, null = True)
     category = models.ForeignKey(Category, related_name="article", null=True)
-    numero = models.ForeignKey(Numero, null=True, related_name="article")
+    numero = models.ForeignKey(Numero, null=True, related_name="article", blank = True)
     title = models.CharField(max_length=128)
     slg = models.SlugField()
-    image = models.ForeignKey(Img, null = True)
+    image = models.ForeignKey(Img, null = True, blank=True)
     edito = models.BooleanField(default=False)
     headline = models.BooleanField(default=False)
 
@@ -60,7 +60,7 @@ class ArticleContent(models.Model):
     )
     article = models.ForeignKey(Article, null = True, related_name='article')
     title = models.CharField(max_length = 128)
-    abstract = models.TextField(null = True)
+    abstract = models.TextField(null = True, blank=True)
     content = models.TextField(null = True)
     language = models.CharField(max_length = 2, choices = LANGUAGES, default = 'fr')
 
@@ -81,7 +81,7 @@ class Comic(models.Model):
     article = models.ForeignKey(Article, null = True, related_name='comic')
     title = models.CharField(max_length = 128)
     image = models.ForeignKey(Img, null=True)
-    content = models.TextField(null = True)
+    content = models.TextField(null = True, blank=True)
     language = models.CharField(max_length = 2, choices = LANGUAGES, default = 'fr')
     
     def __str__(self):

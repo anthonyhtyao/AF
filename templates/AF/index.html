@@ -55,20 +55,15 @@
       <div class="col-md-4">
         <!-- 近期文章列表 well -->
         <div class="well">
-            <h4>近期文章列表</h4>
+            <h4>{{ newsDetail }}</h4>
             <div class="row">
               <div class="col-lg-6">
                 <ul class="list-unstyled">
-                  <li><a href="#">Article 1</a>
+                  {% for news in newsArticles|slice:":5" %}
+                  <li>
+                    <a href="/news/article/{{news.article.slg}}">{{news}}</a>
                   </li>
-                  <li><a href="#">Article 2</a>
-                  </li>
-                  <li><a href="#">Article 3</a>
-                  </li>
-                  <li><a href="#">Article 4</a>
-                  </li>
-                  <li><a href="#">Article 5</a>
-                  </li>
+                  {% endfor %}
                 </ul>
               </div>
             </div>
@@ -84,7 +79,7 @@
           {% endif %}
             <div class="row">
               <a href="/comics/{{comicArticle.article.slg}}">
-              <div class="col-lg-6">
+              <div class="col-lg-12">
               <img src="{{comicArticle.image.imgfile.url}}" width="100%">
               </div>
             </div>
@@ -109,29 +104,4 @@
       </div>
       {% endfor %}
     </div>
-{% endblock %}
-
-{% block downpage_block %}
-  <div class="row">
-    <div class="col-md-4 text-center">
-      <h4>台灣印象短片</h4>
-    </div>
-    <div class="col-md-4 text-center">
-      <h4>Taiwan bar 法文板</h4>
-    </div>
-    <div class="col-md-4 text-center">
-      <h4>圖畫</h4>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-8 text-center well">
-      <div class="col-md-4 text-center">block 1</div>
-      <div class="col-md-4 text-center">block 2</div>
-      <div class="col-md-4 text-center">block 3</div>
-      <div class="col-md-4 text-center">block 4</div>
-      <div class="col-md-4 text-center">block 5</div>
-      <div class="col-md-4 text-center">block 6</div>
-    </div>
-    <div class="col-md-4 text-center well">Photos</div>
-  </div>
 {% endblock %}

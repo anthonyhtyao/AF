@@ -37,6 +37,7 @@ class Category(models.Model):
 
 class Tag(models.Model):
     tag = models.CharField(max_length = 20)
+    recipe = models.BooleanField(default = False)
 
     def __str__(self):
         return self.tag

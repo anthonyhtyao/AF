@@ -35,13 +35,6 @@ class Category(models.Model):
     def __str__(self):
         return self.category
 
-class Tag(models.Model):
-    tag = models.CharField(max_length = 20)
-    recipe = models.BooleanField(default = False)
-
-    def __str__(self):
-        return self.tag
-
 class Article(models.Model):
     author = models.ForeignKey(UserProfile, null = True)
     date = models.DateTimeField(auto_now_add = True, auto_now = False, null = True)
@@ -52,7 +45,6 @@ class Article(models.Model):
     image = models.ForeignKey(Img, null = True, blank=True)
     edito = models.BooleanField(default=False)
     headline = models.BooleanField(default=False)
-    tags = models.ManyToManyField(Tag, blank=True)
 
     def __str__(self):
         return self.title
@@ -107,14 +99,3 @@ class CategoryDetail(models.Model):
     def __str__(self):
         return self.title
 
-class TagDetail(models.Model):
-    LANGUAGES = (
-        ('fr', 'Français'),
-        ('tw', '繁體中文'),
-    )
-    tag = models.ForeignKey(Tag, null = True, related_name="detail")
-    title = models.CharField(max_length = 20)
-    language = models.CharField(max_length = 2, choices = LANGUAGES, default = 'fr')
-
-    def __str__(self):
-        return self.title

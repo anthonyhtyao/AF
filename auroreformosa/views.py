@@ -20,9 +20,20 @@ def init(request):
     edito = Category.objects.get(category="edito")
     categories = CategoryDetail.objects.filter(language=language).exclude(category = edito)
     numeros = Numero.objects.order_by('numero')
+    newsCat = Category.objects.get(category="news")
+    newsDetail = newsCat.detail.get(language=language)
+    newsArticles = []
+    for a in Article.objects.filter(category=newsCat):
+        try:
+            newsArticles.append(a.article.get(language=language))
+        except:
+            pass
+    
     returnForm['numeros'] = numeros
     returnForm['categories'] = categories
     returnForm['language'] = language
+    returnForm['newsDetail'] = newsDetail
+    returnForm['newsArticles'] = newsArticles
     return returnForm, language
 
 def index(request, loginMsg=""):
@@ -30,6 +41,7 @@ def index(request, loginMsg=""):
     comic = Category.objects.get(category="comics")
     comicArticleP = Article.objects.filter(category=comic).order_by('-date')[0]
     comicArticle = comicArticleP.comic.get(language=language)
+    
     returnForm['comicArticle'] = comicArticle
     returnForm['loginMsg'] = loginMsg
     return render(request, 'AF/index.html', returnForm)

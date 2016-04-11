@@ -41,9 +41,12 @@ def index(request, loginMsg=""):
     comic = Category.objects.get(category="comics")
     comicArticleP = Article.objects.filter(category=comic).order_by('-date')[0]
     comicArticle = comicArticleP.comic.get(language=language)
+    headlineP = Article.objects.filter(headline=True).order_by('-date')[0]
+    headline = headlineP.article.get(language=language)
     
     returnForm['comicArticle'] = comicArticle
     returnForm['loginMsg'] = loginMsg
+    returnForm['headline'] = headline
     return render(request, 'AF/index.html', returnForm)
 
 def about(request):

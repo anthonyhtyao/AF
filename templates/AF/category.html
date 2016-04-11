@@ -8,10 +8,11 @@
 <div class="col-sm-12 col-md-12">
     <div class="thumbnail">
       <center><h2>{{article}}</h2></center>
+      <a href="/{{article.article.category}}/article/{{article.article.slg}}">
       <img src="{{article.article.image.imgfile.url}}" alt="test">
+      </a>
       <div class="caption">
         <p>{{article.abstract}}</p>
-        <p><a href="/{{article.article.category}}/article/{{article.article.slg}}" class="btn btn-primary" role="button">Read</a></p>
       </div>
     </div>
   </div>

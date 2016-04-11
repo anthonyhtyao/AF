@@ -6,6 +6,7 @@
         {% block article_content %} {% endblock %}
       </div>
       <div class="col-md-8 col-md-offset-2">
+      <hr>
         <ul class="list-unstyled list-inline">
         {% for article in articleRelated %}
           <li class="col-md-3"><div class ="thumbnail"><center><a href="#">{{ article.title }}</a></center><img src="{{ article.article.image.imgfile.url }}"></div></li>

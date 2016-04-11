@@ -44,6 +44,7 @@ class Article(models.Model):
     slg = models.SlugField()
     image = models.ForeignKey(Img, null = True)
     edito = models.BooleanField(default=False)
+    headline = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title

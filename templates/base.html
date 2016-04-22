@@ -138,8 +138,13 @@
             </li>
             <li>
               <p class="navbar-btn">
-                <a id="buttonFR" class="btn"><img src="{% static "img/languages/fr.png" %}"></a>
-                <a id="buttonTW" class="btn"><img src="{% static "img/languages/logo_small.jpg" %}" width="10px" height="20px"></a>
+                {% if language = "fr" %}
+                  <a id="buttonFR" class="btn" style="color:white">FR</a>
+                  <a id="buttonTW" class="btn" style="color:#6E6E6E">TW</a>
+                {% elif language = "tw" %}
+                  <a id="buttonFR" class="btn" style="color:#6E6E6E">FR</a>
+                  <a id="buttonTW" class="btn" style="color:white">TW</a>
+                {% endif %}
               </p>
             </li>
           </ul>

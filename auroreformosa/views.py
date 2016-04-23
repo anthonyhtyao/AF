@@ -71,7 +71,8 @@ def createarticle(request):
     numeros = Numero.objects.all()
     categoryFR = CategoryDetail.objects.filter(language='fr')
     categoryTW = CategoryDetail.objects.filter(language='tw')
-    return render(request, 'AF/createArticle.html', {'form':articleForm, 'numeros':numeros, 'categoryFR':categoryFR, 'categoryTW':categoryTW})
+    users = UserProfile.objects.all()
+    return render(request, 'AF/createArticle.html', {'form':articleForm, 'numeros':numeros, 'categoryFR':categoryFR, 'categoryTW':categoryTW, 'users':users})
 
 def category(request, category):
     if category == "comics":

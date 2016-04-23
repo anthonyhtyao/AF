@@ -71,35 +71,54 @@ def createarticle(request):
         form = ArticleForm(request.POST)
         if form.is_valid():
             data = request.POST
+            print(data)
+            print(request.FILES)
             # Create Article
-            article = Article.objects.create(title=data['title'])
-            numero = Numero.objects.get(id=data['numero'])
-            author = UserProfile.objects.get(id=data['author'])
-            category = Category.objects.get(id=data['category'])
-            article.numero = numero
-            article.author = author
-            article.category = category
-            try:
-                if (data['isEdito']):
-                    article.edito = True
-            except:
-                pass
-            try:
-                if (data['isHeadline']):
-                    article.headline = True
-            except:
-                pass
-            article.save()
+            if (int(data['article']) == 0):
+                article = Article.objects.create(title=data['title'])
+                # Upload Image
+                imgTitle = str(request.FILES['imgfile']).split("/")[-1]
+                img = Img(imgfile = request.FILES['imgfile'],title=imgTitle)
+                img.save()
+                numero = Numero.objects.get(id=data['numero'])
+                author = UserProfile.objects.get(id=data['author'])
+                if data['language'] == 'fr':
+                    category = Category.objects.get(id=data['categoryFR'])
+                else:
+                    category = Category.objects.get(id=data['categoryTW'])
+                article.image = img
+                article.numero = numero
+                article.author = author
+                article.category = category
+                try:
+                    if (data['isEdito']):
+                        article.edito = True
+                except:
+                    pass
+                try:
+                    if (data['isHeadline']):
+                        article.headline = True
+                except:
+                    pass
+                article.save()
+            # Article already existes
+            else:
+                article = Article.objects.get(id=data['article'])
+                category = article.category
             # Create Article Content
             articleContent = form.save()
             articleContent.article = article
             articleContent.save()
+            #Return article created page
+            request.session['language'] = data['language']
+            return HttpResponseRedirect('/' + str(category) + '/article/' + article.slg)
     articleForm = ArticleForm()
+    articles = Article.objects.all()
     numeros = Numero.objects.all()
     categoryFR = CategoryDetail.objects.filter(language='fr')
     categoryTW = CategoryDetail.objects.filter(language='tw')
     users = UserProfile.objects.all()
-    return render(request, 'AF/createArticle.html', {'form':articleForm, 'numeros':numeros, 'categoryFR':categoryFR, 'categoryTW':categoryTW, 'users':users})
+    return render(request, 'AF/createArticle.html', {'form':articleForm, 'numeros':numeros, 'categoryFR':categoryFR, 'categoryTW':categoryTW, 'users':users, 'articles':articles})
 
 def category(request, category):
     if category == "comics":

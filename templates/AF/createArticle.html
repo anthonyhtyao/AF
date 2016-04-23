@@ -3,9 +3,19 @@
 
 {% block body_block %}
 
-  <form id = "article_form" method="post" action="/createarticle">
+  <form id = "article_form" method="post" action="/createarticle" enctype="multipart/form-data">
   {% csrf_token %}
-    Title : <input id="title" type="text" name="title" maxlength="128" value="{{article.title}}"> 
+    Title : <input id="title" type="text" name="title" maxlength="128" value="{{article.title}}">
+    Article:
+    <select name="article">
+      <option value ="0"> </option>
+    {% for article in articles %}
+      <option value = {{article.id}}> {{ article }}</option>
+    {% endfor %}
+    </select>
+    <br />
+    Image:
+    <p><input type='file' name='imgfile'> </p> 
     Author : 
     <select name="author">
     {% for user in users %}
@@ -20,12 +30,12 @@
     {% endfor %}
     </select>
     Catégorie :
-    <select id='category_fr' name="category">
+    <select id='category_fr' name="categoryFR">
     {% for category in categoryFR %}
       <option value="{{category.category.id}}"> {{ category }}</option>
     {% endfor %}
     </select>
-    <select id ='category_tw' style='display:none' name="category">
+    <select id ='category_tw' style='display:none' name="categoryTW">
     {% for category in categoryTW %}
       <option value="{{category.category.id}}"> {{ category }}</option>
     {% endfor %}

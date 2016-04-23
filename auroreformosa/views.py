@@ -67,6 +67,33 @@ def uploadImg(request):
 
 @login_required
 def createarticle(request):
+    if request.method == 'POST':
+        form = ArticleForm(request.POST)
+        if form.is_valid():
+            data = request.POST
+            # Create Article
+            article = Article.objects.create(title=data['title'])
+            numero = Numero.objects.get(id=data['numero'])
+            author = UserProfile.objects.get(id=data['author'])
+            category = Category.objects.get(id=data['category'])
+            article.numero = numero
+            article.author = author
+            article.category = category
+            try:
+                if (data['isEdito']):
+                    article.edito = True
+            except:
+                pass
+            try:
+                if (data['isHeadline']):
+                    article.headline = True
+            except:
+                pass
+            article.save()
+            # Create Article Content
+            articleContent = form.save()
+            articleContent.article = article
+            articleContent.save()
     articleForm = ArticleForm()
     numeros = Numero.objects.all()
     categoryFR = CategoryDetail.objects.filter(language='fr')

@@ -2,32 +2,57 @@
 
 
 {% block body_block %}
-
-  <form id = "article_form" method="post" action="/createarticle">
+  {% if errMsg != "" %}
+    <div class="alert alert-danger" role="alert">{{ errMsg }}</div>
+  {% endif %}
+  <form id = "article_form" method="post" action="/createarticle" enctype="multipart/form-data">
   {% csrf_token %}
-    Title : <input id="title" type="text" name="title" maxlength="128" value="{{article.title}}"> 
-    Language : <select id='language'> <option value='fr' selected> FR </option><option value='tw'>TW</option></select>
+    Title : <input id="title" type="text" name="title" maxlength="128" value="{{article.title}}">
+    Article:
+    <select name="article">
+      <option value ="0"> </option>
+    {% for article in articles %}
+      <option value = {{article.id}}> {{ article }}</option>
+    {% endfor %}
+    </select>
+    <br />
+    Image:
+    <p><input type='file' name='imgfile'> </p> 
+    Author : 
+    <select name="author">
+    {% for user in users %}
+      <option value = {{user.id}}> {{ user }}</option>
+    {% endfor %}
+    </select>
+    Language : <select id='language' name="language"> <option value='fr' selected> FR </option><option value='tw'>TW</option></select>
     Numéro : 
-    <select>
+    <select name="numero">
     {% for numero in numeros %}
-      <option> {{ numero.numero }}</option>
+      <option value="{{numero.id}}"> {{ numero.numero }}</option>
     {% endfor %}
     </select>
     Catégorie :
-    <select id='category_fr'>
+    <select id='category_fr' name="categoryFR">
     {% for category in categoryFR %}
-      <option> {{ category.title }}</option>
+      <option value="{{category.category.id}}"> {{ category }}</option>
     {% endfor %}
     </select>
-    <select id ='category_tw' style='display:none'>
+    <select id ='category_tw' style='display:none' name="categoryTW">
     {% for category in categoryTW %}
-      <option> {{ category.title }}</option>
+      <option value="{{category.category.id}}"> {{ category }}</option>
     {% endfor %}
     </select>
+    <br />
+    <label class="checkbox-inline">
+      <input type="checkbox" name="isEdito"> Is Edito
+    </label>
+    <label class="checkbox-inline">
+      <input type="checkbox" name="isHeadline"> Is Headline
+    </label>
     <p>Abstract :</p>     
-    <textarea id="newAbstract" type="text" name="content" cols ="80" rows="20"} >{{article.abstract}} </textarea>
+    <textarea id="newAbstract" type="text" name="abstract" cols ="80" rows="10"} >{{article.abstract}} </textarea>
     <p>Content : </p>
-    <textarea id="newContent" type="text" name="content" cols ="80" rows="20"} >{{article.content}} </textarea>
+    <textarea id="newContent" type="text" name="content" cols ="80" rows="30"} >{{article.content}} </textarea>
 	
 	<input type="submit" name="submit" value="Create Article">
 </form>

@@ -47,7 +47,7 @@ class Article(models.Model):
     date = models.DateTimeField(auto_now_add = True, auto_now = False, null = True)
     category = models.ForeignKey(Category, related_name="article", null=True)
     numero = models.ForeignKey(Numero, null=True, related_name="article", blank = True)
-    title = models.CharField(max_length=128)
+    title = models.CharField(max_length=128, unique=True)
     slg = models.SlugField()
     image = models.ForeignKey(Img, null = True, blank=True)
     edito = models.BooleanField(default=False)

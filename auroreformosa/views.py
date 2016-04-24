@@ -66,12 +66,82 @@ def uploadImg(request):
     return render(request,'AF/upload.html',{'form':form})
 
 @login_required
-def createarticle(request):
+def createarticle(request, errMsg=""):
+    if request.method == 'POST':
+        form = ArticleForm(request.POST)
+        if form.is_valid():
+            try:
+                data = request.POST
+                print(data)
+                # Create Article
+                if (int(data['article']) == 0):
+                    numero = Numero.objects.get(id=data['numero'])
+                    # Verify edito and headline are unique
+                    try:
+                        if (data['isEdito']):
+                            edito = True
+                            if numero.article.filter(edito=True).exists():
+                                request.method = ""
+                                return createarticle(request, "Edito already exists")
+                    except:
+                        edito = False
+                    try:
+                        if (data['isHeadline']):
+                            headline = True
+                            if numero.article.filter(headline=True).exists():
+                                request.method=""
+                                return createarticle(request, "Headline already exists")
+                    except:
+                        headline = False
+                    # Create article if title is unique else return
+                    try:
+                        article = Article.objects.create(title=data['title'])
+                    except:
+                        request.method = ""
+                        return createarticle(request, "Title already be used")
+                    
+                    # Upload Image
+                    try:
+                        imgTitle = str(request.FILES['imgfile']).split("/")[-1]
+                        img = Img(imgfile = request.FILES['imgfile'],title=imgTitle)
+                        img.save()
+                        article.image = img
+                    except:
+                        pass
+                    author = UserProfile.objects.get(id=data['author'])
+                    if data['language'] == 'fr':
+                        category = Category.objects.get(id=data['categoryFR'])
+                    else:
+                        category = Category.objects.get(id=data['categoryTW'])
+                    article.numero = numero
+                    article.author = author
+                    article.category = category
+                    article.edito = edito
+                    article.headline = headline
+                    article.save()
+                # Article already existes
+                else:
+                    article = Article.objects.get(id=data['article'])
+                    category = article.category
+                # Create Article Content
+                if article.article.filter(language=data['language']):
+                    request.method=""
+                    return createarticle(request, "Article " + data['language'] + " already exists")
+                articleContent = form.save()
+                articleContent.article = article
+                articleContent.save()
+                #Return article created page
+                request.session['language'] = data['language']
+                return HttpResponseRedirect('/' + str(category) + '/article/' + article.slg)
+            except:
+                pass
     articleForm = ArticleForm()
+    articles = Article.objects.all()
     numeros = Numero.objects.all()
     categoryFR = CategoryDetail.objects.filter(language='fr')
     categoryTW = CategoryDetail.objects.filter(language='tw')
-    return render(request, 'AF/createArticle.html', {'form':articleForm, 'numeros':numeros, 'categoryFR':categoryFR, 'categoryTW':categoryTW})
+    users = UserProfile.objects.all()
+    return render(request, 'AF/createArticle.html', {'form':articleForm, 'numeros':numeros, 'categoryFR':categoryFR, 'categoryTW':categoryTW, 'users':users, 'articles':articles, 'errMsg':errMsg})
 
 def category(request, category):
     if category == "comics":

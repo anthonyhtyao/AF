@@ -2,7 +2,9 @@
 
 
 {% block body_block %}
-
+  {% if errMsg != "" %}
+    <div class="alert alert-danger" role="alert">{{ errMsg }}</div>
+  {% endif %}
   <form id = "article_form" method="post" action="/createarticle" enctype="multipart/form-data">
   {% csrf_token %}
     Title : <input id="title" type="text" name="title" maxlength="128" value="{{article.title}}">

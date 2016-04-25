@@ -248,7 +248,7 @@ def comics(request, slg):
 def archive(request, numero):
     try:
         returnForm, language = init(request)
-        no = Numero.objects.get(numero=int(numero))
+        no = Numero.objects.get(numero=float(numero))
         comicCat = Category.objects.get(category="comics")
         editoP = no.article.get(edito=True)
         edito = editoP.article.get(language=language)

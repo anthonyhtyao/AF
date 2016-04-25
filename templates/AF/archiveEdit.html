@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block body_block %}
+{% load static %}
+<!-- This page presents information of given numero, url for this page: /no/:id-->
+<div class="col-md-8 col-md-offset-2">
+<!-- title for this numero depends on language -->
+
+{% for dist in data %}
+    <h2>{{dist.numero}} {{dist.numero.titleFR}}/{{dist.numero.titleTW}}</h2>
+    <ul>
+      <li> Image :
+        {% if dist.image != None %}
+        <a href="{{dist.image.imgfile.url}}">{{dist.image}}</a>
+        {% else %}
+        Not exists
+        {% endif %}
+      </li>
+      <li> Edito : FR : 
+        {% if dist.editoFR != "" %}
+        {{dist.editoFR}}
+        {% else %}
+        Not exists
+        {% endif %} / TW : 
+        {% if dist.editoTW != "" %}
+        {{dist.editoTW}}
+        {% else %}
+        Not exists
+        {% endif %}
+      </li>  
+      <li> Headline: 
+        {% if dist.headline != "" %}
+        <a href="/{{dist.headline.category}}/article/{{dist.headline.slg}}">{{dist.headline}}</a>
+        {% else %}
+        Not exists
+        {% endif %}
+      </li>  
+      <li> Comic : FR : 
+        {% if dist.comicFR != "" %}
+        <a class="FR" href="/comics/{{dist.comicFR.article.slg}}">{{dist.comicFR}}</a>
+        {% else %}
+        Not exists
+        {% endif %} / TW :  
+        {% if dist.comicTW != "" %}
+        <a class="TW" href="/comics/{{dist.comicTW.article.slg}}">{{dist.comicTW}}</a>
+        {% else %}
+        Not exists
+        {% endif %}
+      </li>
+      <li>
+        Article : 
+        <ul>
+          {% for article in dist.articles %}
+            <li>
+            FR : 
+            {% if article.articleFR != "" %}
+            <a class="FR" href="/{{article.article.category}}/article/{{article.article.slg}}">{{article.articleFR}}</a>
+            {% else %}
+            Not exists
+            {% endif %}
+             / TW : 
+            {% if article.articleTW != "" %}
+            <a class="TW" href="/{{article.article.category}}/article/{{article.article.slg}}">{{article.articleTW}}</a>
+            {% else %}
+            Not exists
+            {% endif %}
+            </li>
+          {% endfor %}
+            <li>
+              <a href="/createarticle"> Add new article </a>
+            </li>
+        </ul>
+      </li> 
+    </ul>
+{% endfor %}
+
+<script>
+       $(".FR").click(function(){
+         $.ajax({
+            type:"POST",
+            url:"/session_language/",
+            data: { language:'fr', csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success: function(){
+            }
+         });
+        });
+      $(".TW").click(function(){
+        $.ajax({
+            type:"POST",
+            url:"/session_language/",
+            data: { 'language':'tw', csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success: function(){
+            }
+        });
+     });
+</script>
+
+
+{% endblock %}

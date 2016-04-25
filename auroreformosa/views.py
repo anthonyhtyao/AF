@@ -194,13 +194,16 @@ def article(request, category, slg):
                 article = None
             i = 1
             articleRelated = []
-            for a in Article.objects.filter(category=cat).order_by('-date'):
-                if i > 4:
-                    break
-                articleGet = a.article.get(language = language)
-                if article != articleGet:
-                    articleRelated.append(articleGet)
-                    i += 1
+            try:
+                for a in Article.objects.filter(category=cat).order_by('-date'):
+                    if i > 4:
+                        break
+                    articleGet = a.article.get(language = language)
+                    if article != articleGet:
+                        articleRelated.append(articleGet)
+                        i += 1
+            except:
+                pass
             returnForm['category'] = category
             returnForm['article'] = article
             returnForm['articleRelated'] = articleRelated
@@ -262,6 +265,70 @@ def archive(request, numero):
         return render(request, 'AF/archiveArticle.html', returnForm)
     except:
         return HttpResponseRedirect('/')
+
+@login_required
+def archiveEdit(request):
+    returnForm, language = init(request)
+    returnForm["data"] = []
+    comicCat = Category.objects.get(category="comics")
+    for no in returnForm['numeros'][::-1]:
+        dist = {'numero' : no}
+        # Test if image exists 
+        image = no.image
+        dist["image"] = image
+        # Test if edito exists
+        try:
+            editoP = no.article.get(edito=True)
+            try:
+                editoFR = editoP.article.get(language="fr")
+                dist["editoFR"] = editoFR
+            except:
+                dist["editoFR"] = ""
+            try:
+                editoTW = editoP.article.get(language="tw")
+                dist["editoTW"] = editoTW
+            except:
+                dist["editoTW"] = ""
+        except:
+            dist["editoFR"] = ""
+            dist["editoTW"] = ""
+        # Test if headline exists 
+        try:
+            headline = no.article.get(headline=True)
+            dist["headline"] = headline
+        except:
+            dist["headline"] = "" 
+        # Test if comic exists
+        try:
+            comicP = no.article.get(category=comicCat)
+            try:
+                comicFR = comicP.comic.get(language="fr")
+                dist["comicFR"] = comicFR
+            except:
+                dist["comicFR"] = ""
+            try:
+                comicTW = comicP.comic.get(language="tw")
+                dist["comicTW"] = comicTW
+            except:
+                dist["comicTW"] = ""
+        except:
+            dist["comicFR"] = ""
+            dist["comicTW"] = ""
+        articles = []
+        for a in  no.article.filter(edito = False).exclude(category = comicCat):
+            tmp = {"article":a}
+            try:
+                tmp["articleFR"] = a.article.get(language="fr")
+            except:
+                tmp["articleFR"] = ""
+            try:
+                tmp["articleTW"] = a.article.get(language="tw")
+            except:
+                tmp["articleTW"] = ""
+            articles.append(tmp)
+        dist["articles"] = articles
+        returnForm["data"].append(dist)
+    return render(request, 'AF/archiveEdit.html', returnForm)
 
 def abonnement(request):
     returnForm, language = init(request)

@@ -194,13 +194,16 @@ def article(request, category, slg):
                 article = None
             i = 1
             articleRelated = []
-            for a in Article.objects.filter(category=cat).order_by('-date'):
-                if i > 4:
-                    break
-                articleGet = a.article.get(language = language)
-                if article != articleGet:
-                    articleRelated.append(articleGet)
-                    i += 1
+            try:
+                for a in Article.objects.filter(category=cat).order_by('-date'):
+                    if i > 4:
+                        break
+                    articleGet = a.article.get(language = language)
+                    if article != articleGet:
+                        articleRelated.append(articleGet)
+                        i += 1
+            except:
+                pass
             returnForm['category'] = category
             returnForm['article'] = article
             returnForm['articleRelated'] = articleRelated
@@ -263,12 +266,16 @@ def archive(request, numero):
     except:
         return HttpResponseRedirect('/')
 
+@login_required
 def archiveEdit(request):
     returnForm, language = init(request)
     returnForm["data"] = []
     comicCat = Category.objects.get(category="comics")
     for no in returnForm['numeros'][::-1]:
         dist = {'numero' : no}
+        # Test if image exists 
+        image = no.image
+        dist["image"] = image
         # Test if edito exists
         try:
             editoP = no.article.get(edito=True)
@@ -307,6 +314,19 @@ def archiveEdit(request):
         except:
             dist["comicFR"] = ""
             dist["comicTW"] = ""
+        articles = []
+        for a in  no.article.filter(edito = False).exclude(category = comicCat):
+            tmp = {"article":a}
+            try:
+                tmp["articleFR"] = a.article.get(language="fr")
+            except:
+                tmp["articleFR"] = ""
+            try:
+                tmp["articleTW"] = a.article.get(language="tw")
+            except:
+                tmp["articleTW"] = ""
+            articles.append(tmp)
+        dist["articles"] = articles
         returnForm["data"].append(dist)
     return render(request, 'AF/archiveEdit.html', returnForm)
 

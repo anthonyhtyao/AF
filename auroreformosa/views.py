@@ -263,6 +263,53 @@ def archive(request, numero):
     except:
         return HttpResponseRedirect('/')
 
+def archiveEdit(request):
+    returnForm, language = init(request)
+    returnForm["data"] = []
+    comicCat = Category.objects.get(category="comics")
+    for no in returnForm['numeros'][::-1]:
+        dist = {'numero' : no}
+        # Test if edito exists
+        try:
+            editoP = no.article.get(edito=True)
+            try:
+                editoFR = editoP.article.get(language="fr")
+                dist["editoFR"] = editoFR
+            except:
+                dist["editoFR"] = ""
+            try:
+                editoTW = editoP.article.get(language="tw")
+                dist["editoTW"] = editoTW
+            except:
+                dist["editoTW"] = ""
+        except:
+            dist["editoFR"] = ""
+            dist["editoTW"] = ""
+        # Test if headline exists 
+        try:
+            headline = no.article.get(headline=True)
+            dist["headline"] = headline
+        except:
+            dist["headline"] = "" 
+        # Test if comic exists
+        try:
+            comicP = no.article.get(category=comicCat)
+            try:
+                comicFR = comicP.comic.get(language="fr")
+                dist["comicFR"] = comicFR
+            except:
+                dist["comicFR"] = ""
+            try:
+                comicTW = comicP.comic.get(language="tw")
+                dist["comicTW"] = comicTW
+            except:
+                dist["comicTW"] = ""
+        except:
+            dist["comicFR"] = ""
+            dist["comicTW"] = ""
+        returnForm["data"].append(dist)
+    return render(request, 'AF/archiveEdit.html', returnForm)
+
 def abonnement(request):
     returnForm, language = init(request)
     if request.method=="POST":

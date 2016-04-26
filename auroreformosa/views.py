@@ -399,7 +399,7 @@ def user_logout(request):
     return HttpResponseRedirect('/')
 
 @login_required
-def createUser(request):
+def createUser(request, msg=""):
     returnForm,language = init(request)
     if request.POST:
         username = request.POST['username']
@@ -411,4 +411,6 @@ def createUser(request):
         up.name = request.POST['name']
         up.save()
         request.method=""
+        msg = "User " + str(up) + " successfully created"
+    returnForm["msg"] = msg
     return render(request, 'admin/createUser.html', returnForm)

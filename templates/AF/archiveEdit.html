@@ -10,7 +10,8 @@
     <ul>
       <li> Image :
         {% if dist.image != None %}
-        <a href="{{dist.image.imgfile.url}}">{{dist.image}}</a>
+        <!--Display archive image when mouse over -->
+        <a title="" href="#" onmouseover="tooltipArchiveImg(this)" onmouseout=" " value="{{dist.image.imgfile.url}}">{{dist.image}}</a>
         {% else %}
         Not exists
         {% endif %}
@@ -74,6 +75,11 @@
 {% endfor %}
 
 <script>
+       function tooltipArchiveImg(x) {
+           var value = $(x).attr('value');
+           $(x).tooltip({content:'<img width="100%" src=' + value + '/>'});
+       }
+       $(".test").tooltip({ content:'<img width="100%" src="/media/img/v1.jpg" />'});
        $(".FR").click(function(){
          $.ajax({
             type:"POST",

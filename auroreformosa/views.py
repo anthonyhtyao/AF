@@ -397,3 +397,20 @@ def user_logout(request):
 
     # Take the user back to the homepage.
     return HttpResponseRedirect('/')
+
+@login_required
+def createUser(request, msg=""):
+    returnForm,language = init(request)
+    if request.POST:
+        username = request.POST['username']
+        email = request.POST['email']
+        # Init password 0000
+        u = User.objects.create_user(username, email, "0000")
+        up = UserProfile()
+        up.user = u
+        up.name = request.POST['name']
+        up.save()
+        request.method=""
+        msg = "User " + str(up) + " successfully created"
+    returnForm["msg"] = msg
+    return render(request, 'admin/createUser.html', returnForm)

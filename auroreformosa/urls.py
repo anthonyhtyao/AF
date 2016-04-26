@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^logout/$', views.user_logout, name='logout'),
     url(r'^abonnement', views.abonnement, name="abonnement"),
     url(r'^contact', views.contact, name="contact"),
+    url(r'^createuser', views.createUser, name="createuser"),
     url(r'^upload', views.uploadImg, name='upload'),
     url(r'^createarticle', views.createarticle, name='createarticle'),
     url(r'^session_language/$', views.session_language, name='session_language'),

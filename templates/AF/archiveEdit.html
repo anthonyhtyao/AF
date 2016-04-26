@@ -10,7 +10,8 @@
     <ul>
       <li> Image :
         {% if dist.image != None %}
-        <a href="{{dist.image.imgfile.url}}">{{dist.image}}</a>
+        <!--Display archive image when mouse over -->
+        <a title="" href="#" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{dist.image.imgfile.url}}">{{dist.image}}</a>
         {% else %}
         Not exists
         {% endif %}
@@ -36,12 +37,12 @@
       </li>  
       <li> Comic : FR : 
         {% if dist.comicFR != "" %}
-        <a class="FR" href="/comics/{{dist.comicFR.article.slg}}">{{dist.comicFR}}</a>
+        <a class="FR" href="/comics/{{dist.comicFR.article.slg}}" title="" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{dist.comicFR.image.imgfile.url}}" >{{dist.comicFR}}</a>
         {% else %}
         Not exists
         {% endif %} / TW :  
         {% if dist.comicTW != "" %}
-        <a class="TW" href="/comics/{{dist.comicTW.article.slg}}">{{dist.comicTW}}</a>
+        <a class="TW" href="/comics/{{dist.comicTW.article.slg}}" title="" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{dist.comicTW.image.imgfile.url}}" >{{dist.comicTW}}</a>
         {% else %}
         Not exists
         {% endif %}
@@ -74,6 +75,14 @@
 {% endfor %}
 
 <script>
+       function tooltipArchiveImg(x) {
+           var value = $(x).attr('value');
+           $(x).tooltip({content:'<img width="100%" src=' + value + '/>'});
+       }
+       function closeTooltip(x) {
+           $(x).tooltip("close");
+       }
+       $(".test").tooltip({ content:'<img width="100%" src="/media/img/v1.jpg" />'});
        $(".FR").click(function(){
          $.ajax({
             type:"POST",

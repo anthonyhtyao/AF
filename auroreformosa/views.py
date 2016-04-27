@@ -55,6 +55,7 @@ def about(request):
 
 @login_required
 def uploadImg(request):
+    returnForm, language = init(request)
     if request.method == 'POST':
         form = ImgForm(request.POST, request.FILES)
         if form.is_valid():
@@ -63,10 +64,12 @@ def uploadImg(request):
             newImg.save()
     else:
         form = ImgForm()
-    return render(request,'admin/upload.html',{'form':form})
+    returnForm['form'] = form
+    return render(request,'admin/upload.html', returnForm)
 
 @login_required
 def createarticle(request, errMsg=""):
+    returnForm, language = init(request)
     if request.method == 'POST':
         form = ArticleForm(request.POST)
         if form.is_valid():
@@ -141,7 +144,13 @@ def createarticle(request, errMsg=""):
     categoryFR = CategoryDetail.objects.filter(language='fr')
     categoryTW = CategoryDetail.objects.filter(language='tw')
     users = UserProfile.objects.all()
-    return render(request, 'admin/createArticle.html', {'form':articleForm, 'numeros':numeros, 'categoryFR':categoryFR, 'categoryTW':categoryTW, 'users':users, 'articles':articles, 'errMsg':errMsg})
+    returnForm['form'] = articleForm
+    returnForm['categoryFR'] = categoryFR
+    returnForm['categoryTW'] = categoryTW
+    returnForm['users'] = users
+    returnForm['articles'] = articles
+    returnForm['errMsg'] = errMsg
+    return render(request, 'admin/createArticle.html', returnForm)
 
 def category(request, category):
     if category == "comics":

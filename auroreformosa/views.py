@@ -63,7 +63,7 @@ def uploadImg(request):
             newImg.save()
     else:
         form = ImgForm()
-    return render(request,'AF/upload.html',{'form':form})
+    return render(request,'admin/upload.html',{'form':form})
 
 @login_required
 def createarticle(request, errMsg=""):
@@ -141,7 +141,7 @@ def createarticle(request, errMsg=""):
     categoryFR = CategoryDetail.objects.filter(language='fr')
     categoryTW = CategoryDetail.objects.filter(language='tw')
     users = UserProfile.objects.all()
-    return render(request, 'AF/createArticle.html', {'form':articleForm, 'numeros':numeros, 'categoryFR':categoryFR, 'categoryTW':categoryTW, 'users':users, 'articles':articles, 'errMsg':errMsg})
+    return render(request, 'admin/createArticle.html', {'form':articleForm, 'numeros':numeros, 'categoryFR':categoryFR, 'categoryTW':categoryTW, 'users':users, 'articles':articles, 'errMsg':errMsg})
 
 def category(request, category):
     if category == "comics":
@@ -328,7 +328,7 @@ def archiveEdit(request):
             articles.append(tmp)
         dist["articles"] = articles
         returnForm["data"].append(dist)
-    return render(request, 'AF/archiveEdit.html', returnForm)
+    return render(request, 'admin/archiveEdit.html', returnForm)
 
 def abonnement(request):
     returnForm, language = init(request)

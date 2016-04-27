@@ -105,6 +105,17 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+            <li>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Admin </a>
+              <ul class = "dropdown-menu">
+                <li><a href="/no/edit">Archive Detail</a>
+                <li><a href="/createarticle">Create Article</a>
+                <li><a href="/createuser">Create User</a>
+                <li><a href="/upload">Upload Image</a>
+              </ul>
+            </li>
+            {% endif %}
             {% if language == "fr" %}
             <li>
               <a href="/about">A propos</a>

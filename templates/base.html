@@ -24,7 +24,7 @@
   <link href="{% static "css/modern-business.css" %}" rel="stylesheet">
   <!-- Custom CSS -->
   <link rel="stylesheet" href="{% static "css/creative.css" %}" type="text/css">
-  
+
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
@@ -50,7 +50,7 @@
   {{ form.media }}
   <script>
     tinymce.init({
-        selector: ['#newContent']
+        selector: ['#newContent','#comicFR','#comicTW']
     });
     </script>
 
@@ -87,7 +87,7 @@
 
 
 {% block header_block %}
-  <header> 
+  <header>
 {% endblock header_block %}
     <nav id="mainNav" class="navbar navbar-default">
       <div class="container-fluid">
@@ -109,10 +109,11 @@
             <li>
               <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Admin </a>
               <ul class = "dropdown-menu">
-                <li><a href="/no/edit">Archive Detail</a>
-                <li><a href="/createarticle">Create Article</a>
-                <li><a href="/createuser">Create User</a>
-                <li><a href="/upload">Upload Image</a>
+                <li><a href="/createcomic">Add Comic</a></li>
+                <li><a href="/no/edit">Archive Detail</a></li>
+                <li><a href="/createarticle">Create Article</a></li>
+                <li><a href="/createuser">Create User</a></li>
+                <li><a href="/upload">Upload Image</a></li>
               </ul>
             </li>
             {% endif %}
@@ -163,7 +164,7 @@
         <!-- /.navbar-collapse -->
       </div>
       <!-- /.container-fluid -->
-    </nav> 
+    </nav>
     <div class="header-content">
 
       <div class="header-content-inner">
@@ -188,7 +189,7 @@
         {% block body_block %} {% endblock %}
   </div>
 {% block downpage_block %}
-  
+
 {% endblock downpage_block %}
         <footer>
             <div class="row">
@@ -205,10 +206,10 @@
             </div>
         </footer>
 
-    
+
     <!-- /.container -->
 
-    
+
 <div id="dialog" class="login-dialog" title="Log In">
     <form id="login_form" action="/login/" method="post">
         {% csrf_token %}

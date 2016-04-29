@@ -28,7 +28,7 @@ def init(request):
             newsArticles.append(a.article.get(language=language))
         except:
             pass
-    
+
     returnForm['numeros'] = numeros
     returnForm['categories'] = categories
     returnForm['language'] = language
@@ -43,7 +43,7 @@ def index(request, loginMsg=""):
     comicArticle = comicArticleP.comic.get(language=language)
     headlineP = Article.objects.filter(headline=True).order_by('-date')[0]
     headline = headlineP.article.get(language=language)
-    
+
     returnForm['comicArticle'] = comicArticle
     returnForm['loginMsg'] = loginMsg
     returnForm['headline'] = headline
@@ -66,6 +66,66 @@ def uploadImg(request):
         form = ImgForm()
     returnForm['form'] = form
     return render(request,'admin/upload.html', returnForm)
+
+@login_required
+def createComic(request, errMsg="", success="", warnMsg=""):
+    returnForm, language = init(request)
+    if request.method == 'POST':
+        form = ComicForm(request.POST)
+        if form.is_valid():
+            print(request.FILES)
+            data = request.POST
+            author = UserProfile.objects.get(id=data['author'])
+            comicCat = Category.objects.get(category="comics")
+            numero = Numero.objects.get(id=data['numero'])
+            titleFR = data['titleFR']
+            try:
+                article = Article.objects.create(title=titleFR)
+            except:
+                request.method = ""
+                return createComic(request, errMsg = "Title already be used")
+            article.author = author
+            article.category = comicCat
+            article.numero = numero
+            article.save()
+            try:
+                imgTitleFR = str(request.FILES['imgfileFR']).split("/")[-1]
+                imgFR = Img(imgfile = request.FILES['imgfileFR'],title=imgTitleFR)
+                imgFR.save()
+                comic = Comic.objects.create(title = titleFR)
+                comic.article = article
+                comic.image = imgFR
+                comic.content = data['contentFR']
+                comic.save()
+            except:
+                request.method = ""
+                return createComic(request, errMsg = "ImageFR error")
+            titleTW = data['titleTW']
+            if titleTW != "":
+                try:
+                    imgTitleTW = str(request.FILES['imgfileTW']).split("/")[-1]
+                    imgTW = Img(imgfile = request.FILES['imgfileTW'],title=imgTitleTW)
+                    imgTW.save()
+                    comic = Comic.objects.create(title = titleTW)
+                    comic.article = article
+                    comic.image = imgTW
+                    comic.content = data['contentTW']
+                    comic.language = "tw"
+                    comic.save()
+                    request.method = ""
+                    return createComic(request, success="Commics FR and TW added successfully. <a class='FR' href=/comics/"+article.slg+"> Click to read Comic FR </a> and <a class='TW' href=/comics/"+article.slg+"> Click to read Comic TW </a>")
+                except:
+                    pass
+            request.method = ""
+            return createComic(request, warnMsg = "Comic FR added successfully and Comic TW fail. <a class='FR' href=/comics/"+article.slg+"> Click to read Comic FR </a>")
+    comicForm = ComicForm()
+    users = UserProfile.objects.all()
+    returnForm['form'] = comicForm
+    returnForm['users'] = users
+    returnForm['errMsg'] = errMsg
+    returnForm['warnMsg'] = warnMsg
+    returnForm['success'] = success
+    return render(request, 'admin/createComic.html', returnForm)
 
 @login_required
 def createarticle(request, errMsg=""):
@@ -102,7 +162,7 @@ def createarticle(request, errMsg=""):
                     except:
                         request.method = ""
                         return createarticle(request, "Title already be used")
-                    
+
                     # Upload Image
                     try:
                         imgTitle = str(request.FILES['imgfile']).split("/")[-1]
@@ -158,7 +218,7 @@ def category(request, category):
         comic = comicCat.article.order_by('-date')[0]
         return HttpResponseRedirect('/comics/' + comic.slg)
     elif category == "edito":
-        return HttpResponseRedirect("/") 
+        return HttpResponseRedirect("/")
     else:
         returnForm, language = init(request)
         try:
@@ -195,7 +255,7 @@ def article(request, category, slg):
         except:
             cat = None
         if articleParent.category == cat:
-            returnForm, language = init(request) 
+            returnForm, language = init(request)
             category = CategoryDetail.objects.get(language=language, category=cat)
             try:
                 article = articleParent.article.get(language=language)
@@ -242,7 +302,7 @@ def comics(request, slg):
             if i == l-1:
                 nextComic = comics[0]
             else:
-                nextComic = comics[i+1]  
+                nextComic = comics[i+1]
         except:
             comic = None
             return HttpResponseRedirect("/")
@@ -252,7 +312,7 @@ def comics(request, slg):
         returnForm['beforeComic'] = beforeComic
         return render(request, 'AF/comics.html', returnForm)
     except:
-        return HttpResponseRedirect('/')    
+        return HttpResponseRedirect('/')
 
 def archive(request, numero):
     try:
@@ -282,7 +342,7 @@ def archiveEdit(request):
     comicCat = Category.objects.get(category="comics")
     for no in returnForm['numeros'][::-1]:
         dist = {'numero' : no}
-        # Test if image exists 
+        # Test if image exists
         image = no.image
         dist["image"] = image
         # Test if edito exists
@@ -301,12 +361,12 @@ def archiveEdit(request):
         except:
             dist["editoFR"] = ""
             dist["editoTW"] = ""
-        # Test if headline exists 
+        # Test if headline exists
         try:
             headline = no.article.get(headline=True)
             dist["headline"] = headline
         except:
-            dist["headline"] = "" 
+            dist["headline"] = ""
         # Test if comic exists
         try:
             comicP = no.article.get(category=comicCat)
@@ -364,7 +424,7 @@ def abonnement(request):
                     action += " € , "
             except:
                 pass
-            try:            
+            try:
                 if request.POST['informer']:
                     action += "être informé(e)"
             except:

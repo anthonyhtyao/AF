@@ -9,15 +9,19 @@
   {% elif success != "" %}
     <div class="alert alert-success" role="alert">{{ success|safe }}</div>
   {% endif %}
-
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      Info
+    </div>
+    <div class="panel-body">
+      TitleFR and ImageFR need to be filled.<br />
+      TitleTW is needed if ImageTW exists.
+    </div>
+  </div>
   <form id = "comic_form" method="post" action="/createcomic" enctype="multipart/form-data">
   {% csrf_token %}
-    TitleFR : <input id="titleFR" type="text" name="titleFR" maxlength="128" value="">
-    TitleTW : <input id="titleTW" type="text" name="titleTW" maxlength="128" value="">
-    ImageFR:
-    <p><input type='file' name='imgfileFR'> </p>
-    ImageTW:
-    <p><input type='file' name='imgfileTW'> </p>
+  <br />
+  <div class="form-inline">
     Author :
     <select name="author">
     {% for user in users %}
@@ -30,13 +34,35 @@
       <option value="{{numero.id}}"> {{ numero.numero }}</option>
     {% endfor %}
     </select>
-    <br />
-    <p>ContentFR :</p>
-    <textarea id="comicFR" type="text" name="contentFR" cols ="80" rows="10"} >{{article.abstract}} </textarea>
-    <p>ContentTW : </p>
-    <textarea id="comicTW" type="text" name="contentTW" cols ="80" rows="10"} >{{article.content}} </textarea>
+  </div>
+  <br />
 
-	<input type="submit" name="submit" value="Add Comic">
+  <div class="col-md-5">
+    <div class="form-group">
+      <label class="sr-only" for="titleFR">TitleFR : </label>
+      TitleFR : <input id="titleFR" class="form-control" type="text" placeholder="Title" name="titleFR" maxlength="128" value="">
+    </div>
+    ImageFR:
+    <p><input type='file' name='imgfileFR'> </p>
+    <p>ContentFR :</p>
+    <textarea id="comicFR" type="text" name="contentFR" cols ="40" rows="10"} >{{article.abstract}} </textarea>
+  </div>
+
+  <div class="col-md-5 col-md-offset-2">
+    <div class="form-group">
+      <label class="sr-only" for="titleTW">TitleTW : </label>
+      TitleTW : <input id="titleTW" class="form-control" type="text" placeholder="Title" name="titleTW" maxlength="128" value="">
+    </div>
+      ImageTW:
+    <p><input type='file' name='imgfileTW'> </p>
+    <p>ContentTW : </p>
+    <textarea id="comicTW" type="text" name="contentTW" cols ="40" rows="10"} >{{article.content}} </textarea>
+</div>
+<div class="col-md-12">
+  <br />
+  <br />
+  <center><input type="submit" name="submit" value="Add Comic"></center>
+</div>
 </form>
 
 <script>

@@ -322,15 +322,17 @@ def archive(request, numero):
         editoP = no.article.get(edito=True)
         edito = editoP.article.get(language=language)
         articles = []
+        comics = []
         for a in  no.article.filter(edito = False):
             if a.category == comicCat:
                 comic = a.comic.get(language=language)
+                comics.append(comic)
             else:
                 articles.append(a.article.get(language=language))
         returnForm['numero'] = no
         returnForm['articles'] = articles
         returnForm['edito'] = edito
-        returnForm['comic'] = comic
+        returnForm['comics'] = comics
         return render(request, 'AF/archiveArticle.html', returnForm)
     except:
         return HttpResponseRedirect('/')
@@ -369,20 +371,24 @@ def archiveEdit(request):
             dist["headline"] = ""
         # Test if comic exists
         try:
-            comicP = no.article.get(category=comicCat)
-            try:
-                comicFR = comicP.comic.get(language="fr")
-                dist["comicFR"] = comicFR
-            except:
-                dist["comicFR"] = ""
-            try:
-                comicTW = comicP.comic.get(language="tw")
-                dist["comicTW"] = comicTW
-            except:
-                dist["comicTW"] = ""
+            comicP = no.article.filter(category=comicCat)
+            comicList = []
+            for a in comicP:
+                d = {}
+                try:
+                    comicFR = a.comic.get(language="fr")
+                    d["comicFR"] = comicFR
+                except:
+                    d["comicFR"] = ""
+                try:
+                    comicTW = a.comic.get(language="tw")
+                    d["comicTW"] = comicTW
+                except:
+                    d["comicTW"] = ""
+                comicList.append(d)
+            dist["comics"] = comicList
         except:
-            dist["comicFR"] = ""
-            dist["comicTW"] = ""
+            dist["comics"] = ""
         articles = []
         for a in  no.article.filter(edito = False).exclude(category = comicCat):
             tmp = {"article":a}

@@ -16,6 +16,12 @@ class ArticleForm(forms.ModelForm):
         model = ArticleContent
         fields = ('language','title','abstract', 'content',)
 
+class ComicForm(forms.Form):
+    titleFR = forms.CharField(max_length=128)
+    titleTW = forms.CharField(max_length=128, required = False)
+    contentFR = forms.CharField(widget = TinyMCE(attrs={'cols': 80, 'rows': 3}), required=False)
+    contentTW = forms.CharField(widget = TinyMCE(attrs={'cols': 80, 'rows': 3}), required=False)
+
 class AbonnementForm(forms.Form):
     name = forms.CharField(max_length = 64)
     email = forms.EmailField(max_length = 128)

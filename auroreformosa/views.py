@@ -43,7 +43,10 @@ def index(request, loginMsg=""):
     comicArticle = comicArticleP.comic.get(language=language)
     headlineP = Article.objects.filter(headline=True).order_by('-date')[0]
     headline = headlineP.article.get(language=language)
-
+    for n in returnForm['numeros'][::-1]:
+        if int(n.numero) == n.numero:
+            returnForm['headerImage'] = n.image
+            break
     returnForm['comicArticle'] = comicArticle
     returnForm['loginMsg'] = loginMsg
     returnForm['headline'] = headline

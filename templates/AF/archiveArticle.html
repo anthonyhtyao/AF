@@ -25,12 +25,12 @@
   <div>
     <dl class="dl-horizontal">
       {% for comic in comics %}
-        <dt><a href="/comics/{{comic.article.slg}}" title="{{comic.article}}">{{comic}}</a></dt>
-        <dd>{{comic.article.category}}</dd>
+        <dt>{{comic.article.category}}</dt>
+        <dd><a href="/comics/{{comic.article.slg}}" title="{{comic.article}}">{{comic}}</a></dd>        
       {% endfor %}
       {% for article in articles %}
-        <dt><a href="/{{article.article.category}}/article/{{article.article.slg}}" title="{{article.article}}">{{article}}</a></dt>
-        <dd>{{article.article.category}}</dd>
+        <dt>{{article.article.category}}</dt>
+        <dd><a href="/{{article.article.category}}/article/{{article.article.slg}}" title="{{article.article}}">{{article}}</a></dd>
       {% endfor %}
     </dl>
   </div>

@@ -31,6 +31,7 @@ class Numero(models.Model):
 
 class Category(models.Model):
     category = models.CharField(max_length = 20)
+    color = models.CharField(max_length = 20, default="#FF0033")
 
     def __str__(self):
         return self.category

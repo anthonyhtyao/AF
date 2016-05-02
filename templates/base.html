@@ -180,7 +180,7 @@
     <ul class="nav navbar-nav">
       {% for category in categories %}
         <li class="">
-          <a href="/{{category.category}}"> {{category.title}} </a>
+          <a class = "category" style="color:rgba(0,0,0,.5)" onmouseover="changeColor(this,'{{category.category.color}}')" onmouseout="returnColor(this)" href="/{{category.category}}"> {{category.title}} </a>
         </li>
       {% endfor %}
     </ul>
@@ -223,7 +223,15 @@
     </form>
 </div>
 
-
+<script>
+//Change category btm color when mouse over
+  function changeColor (x,color) {
+    $(x).css("color",color);
+  }
+  function returnColor (x) {
+    $(x).css("color", "rgba(0,0,0,.5)");
+  }
+</script>
 <script>
     var loginMsg = "{{loginMsg}}";
     if (loginMsg != "") {

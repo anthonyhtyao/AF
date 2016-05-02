@@ -2,7 +2,7 @@
   {% load static %}
 
 {% block header_block %}
-  <header class="header-index">
+  <header  style="background-image: url({{headerImage.imgfile.url}})" class="header-index" >
 {% endblock header_block %}
 
 
@@ -50,9 +50,9 @@
   </a>
 </div>
 <br>
-      <div>
+      <div class="well row">
         <a href="{{headline.article.category}}/article/{{headline.article.slg}}" title="{{headline}}">
-        <div class="col-md-7">
+        <div class="col-md-7 ">
           <img src="{{headline.article.image.imgfile.url}}" width="100%">
         </div>
         </a>

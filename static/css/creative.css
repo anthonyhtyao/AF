@@ -11,7 +11,7 @@ body {
 }
 
 body {
-    font-family: Merriweather,'Helvetica Neue',Arial,sans-serif;
+    font-family: 'Helvetica Neue',Merriweather,Arial,sans-serif;
 }
 
 hr {
@@ -26,6 +26,7 @@ hr.light {
 
 a {
       color: #f05f40;
+      font-family: 'Helvetica','Open Sans',Arial,sans-serif;
     -webkit-transition: all .35s;
     -moz-transition: all .35s;
     transition: all .35s;

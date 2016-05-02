@@ -93,8 +93,21 @@
               <div class="col-lg-12">
               <img src="{{comicArticle.image.imgfile.url}}" width="100%">
               </div>
+            </a>
             </div>
             <!-- /.row -->
+        </div>
+        <div style="position: relative;">
+          <div class="text" style="color:#8B00FF; ">
+            {% if request.session.language = "fr" %}
+              <h2>Bande Dessinée</h2>
+            {% elif request.session.language = "tw" %}
+              <h2>漫畫</h2>
+            {% endif %}
+            <h1 style="color:white">{{comicArticle.title}}</h1>
+          </div>
+          <div class="colorOverlay"></div>
+          <img src="{{comicArticle.image.imgfile.url}}" width="100%">
         </div>
         <div class="well">
           {% if request.session.language = "fr" %}

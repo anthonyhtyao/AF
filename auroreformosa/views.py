@@ -43,6 +43,7 @@ def index(request, loginMsg=""):
     comicArticle = comicArticleP.comic.get(language=language)
     headlineP = Article.objects.filter(headline=True).order_by('-date')[0]
     headline = headlineP.article.get(language=language)
+    headlineCat = headlineP.category.detail.get(language=language)
     for n in returnForm['numeros'][::-1]:
         if int(n.numero) == n.numero:
             returnForm['headerImage'] = n.image
@@ -50,6 +51,7 @@ def index(request, loginMsg=""):
     returnForm['comicArticle'] = comicArticle
     returnForm['loginMsg'] = loginMsg
     returnForm['headline'] = headline
+    returnForm['headlineCat'] = headlineCat
     return render(request, 'AF/index.html', returnForm)
 
 def about(request):

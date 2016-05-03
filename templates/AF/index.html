@@ -22,33 +22,25 @@
         </div>
 <br>
       <div class="col-md-6">
-        <div class="textOnImage ">
-          <div class="text" style="color:{{comicArticle.article.category.color}}; ">
-            {% if request.session.language = "fr" %}
-              <h3>Bande Dessinée</h3>
-            {% elif request.session.language = "tw" %}
-              <h3>漫畫</h3>
-            {% endif %}
-            <h2>{{comicArticle.title}}</h2>
+        <div class="textOnImage">
+          <div class="text" style="color:{{newestArticle3.article.category.color}}; ">
+            <h3>{{newestArticle3Cat}}
+            <h2>{{newestArticle3}}</h2>
           </div>
           <div class="colorOverlay"></div>
-          <img src="{{comicArticle.image.imgfile.url}}" width="100%">
+          <img src="{{newestArticle3.article.image.imgfile.url}}" width="100%">
         </div>
 
       </div>
         <div class="col-md-6">
-        <div class="textOnImage ">
-          <div class="text" style="color:{{comicArticle.article.category.color}}; ">
-            {% if request.session.language = "fr" %}
-              <h3>Bande Dessinée</h3>
-            {% elif request.session.language = "tw" %}
-              <h3>漫畫</h3>
-            {% endif %}
-            <h2>{{comicArticle.title}}</h2>
+          <div class="textOnImage">
+            <div class="text" style="color:{{newestArticle2.article.category.color}}; ">
+              <h3>{{newestArticle2Cat}}
+              <h2>{{newestArticle2}}</h2>
+            </div>
+            <div class="colorOverlay"></div>
+            <img src="{{newestArticle2.article.image.imgfile.url}}" width="100%">
           </div>
-          <div class="colorOverlay"></div>
-          <img src="{{comicArticle.image.imgfile.url}}" width="100%">
-        </div>
       </div>
     </div>
 
@@ -56,16 +48,12 @@
       <div class="col-md-4">
         <!-- 近期文章列表 well -->
         <div class="textOnImage">
-          <div class="text" style="color:{{comicArticle.article.category.color}}; ">
-            {% if request.session.language = "fr" %}
-              <h3>Bande Dessinée</h3>
-            {% elif request.session.language = "tw" %}
-              <h3>漫畫</h3>
-            {% endif %}
-            <h2>{{comicArticle.title}}</h2>
+          <div class="text" style="color:{{newestArticle1.article.category.color}}; ">
+            <h3>{{newestArticle1Cat}}
+            <h2>{{newestArticle1}}</h2>
           </div>
           <div class="colorOverlay"></div>
-          <img src="{{comicArticle.image.imgfile.url}}" width="100%">
+          <img src="{{newestArticle1.article.image.imgfile.url}}" width="100%">
         </div>
         <!-- comic -->
         <div class="textOnImage">

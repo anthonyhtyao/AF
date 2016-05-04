@@ -7,9 +7,10 @@
 
 
 {% block body_block %}
-    <div class="row">
+
 
       <!-- Blog Post Content Column -->
+<div class="col-md-12">
       <div class="col-md-8">
         <div class="textOnImage">
           <div class="text" style="color:{{headline.article.category.color}}; ">
@@ -20,33 +21,8 @@
           <div class="colorOverlay"></div>
           <img src="{{headline.article.image.imgfile.url}}" width="100%">
         </div>
-<br>
-      <div class="col-md-6">
-        <div class="textOnImage">
-          <div class="text" style="color:{{newestArticle3.article.category.color}}; ">
-            <h3>{{newestArticle3Cat}}
-            <h2>{{newestArticle3}}</h2>
-          </div>
-          <div class="colorOverlay"></div>
-          <img src="{{newestArticle3.article.image.imgfile.url}}" width="100%">
-        </div>
-
       </div>
-        <div class="col-md-6">
-          <div class="textOnImage">
-            <div class="text" style="color:{{newestArticle2.article.category.color}}; ">
-              <h3>{{newestArticle2Cat}}
-              <h2>{{newestArticle2}}</h2>
-            </div>
-            <div class="colorOverlay"></div>
-            <img src="{{newestArticle2.article.image.imgfile.url}}" width="100%">
-          </div>
-      </div>
-    </div>
-
-      <!-- Blog Sidebar Widgets Column -->
       <div class="col-md-4">
-        <!-- 近期文章列表 well -->
         <div class="textOnImage">
           <div class="text" style="color:{{newestArticle1.article.category.color}}; ">
             <h3>{{newestArticle1Cat}}
@@ -55,7 +31,30 @@
           <div class="colorOverlay"></div>
           <img src="{{newestArticle1.article.image.imgfile.url}}" width="100%">
         </div>
-        <!-- comic -->
+      </div>
+
+      <div class="col-md-4">
+        <div class="textOnImage">
+          <div class="text" style="color:{{newestArticle2.article.category.color}}; ">
+            <h3>{{newestArticle2Cat}}
+            <h2>{{newestArticle2}}</h2>
+          </div>
+          <div class="colorOverlay"></div>
+          <img src="{{newestArticle2.article.image.imgfile.url}}" width="100%">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="textOnImage">
+          <div class="text" style="color:{{newestArticle3.article.category.color}}; ">
+            <h3>{{newestArticle3Cat}}
+            <h2>{{newestArticle3}}</h2>
+          </div>
+          <div class="colorOverlay"></div>
+          <img src="{{newestArticle3.article.image.imgfile.url}}" width="100%">
+        </div>
+      </div>
+      <div class="col-md-4">
         <div class="textOnImage">
           <div class="text" style="color:{{comicArticle.article.category.color}}; ">
             {% if request.session.language = "fr" %}
@@ -70,11 +69,14 @@
         </div>
       </div>
 
-    </div>
-    <!-- /.row -->
+</div>
+      <!-- Blog Sidebar Widgets Column -->
+
+
+<br>
 <hr>
     <!-- <p class="col-lg-8 col-lg-offset-2 text-center">Ici les slides</p> -->
-    <div class="row well">
+    <div class="col-md-12 row well">
       {% for numero in numeros.reverse|slice:":6"%}
       <div class="col-md-2 text-center">
         <a href="/no/{{numero}}" title="numero {{numero}}">

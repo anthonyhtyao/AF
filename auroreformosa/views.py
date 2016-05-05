@@ -37,6 +37,18 @@ def init(request):
     returnForm['newsArticles'] = newsArticles
     return returnForm, language
 
+def newestArticle(request, comic, language):
+    articles = Article.objects.exclude(headline=True).exclude(category=comic).exclude(edito=True).order_by('-date')[:5]
+    l = len(articles)
+    randomL = random.sample(range(l),3)
+    newestArticle1 = articles[randomL[0]].article.get(language=language)
+    newestArticle1Cat = articles[randomL[0]].category.detail.get(language=language)
+    newestArticle2 = articles[randomL[1]].article.get(language=language)
+    newestArticle2Cat = articles[randomL[1]].category.detail.get(language=language)
+    newestArticle3 = articles[randomL[2]].article.get(language=language)
+    newestArticle3Cat = articles[randomL[2]].category.detail.get(language=language)
+    return newestArticle1, newestArticle1Cat, newestArticle2, newestArticle2Cat, newestArticle3, newestArticle3Cat
+
 def index(request, loginMsg=""):
     returnForm, language = init(request)
     comic = Category.objects.get(category="comics")
@@ -50,31 +62,14 @@ def index(request, loginMsg=""):
     headlineP = Article.objects.filter(headline=True, numero = newestNumero)[0]
     headline = headlineP.article.get(language=language)
     headlineCat = headlineP.category.detail.get(language=language)
-    articles = Article.objects.filter(numero = newestNumero).exclude(headline=True).exclude(category=comic).exclude(edito=True)
-    l = len(articles)
-    randomL = random.sample(range(l),3)
-    try:
-        newestArticle1 = articles[randomL[0]].article.get(language=language)
-        newestArticle1Cat = articles[randomL[0]].category.detail.get(language=language)
-        returnForm['newestArticle1'] = newestArticle1
-        returnForm['newestArticle1Cat'] = newestArticle1Cat
-    except:
-        pass
-    try:
-        newestArticle2 = articles[randomL[1]].article.get(language=language)
-        newestArticle2Cat = articles[randomL[1]].category.detail.get(language=language)
-        returnForm['newestArticle2'] = newestArticle2
-        returnForm['newestArticle2Cat'] = newestArticle2Cat
-    except:
-        pass
-    try:
-        newestArticle3 = articles[randomL[2]].article.get(language=language)
-        newestArticle3Cat = articles[randomL[2]].category.detail.get(language=language)
-        returnForm['newestArticle3'] = newestArticle3
-        returnForm['newestArticle3Cat'] = newestArticle3Cat
-    except:
-        pass
+    newestArticle1, newestArticle1Cat, newestArticle2, newestArticle2Cat, newestArticle3, newestArticle3Cat = newestArticle(request, comic, language)
 
+    returnForm['newestArticle1'] = newestArticle1
+    returnForm['newestArticle1Cat'] = newestArticle1Cat
+    returnForm['newestArticle2'] = newestArticle2
+    returnForm['newestArticle2Cat'] = newestArticle2Cat
+    returnForm['newestArticle3'] = newestArticle3
+    returnForm['newestArticle3Cat'] = newestArticle3Cat
     returnForm['comicArticle'] = comicArticle
     returnForm['loginMsg'] = loginMsg
     returnForm['headline'] = headline

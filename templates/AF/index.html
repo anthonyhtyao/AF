@@ -10,8 +10,8 @@
 
 
       <!-- Blog Post Content Column -->
-<div class="col-md-12">
-      <div class="col-md-8">
+<div class="col-md-12" style="top:2%;height:30%">
+      <div class="col-md-8 fixHeight">
         <div class="textOnImage">
           <div class="text" style="color:{{headline.article.category.color}}; ">
             <h3>{{headlineCat}}</h3>
@@ -19,43 +19,44 @@
             <h5>{{headline.abstract}}</h5>
           </div>
           <div class="colorOverlay"></div>
-          <img src="{{headline.article.image.imgfile.url}}" width="100%">
+          <img src="{{headline.article.image.imgfile.url}}" width="100%" height="100%">
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="textOnImage">
+      <div class="col-md-4 fixHeight">
+        <div class="textOnImage fixHeight">
           <div class="text" style="color:{{newestArticle1.article.category.color}}; ">
             <h3>{{newestArticle1Cat}}
             <h2>{{newestArticle1}}</h2>
           </div>
           <div class="colorOverlay"></div>
-          <img src="{{newestArticle1.article.image.imgfile.url}}" width="100%">
+          <img src="{{newestArticle1.article.image.imgfile.url}}" width="100%" height="100%">
         </div>
       </div>
-
-      <div class="col-md-4">
-        <div class="textOnImage">
+</div>
+<div class="col-md-12" style="top: 4%;height:30%">
+      <div class="col-md-4 fixHeight">
+        <div class="textOnImage fixHeight">
           <div class="text" style="color:{{newestArticle2.article.category.color}}; ">
             <h3>{{newestArticle2Cat}}
             <h2>{{newestArticle2}}</h2>
           </div>
           <div class="colorOverlay"></div>
-          <img src="{{newestArticle2.article.image.imgfile.url}}" width="100%">
+          <img src="{{newestArticle2.article.image.imgfile.url}}" width="100%" height="100%">
         </div>
       </div>
 
-      <div class="col-md-4">
-        <div class="textOnImage">
+      <div class="col-md-4 fixHeight">
+        <div class="textOnImage fixHeight">
           <div class="text" style="color:{{newestArticle3.article.category.color}}; ">
             <h3>{{newestArticle3Cat}}
             <h2>{{newestArticle3}}</h2>
           </div>
           <div class="colorOverlay"></div>
-          <img src="{{newestArticle3.article.image.imgfile.url}}" width="100%">
+          <img src="{{newestArticle3.article.image.imgfile.url}}" width="100%" height="100%">
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="textOnImage">
+      <div class="col-md-4 fixHeight">
+        <div class="textOnImage fixHeight">
           <div class="text" style="color:{{comicArticle.article.category.color}}; ">
             {% if request.session.language = "fr" %}
               <h3>Bande Dessinée</h3>
@@ -65,18 +66,18 @@
             <h2>{{comicArticle.title}}</h2>
           </div>
           <div class="colorOverlay"></div>
-          <img src="{{comicArticle.image.imgfile.url}}" width="100%">
+          <img src="{{comicArticle.image.imgfile.url}}" width="100%" height="100%">
         </div>
       </div>
-
 </div>
       <!-- Blog Sidebar Widgets Column -->
 
 
-<br>
-<hr>
+
+
     <!-- <p class="col-lg-8 col-lg-offset-2 text-center">Ici les slides</p> -->
-    <div class="col-md-12 row well">
+    <div class="col-md-12 row well" style="top:10%">
+
       {% for numero in numeros.reverse|slice:":6"%}
       <div class="col-md-2 text-center">
         <a href="/no/{{numero}}" title="numero {{numero}}">

@@ -24,6 +24,7 @@
   <link href="{% static "css/modern-business.css" %}" rel="stylesheet">
   <!-- Custom CSS -->
   <link rel="stylesheet" href="{% static "css/creative.css" %}" type="text/css">
+  <link rel="stylesheet" href="{% static "css/style.css" %}" type="text/css">
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -185,7 +186,7 @@
       {% endfor %}
     </ul>
   </div>
-  <div class="container">
+  <div class="container" style="height:100%">
         {% block body_block %} {% endblock %}
   </div>
 {% block downpage_block %}

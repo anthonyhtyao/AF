@@ -177,11 +177,13 @@
 
 
 
-  <div class="container">
-    <ul class="nav navbar-nav">
+  <div class="col-md-9 col-md-offset-2">
+    <ul class="nav navbar-nav col-md-12">
       {% for category in categories %}
-        <li class="">
-          <a class = "category" style="color:rgba(0,0,0,.5)" onmouseover="changeColor(this,'{{category.category.color}}')" onmouseout="returnColor(this)" href="/{{category.category}}"> {{category.title}} </a>
+        <li class="" style="width:10%">
+          <h4>
+            <a class = "category" style="color:rgba(0,0,0,.5)" onmouseover="changeColor(this,'{{category.category.color}}')" onmouseout="returnColor(this)" href="/{{category.category}}"> {{category.title}} </a>
+          </h4>
         </li>
       {% endfor %}
     </ul>

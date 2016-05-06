@@ -1,6 +1,7 @@
 .textOnImage {
     position: relative;
     height: 100%;
+    border: 2px solid black;
 }
 
 .text {
@@ -10,7 +11,7 @@
     left: 5%;
     bottom: 1%;
 }
-.text > h2,h5 {
+.text > h3,h5 {
   color:white;
 }
 

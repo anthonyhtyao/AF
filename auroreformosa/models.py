@@ -22,7 +22,7 @@ class Numero(models.Model):
     image = models.ForeignKey(Img, null=True)
     titleFR = models.CharField(max_length=128, null=True)
     titleTW = models.CharField(max_length=128, null=True)
-    
+
     def __str__(self):
         if self.numero - int(self.numero) == 0:
             return str(int(self.numero))
@@ -43,6 +43,9 @@ class Tag(models.Model):
     def __str__(self):
         return self.tag
 
+# field image is the head image of article
+# field gallery store all images of this article, can be null
+# one edito and one headline for each numero, an article cannot be edito and headline in same time
 class Article(models.Model):
     author = models.ForeignKey(UserProfile, null = True)
     date = models.DateTimeField(auto_now_add = True, auto_now = False, null = True)
@@ -51,6 +54,7 @@ class Article(models.Model):
     title = models.CharField(max_length=128, unique=True)
     slg = models.SlugField()
     image = models.ForeignKey(Img, null = True, blank=True)
+    gallery = models.ManyToManyField(Img, blank=True, related_name="galleryAricle")
     edito = models.BooleanField(default=False)
     headline = models.BooleanField(default=False)
     tags = models.ManyToManyField(Tag, blank=True)
@@ -78,7 +82,7 @@ class ArticleContent(models.Model):
 
     def inNumero(self, numero):
         return self.article.numero == numero
-    
+
     def __str__(self):
         return self.title
 
@@ -92,7 +96,7 @@ class Comic(models.Model):
     image = models.ForeignKey(Img, null=True)
     content = models.TextField(null = True, blank=True)
     language = models.CharField(max_length = 2, choices = LANGUAGES, default = 'fr')
-    
+
     def __str__(self):
         return self.title
 

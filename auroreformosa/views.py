@@ -143,6 +143,7 @@ def article(request, category, slg):
                 pass
             returnForm['category'] = category
             returnForm['article'] = article
+            returnForm['gallery'] = article.article.gallery.all()
             returnForm['articleRelated'] = articleRelated
             return render(request, 'AF/article.html', returnForm)
         else:

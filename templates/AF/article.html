@@ -4,15 +4,22 @@
 <div>
   <center><h1>{{article.title}}</h1></center>
   <center>
-    <a href="/"><img src="{% static "img/logo_small.png" %}" width="10px" height="20px"></a> | 
-    <a href="../">{{category.title}}</a> | 
-    by <a href="#">{{article.article.author.name}}</a> | 
-    <span class="glyphicon glyphicon-time"></span> Posted on {{article.article.date}} 
+    <a href="/"><img src="{% static "img/logo_small.png" %}" width="10px" height="20px"></a> |
+    <a href="../">{{category.title}}</a> |
+    by <a href="#">{{article.article.author.name}}</a> |
+    <span class="glyphicon glyphicon-time"></span> Posted on {{article.article.date}}
  </center>
   <br>
   <div>
     <img src="{{article.article.image.imgfile.url}}" width="100%">
     {{article.content|safe}}
   </div>
+</div>
+<div>
+<ul class="list-unstyled list-inline">
+{% for img in gallery %}
+<li class="col-md-3"><img src="{{img.imgfile.url}}" width="100%"></li>
+{% endfor %}
+</ul>
 </div>
 {% endblock %}

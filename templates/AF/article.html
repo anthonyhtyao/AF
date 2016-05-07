@@ -12,11 +12,4 @@
     {{article.content|safe}}
   </div>
 </div>
-<div>
-<ul class="list-unstyled list-inline">
-{% for img in gallery %}
-<li class="col-md-3"><img src="{{img.imgfile.url}}" width="100%"></li>
-{% endfor %}
-</ul>
-</div>
 {% endblock %}

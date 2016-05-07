@@ -20,14 +20,24 @@
 {% endblock  %}
 
 {% block body_block %}
-  <div class="col-md-10 col-md-offset-1">
+  <div class="col-md-12">
     <img src="{{article.article.image.imgfile.url}}" width="100%">
   </div>
   <div class="container">
-    <div class="row">
-      <div class="col-md-offset-2 col-md-8">
+      <div class="col-md-offset-1 col-md-10" style="height:110%">
         {% block article_content %} {% endblock %}
       </div>
+  </div>
+  <div class="col-md-12" style="height:15%">
+    <div style="height:100%">
+      <ul class="list-unstyled list-inline fixHeight">
+        {% for img in gallery %}
+        <li class="col-md-2 fixHeight"><img src="{{img.imgfile.url}}" width="100%" height="100%"></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div/>
       <div class="col-md-8 col-md-offset-2">
       <hr>
         <ul class="list-unstyled list-inline">
@@ -36,6 +46,5 @@
         {% endfor %}
         </ul>
       </div>
-    </div>
   </div>
 {% endblock %}

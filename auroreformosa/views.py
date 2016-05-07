@@ -37,10 +37,17 @@ def init(request):
     returnForm['newsArticles'] = newsArticles
     return returnForm, language
 
+# Return newest article's rule
 def newestArticle(request, comic, language):
-    articles = Article.objects.exclude(headline=True).exclude(category=comic).exclude(edito=True).order_by('-date')[:5]
+    # Exclude edito and comic
+    articlesP = Article.objects.exclude(headline=True).exclude(category=comic).exclude(edito=True).order_by('-date')
+    # Get article list where article exists for language given
+    articles = [a for a in articlesP if a.languageIsExist(language) ]
     l = len(articles)
-    randomL = random.sample(range(l),3)
+    if l >= 5:
+        randomL = random.sample(range(5),3)
+    else:
+        randomL = random.sample(range(l),3)
     newestArticle1 = articles[randomL[0]].article.get(language=language)
     newestArticle1Cat = articles[randomL[0]].category.detail.get(language=language)
     newestArticle2 = articles[randomL[1]].article.get(language=language)
@@ -57,11 +64,12 @@ def index(request, loginMsg=""):
             returnForm['headerImage'] = n.image
             break
     newestNumero = returnForm['numeros'][::-1][0]
-    comicArticleP = Article.objects.filter(category=comic, numero = newestNumero)[0]
-    comicArticle = comicArticleP.comic.get(language=language)
-    headlineP = Article.objects.filter(headline=True, numero = newestNumero)[0]
-    headline = headlineP.article.get(language=language)
-    headlineCat = headlineP.category.detail.get(language=language)
+    # Filter here can be optimised
+    comicArticleP = Article.objects.filter(category=comic, numero = newestNumero)
+    comicArticle = [a.comic.get(language=language) for a in comicArticleP if a.languageIsExist(language)][0]
+    headlineP = Article.objects.filter(headline=True, numero = newestNumero)
+    headline = [h.article.get(language=language) for h in headlineP if h.languageIsExist(language)][0]
+    headlineCat = headline.article.category.detail.get(language=language)
     newestArticle1, newestArticle1Cat, newestArticle2, newestArticle2Cat, newestArticle3, newestArticle3Cat = newestArticle(request, comic, language)
 
     returnForm['newestArticle1'] = newestArticle1

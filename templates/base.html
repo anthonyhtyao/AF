@@ -176,7 +176,7 @@
   </header>
 
 
-
+{% block category_block %}
   <div class="col-md-9 col-md-offset-2">
     <ul class="nav navbar-nav col-md-12">
       {% for category in categories %}
@@ -188,6 +188,7 @@
       {% endfor %}
     </ul>
   </div>
+{% endblock category_block %}
   <div class="container" style="height:100%">
         {% block body_block %} {% endblock %}
   </div>

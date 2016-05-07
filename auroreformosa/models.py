@@ -66,6 +66,19 @@ class Article(models.Model):
         self.slg = slugify(self.title)
         super(Article, self).save(*args, **kwargs)
 
+# Return True if language given for this article exists 
+    def languageIsExist(self, language):
+        b = False
+        try:
+            b = b or self.article.filter(language=language).count() == 1
+        except:
+            pass
+        try:
+            b = b or self.comic.filter(language=language).count() == 1
+        except:
+            pass
+        return b
+
 class ArticleContent(models.Model):
     LANGUAGES = (
         ('fr', 'Français'),

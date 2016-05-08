@@ -254,3 +254,33 @@ def createUser(request, msg=""):
         msg = "User " + str(up) + " successfully created"
     returnForm["msg"] = msg
     return render(request, 'admin/createUser.html', returnForm)
+
+@login_required
+def articleEdit(request, category, slg, errMsg="", msg=""):
+    returnForm, language = init(request)
+    try:
+        currentArticle = Article.objects.get(slg=slg)
+        currentArticleContent = currentArticle.article.get(language=language)
+    except:
+        return HttpResponseRedirect('/')
+    returnForm['currentArticle'] = currentArticle
+    returnForm['currentArticleContent'] = currentArticleContent
+    returnForm['currentCategory'] = currentArticle.category
+    returnForm['currentNumero'] = currentArticle.numero
+    msg = "Edit article " + str(currentArticleContent)
+    articleForm = ArticleForm()
+    articles = Article.objects.all()
+    numeros = Numero.objects.all()
+    categoryFR = CategoryDetail.objects.filter(language='fr')
+    categoryTW = CategoryDetail.objects.filter(language='tw')
+    users = UserProfile.objects.all()
+    returnForm['form'] = articleForm
+    returnForm['categoryFR'] = categoryFR
+    returnForm['categoryTW'] = categoryTW
+    returnForm['users'] = users
+    returnForm['articles'] = articles
+    returnForm['edito'] = currentArticle.edito
+    returnForm['headline'] = currentArticle.headline
+    returnForm['errMsg'] = errMsg
+    returnForm['msg'] = msg
+    return render(request, 'admin/createArticle.html', returnForm)

@@ -29,7 +29,7 @@
     <br />
     Image:
     {% if currentArticle.image %}
-    123
+    <a title="" href="#" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{currentArticle.image.imgfile.url}}">{{currentArticle.image}}</a>
     {% endif %}
     <p><input type='file' name='imgfile'> </p>
     Author :

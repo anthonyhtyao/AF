@@ -15,9 +15,9 @@
         <a href="/{{headlineCat.category}}/article/{{headline.article.slg}}">
           <div class="textOnImage">
             <div class="text" style="color:{{headline.article.category.color}}; ">
-              <h4>{{headlineCat}}</h4>
               <h3>{{headline}}</h3>
               <h5>{{headline.abstract}}</h5>
+              <h4>{{headlineCat}}</h4>
             </div>
             <div class="colorOverlay"></div>
             <img src="{{headline.article.image.imgfile.url}}" width="100%" height="100%">
@@ -28,8 +28,8 @@
         <a href="/{{newestArticle1Cat.category}}/article/{{newestArticle1.article.slg}}">
           <div class="textOnImage fixHeight">
             <div class="text" style="color:{{newestArticle1.article.category.color}}; ">
-              <h4>{{newestArticle1Cat}}</h4>
               <h3>{{newestArticle1}}</h3>
+              <h4>{{newestArticle1Cat}}</h4>
             </div>
             <div class="colorOverlay"></div>
             <img src="{{newestArticle1.article.image.imgfile.url}}" width="100%" height="100%">
@@ -42,8 +42,8 @@
         <a href="/{{newestArticle2Cat.category}}/article/{{newestArticle2.article.slg}}">
           <div class="textOnImage fixHeight">
             <div class="text" style="color:{{newestArticle2.article.category.color}}; ">
-              <h4>{{newestArticle2Cat}}</h4>
               <h3>{{newestArticle2}}</h3>
+              <h4>{{newestArticle2Cat}}</h4>
             </div>
             <div class="colorOverlay"></div>
             <img src="{{newestArticle2.article.image.imgfile.url}}" width="100%" height="100%">
@@ -55,8 +55,8 @@
         <a href="/{{newestArticle3Cat.category}}/article/{{newestArticle3.article.slg}}">
           <div class="textOnImage fixHeight">
             <div class="text" style="color:{{newestArticle3.article.category.color}}; ">
-              <h4>{{newestArticle3Cat}}</h4>
               <h3>{{newestArticle3}}</h3>
+              <h4>{{newestArticle3Cat}}</h4>
             </div>
             <div class="colorOverlay"></div>
             <img src="{{newestArticle3.article.image.imgfile.url}}" width="100%" height="100%">
@@ -67,12 +67,12 @@
         <a href="/comics/{{comicArticle.article.slg}}">
           <div class="textOnImage fixHeight">
             <div class="text" style="color:{{comicArticle.article.category.color}}; ">
+              <h3>{{comicArticle.title}}</h3>
               {% if request.session.language = "fr" %}
                 <h4>Bande Dessinée</h4>
               {% elif request.session.language = "tw" %}
                 <h4>漫畫</h4>
               {% endif %}
-              <h3>{{comicArticle.title}}</h3>
             </div>
             <div class="colorOverlay"></div>
             <img src="{{comicArticle.image.imgfile.url}}" width="100%" height="100%">

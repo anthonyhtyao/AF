@@ -65,9 +65,9 @@ def index(request, loginMsg=""):
             break
     newestNumero = returnForm['numeros'][::-1][0]
     # Filter here can be optimised
-    comicArticleP = Article.objects.filter(category=comic, numero = newestNumero)
+    comicArticleP = Article.objects.filter(category=comic).order_by("-date")
     comicArticle = [a.comic.get(language=language) for a in comicArticleP if a.languageIsExist(language)][0]
-    headlineP = Article.objects.filter(headline=True, numero = newestNumero)
+    headlineP = Article.objects.filter(headline=True).order_by("-date")
     headline = [h.article.get(language=language) for h in headlineP if h.languageIsExist(language)][0]
     headlineCat = headline.article.category.detail.get(language=language)
     newestArticle1, newestArticle1Cat, newestArticle2, newestArticle2Cat, newestArticle3, newestArticle3Cat = newestArticle(request, comic, language)

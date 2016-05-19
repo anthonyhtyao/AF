@@ -19,7 +19,8 @@ def init(request):
     returnForm={}
     # Put categories list in return form
     edito = Category.objects.get(category="edito")
-    categories = CategoryDetail.objects.filter(language=language).exclude(category = edito)
+    cat = Category.objects.exclude(category=edito).order_by('order')
+    categories = [a.detail.get(language=language) for a in cat]
     numeros = Numero.objects.order_by('numero')
     newsCat = Category.objects.get(category="news")
     newsDetail = newsCat.detail.get(language=language)

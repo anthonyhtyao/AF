@@ -32,6 +32,7 @@ class Numero(models.Model):
 class Category(models.Model):
     category = models.CharField(max_length = 20)
     color = models.CharField(max_length = 20, default="#FF0033")
+    order = models.IntegerField(default="0")
 
     def __str__(self):
         return self.category
@@ -66,7 +67,7 @@ class Article(models.Model):
         self.slg = slugify(self.title)
         super(Article, self).save(*args, **kwargs)
 
-# Return True if language given for this article exists 
+# Return True if language given for this article exists
     def languageIsExist(self, language):
         b = False
         try:

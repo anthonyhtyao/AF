@@ -1,6 +1,5 @@
 from django import forms
 from auroreformosa.models import *
-from tinymce.widgets import TinyMCE
 
 class ImgForm(forms.Form):
     imgfile = forms.FileField(
@@ -10,7 +9,7 @@ class ImgForm(forms.Form):
 
 class ArticleForm(forms.ModelForm):
     title = forms.CharField(max_length = 128)
-    content = forms.CharField(widget = TinyMCE(attrs={'cols': 80, 'rows': 3}))
+    content = forms.CharField(widget = forms.Textarea)
 
     class Meta:
         model = ArticleContent
@@ -19,8 +18,8 @@ class ArticleForm(forms.ModelForm):
 class ComicForm(forms.Form):
     titleFR = forms.CharField(max_length=128)
     titleTW = forms.CharField(max_length=128, required = False)
-    contentFR = forms.CharField(widget = TinyMCE(attrs={'cols': 80, 'rows': 3}), required=False)
-    contentTW = forms.CharField(widget = TinyMCE(attrs={'cols': 80, 'rows': 3}), required=False)
+    contentFR = forms.CharField(widget = forms.Textarea, required=False)
+    contentTW = forms.CharField(widget = forms.Textarea, required=False)
 
 class AbonnementForm(forms.Form):
     name = forms.CharField(max_length = 64)

@@ -12,7 +12,11 @@
   {% endif %}
 
   <div class="col-md-12">
-  <form id = "article_form" method="post" action="/createarticle" enctype="multipart/form-data">
+  {% if currentArticle %}
+    <form id = "article_form" method="post" action="/{{currentCategory}}/article/{{currentArticle.slg}}/edit" enctype="multipart/form-data">
+  {% else %}
+    <form id = "article_form" method="post" action="/createarticle" enctype="multipart/form-data">
+  {% endif %}
   {% csrf_token %}
     Title : <input id="title" type="text" name="title" maxlength="128" value="{{currentArticle.title}}">
     Article:

@@ -258,29 +258,41 @@ def createUser(request, msg=""):
 @login_required
 def articleEdit(request, category, slg, errMsg="", msg=""):
     returnForm, language = init(request)
-    try:
-        currentArticle = Article.objects.get(slg=slg)
-        currentArticleContent = currentArticle.article.get(language=language)
-    except:
-        return HttpResponseRedirect('/')
-    returnForm['currentArticle'] = currentArticle
-    returnForm['currentArticleContent'] = currentArticleContent
-    returnForm['currentCategory'] = currentArticle.category
-    returnForm['currentNumero'] = currentArticle.numero
-    msg = "Edit article " + str(currentArticleContent)
-    articleForm = ArticleForm()
-    articles = Article.objects.all()
-    numeros = Numero.objects.all()
-    categoryFR = CategoryDetail.objects.filter(language='fr')
-    categoryTW = CategoryDetail.objects.filter(language='tw')
-    users = UserProfile.objects.all()
-    returnForm['form'] = articleForm
-    returnForm['categoryFR'] = categoryFR
-    returnForm['categoryTW'] = categoryTW
-    returnForm['users'] = users
-    returnForm['articles'] = articles
-    returnForm['edito'] = currentArticle.edito
-    returnForm['headline'] = currentArticle.headline
-    returnForm['errMsg'] = errMsg
-    returnForm['msg'] = msg
-    return render(request, 'admin/createArticle.html', returnForm)
+    if request.method == 'POST':
+        form = ArticleForm(request.POST)
+        if form.is_valid():
+            data = request.POST
+            article = Article.objects.get(id = data['article'])
+            articleContent = article.article.get(language=data['language'])
+            articleContent.title = data['title']
+            articleContent.abstract = data['abstract']
+            articleContent.content = data['content']
+            articleContent.save()
+            return HttpResponseRedirect('/' + str(article.category) + '/article/' + article.slg)
+    else:
+        try:
+            currentArticle = Article.objects.get(slg=slg)
+            currentArticleContent = currentArticle.article.get(language=language)
+        except:
+            return HttpResponseRedirect('/')
+        returnForm['currentArticle'] = currentArticle
+        returnForm['currentArticleContent'] = currentArticleContent
+        returnForm['currentCategory'] = currentArticle.category
+        returnForm['currentNumero'] = currentArticle.numero
+        msg = "Edit article " + str(currentArticleContent) + ". Can only edit title, abstract and content"
+        articleForm = ArticleForm()
+        articles = Article.objects.all()
+        numeros = Numero.objects.all()
+        categoryFR = CategoryDetail.objects.filter(language='fr')
+        categoryTW = CategoryDetail.objects.filter(language='tw')
+        users = UserProfile.objects.all()
+        returnForm['form'] = articleForm
+        returnForm['categoryFR'] = categoryFR
+        returnForm['categoryTW'] = categoryTW
+        returnForm['users'] = users
+        returnForm['articles'] = articles
+        returnForm['edito'] = currentArticle.edito
+        returnForm['headline'] = currentArticle.headline
+        returnForm['errMsg'] = errMsg
+        returnForm['msg'] = msg
+        return render(request, 'admin/createArticle.html', returnForm)

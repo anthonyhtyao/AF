@@ -90,13 +90,7 @@
 {% endfor %}
 
 <script>
-       function tooltipArchiveImg(x) {
-           var value = $(x).attr('value');
-           $(x).tooltip({content:'<img width="100%" src=' + value + '/>'});
-       }
-       function closeTooltip(x) {
-           $(x).tooltip("close");
-       }
+       
        $(".test").tooltip({ content:'<img width="100%" src="/media/img/v1.jpg" />'});
        $(".FR").click(function(){
          $.ajax({

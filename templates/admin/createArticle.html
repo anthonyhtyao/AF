@@ -8,7 +8,7 @@
     <div class="alert alert-danger" role="alert">{{ errMsg }}</div>
   {% endif %}
   {% if msg != "" %}
-    <div class="alert alert-info" role="alert">{{ msg }}</div>
+    <div class="alert alert-info" role="alert">{{ msg | safe}}</div>
   {% endif %}
 
   <div class="col-md-12">

@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'^comics/(?P<slg>.+)$', views.comics, name="comics"),
     url(r'^(?P<category>[a-z]+)/$', views.category, name='category'),
     url(r'^(?P<category>[a-z]+)/article/(?P<slg>.+)/edit$', viewsAdmin.articleEdit, name='articleEdit'),
+    url(r'^(?P<category>[a-z]+)/article/(?P<slg>.+)/editinfo$', viewsAdmin.articleEditInfo, name='articleEditInfo'),
     url(r'^(?P<category>[a-z]+)/article/(?P<slg>.+)$', views.article, name='article'),
     url(r'^no/(?P<numero>[0-9.]+)$', views.archive, name='archive'),
     url(r'^no/edit$', viewsAdmin.archiveEdit, name='archiveEdit'),

@@ -279,7 +279,7 @@ def articleEdit(request, category, slg, errMsg="", msg=""):
         returnForm['currentArticleContent'] = currentArticleContent
         returnForm['currentCategory'] = currentArticle.category
         returnForm['currentNumero'] = currentArticle.numero
-        msg = "Edit article " + str(currentArticleContent) + ". Can only edit title, abstract and content"
+        msg = "Edit article <b>" + str(currentArticleContent) + "</b>. <br/>Can only edit title, abstract and content. <a href=/"+str(currentArticle.category)+"/article/"+currentArticle.slg+"/editinfo>Click here</a> to modify artilcle's information"
         articleForm = ArticleForm()
         articles = Article.objects.all()
         numeros = Numero.objects.all()
@@ -296,3 +296,28 @@ def articleEdit(request, category, slg, errMsg="", msg=""):
         returnForm['errMsg'] = errMsg
         returnForm['msg'] = msg
         return render(request, 'admin/createArticle.html', returnForm)
+
+@login_required
+def articleEditInfo(request, category, slg, errMsg="", msg=""):
+    returnForm, language = init(request)
+    try:
+        currentArticle = Article.objects.get(slg=slg)
+        currentArticleContent = currentArticle.article.get(language=language)
+    except:
+        return HttpResponseRedirect('/')
+    returnForm['currentArticle'] = currentArticle
+    returnForm['currentCategory'] = currentArticle.category
+    returnForm['currentNumero'] = currentArticle.numero
+    msg = "Edit article <b>" + str(currentArticleContent) + "</b>'s information. <a href=/"+str(currentArticle.category)+"/article/"+currentArticle.slg+"/edit> Back to edit article </a>"
+    numeros = Numero.objects.all()
+    categoryFR = CategoryDetail.objects.filter(language='fr')
+    categoryTW = CategoryDetail.objects.filter(language='tw')
+    users = UserProfile.objects.all()
+    returnForm['categoryFR'] = categoryFR
+    returnForm['categoryTW'] = categoryTW
+    returnForm['users'] = users
+    returnForm['edito'] = currentArticle.edito
+    returnForm['headline'] = currentArticle.headline
+    returnForm['errMsg'] = errMsg
+    returnForm['msg'] = msg
+    return render(request, 'admin/editArticleInfo.html', returnForm)

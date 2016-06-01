@@ -258,20 +258,18 @@ def createUser(request, msg=""):
 @login_required
 def articleEdit(request, category, slg, errMsg="", msg=""):
     returnForm, language = init(request)
+    currentArticle = Article.objects.get(slg=slg)
     if request.method == 'POST':
         form = ArticleForm(request.POST)
-        if form.is_valid():
-            data = request.POST
-            article = Article.objects.get(id = data['article'])
-            articleContent = article.article.get(language=data['language'])
-            articleContent.title = data['title']
-            articleContent.abstract = data['abstract']
-            articleContent.content = data['content']
-            articleContent.save()
-            return HttpResponseRedirect('/' + str(article.category) + '/article/' + article.slg)
+        data = request.POST
+        articleContent = currentArticle.article.get(language=language)
+        articleContent.title = data['title']
+        articleContent.abstract = data['abstract']
+        articleContent.content = data['content']
+        articleContent.save()
+        return HttpResponseRedirect('/' + str(category) + '/article/' + slg)
     else:
         try:
-            currentArticle = Article.objects.get(slg=slg)
             currentArticleContent = currentArticle.article.get(language=language)
         except:
             return HttpResponseRedirect('/')
@@ -305,19 +303,52 @@ def articleEditInfo(request, category, slg, errMsg="", msg=""):
         currentArticleContent = currentArticle.article.get(language=language)
     except:
         return HttpResponseRedirect('/')
-    returnForm['currentArticle'] = currentArticle
-    returnForm['currentCategory'] = currentArticle.category
-    returnForm['currentNumero'] = currentArticle.numero
-    msg = "Edit article <b>" + str(currentArticleContent) + "</b>'s information. <a href=/"+str(currentArticle.category)+"/article/"+currentArticle.slg+"/edit> Back to edit article </a>"
-    numeros = Numero.objects.all()
-    categoryFR = CategoryDetail.objects.filter(language='fr')
-    categoryTW = CategoryDetail.objects.filter(language='tw')
-    users = UserProfile.objects.all()
-    returnForm['categoryFR'] = categoryFR
-    returnForm['categoryTW'] = categoryTW
-    returnForm['users'] = users
-    returnForm['edito'] = currentArticle.edito
-    returnForm['headline'] = currentArticle.headline
-    returnForm['errMsg'] = errMsg
-    returnForm['msg'] = msg
-    return render(request, 'admin/editArticleInfo.html', returnForm)
+    if request.method == 'POST':
+        data = request.POST
+        numero = Numero.objects.get(id=data['numero'])
+        try:
+            if (data['isEdito']):
+                edito = True
+                if numero.article.get(edito=True) != currentArticle:
+                    request.method = ""
+                    return articleEditInfo(request, category,slg,errMsg="Edito already exists")
+        except:
+            edito = False
+        try:
+            if (data['isHeadline']):
+                headline = True
+                if numero.article.get(headline=True) != currentArticle:
+                    request.method=""
+                    return articleEditInfo(request, category,slg,errMsg="Headline already exists")
+        except:
+            headline = False
+        try:
+            imgTitle = str(request.FILES['imgfile']).split("/")[-1]
+            img = Img(imgfile = request.FILES['imgfile'],title=imgTitle)
+            img.save()
+            currentArticle.image = img
+        except:
+            pass
+        category = Category.objects.get(id=data['category'])
+        currentArticle.numero = numero
+        currentArticle.category = category
+        currentArticle.edito = edito
+        currentArticle.headline = headline
+        currentArticle.save()
+        request.method = ""
+        return articleEdit(request,category,slg)
+    else:
+        returnForm['currentArticle'] = currentArticle
+        returnForm['currentCategory'] = currentArticle.category
+        returnForm['currentNumero'] = currentArticle.numero
+        msg = "Edit article <b>" + str(currentArticleContent) + "</b>'s information. <a href=/"+str(currentArticle.category)+"/article/"+currentArticle.slg+"/edit> Back to edit article </a>"
+        numeros = Numero.objects.all()
+        categories = CategoryDetail.objects.filter(language=language)
+        users = UserProfile.objects.all()
+        returnForm['categories'] = categories
+        returnForm['users'] = users
+        returnForm['edito'] = currentArticle.edito
+        returnForm['headline'] = currentArticle.headline
+        returnForm['errMsg'] = errMsg
+        returnForm['msg'] = msg
+        return render(request, 'admin/editArticleInfo.html', returnForm)

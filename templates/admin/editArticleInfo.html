@@ -37,18 +37,13 @@
     {% endfor %}
     </select>
     Catégorie :
-    <select id='category_fr' name="categoryFR">
-    {% for category in categoryFR %}
+    <select id='category' name="category">
+    {% for category in categories %}
       {% if category.category == currentCategory %}
       <option value="{{category.category.id}}" selected> {{ category }}</option>
       {% else %}
       <option value="{{category.category.id}}"> {{ category }}</option>
       {% endif %}
-    {% endfor %}
-    </select>
-    <select id ='category_tw' style='display:none' name="categoryTW">
-    {% for category in categoryTW %}
-      <option value="{{category.category.id}}"> {{ category }}</option>
     {% endfor %}
     </select>
     <br />
@@ -58,7 +53,7 @@
     <label class="checkbox-inline">
       <input type="checkbox" name="isHeadline" {% if headline %} checked {% endif %}> Is Headline
     </label>
-
+<br/><br/>
 	<input type="submit" name="submit" value="Update">
 </form>
 </div>

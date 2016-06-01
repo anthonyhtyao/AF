@@ -2,6 +2,7 @@
 
 
 {% block body_block %}
+  <br/><br/><br/>
   {% if errMsg != "" %}
     <div class="alert alert-danger" role="alert">{{ errMsg }}</div>
   {% elif warnMsg != "" %}
@@ -57,13 +58,13 @@
     <p><input type='file' name='imgfileTW'> </p>
     <p>ContentTW : </p>
     <textarea id="comicTW" class="tiny" type="text" name="contentTW" cols ="40" rows="10"} >{{article.content}} </textarea>
-</div>
-<div class="col-md-12">
-  <br />
-  <br />
-  <center><input type="submit" name="submit" value="Add Comic"></center>
-</div>
-</form>
+  </div>
+  <div class="col-md-12">
+    <br />
+    <br />
+    <center><input type="submit" name="submit" value="Add Comic"></center>
+  </div>
+  </form>
 
 <script>
        $(".FR").click(function(){

@@ -162,6 +162,13 @@ def createarticle(request, errMsg=""):
     categoryFR = CategoryDetail.objects.filter(language='fr')
     categoryTW = CategoryDetail.objects.filter(language='tw')
     users = UserProfile.objects.all()
+    # Get variable details by geet request
+    try:
+        no = request.GET['no']
+        currentNumero = Numero.objects.get(numero=no)
+    except:
+        currentNumero = ""
+    returnForm['currentNumero'] = currentNumero
     returnForm['form'] = articleForm
     returnForm['categoryFR'] = categoryFR
     returnForm['categoryTW'] = categoryTW

@@ -57,7 +57,7 @@
           {% endfor %}
         {% endif %}
           <li>
-            <a href="/createcomic"> Add new comic </a>
+            <a href="/createcomic?no={{dist.numero}}"> Add new comic </a>
           </li>
         </ul>
       </li>
@@ -82,7 +82,7 @@
             </li>
           {% endfor %}
             <li>
-              <a href="/createarticle"> Add new article </a>
+              <a href="/createarticle?no={{dist.numero.numero}}"> Add new article </a>
             </li>
         </ul>
       </li>
@@ -90,7 +90,7 @@
 {% endfor %}
 
 <script>
-       
+
        $(".test").tooltip({ content:'<img width="100%" src="/media/img/v1.jpg" />'});
        $(".FR").click(function(){
          $.ajax({

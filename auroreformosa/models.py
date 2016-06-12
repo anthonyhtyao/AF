@@ -8,7 +8,7 @@ class UserProfile(models.Model):
     name = models.CharField(max_length = 128, blank = True)
 
     def __str__(self):
-        return self.user.username
+        return self.name
 
 class Img(models.Model):
     imgfile = models.FileField(upload_to='img')

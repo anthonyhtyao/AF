@@ -26,13 +26,22 @@
     Author :
     <select name="author">
     {% for user in users %}
+    <!-- Set THK as default comic's author -->
+      {% if user.name == "THK" %}
+      <option value = {{user.id}} selected> {{ user }}</option>
+      {% else %}
       <option value = {{user.id}}> {{ user }}</option>
+      {% endif %}
     {% endfor %}
     </select>
     Numéro :
     <select name="numero">
     {% for numero in numeros %}
+      {% if numero.numero == currentNumero %}
+      <option value="{{numero.id}}" selected> {{ numero.numero }}</option>
+      {% else %}
       <option value="{{numero.id}}"> {{ numero.numero }}</option>
+      {% endif %}
     {% endfor %}
     </select>
   </div>

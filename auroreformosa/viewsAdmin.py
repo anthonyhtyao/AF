@@ -78,6 +78,12 @@ def createComic(request, errMsg="", success="", warnMsg=""):
             return createComic(request, warnMsg = "Comic FR added successfully and Comic TW fail. <a class='FR' href=/comics/"+article.slg+"> Click to read Comic FR </a>")
     comicForm = ComicForm()
     users = UserProfile.objects.all()
+    # Get variable details by geet request
+    try:
+        no = request.GET['no']
+    except:
+        no = 1
+    returnForm['currentNumero'] = float(no)
     returnForm['form'] = comicForm
     returnForm['users'] = users
     returnForm['errMsg'] = errMsg
@@ -162,6 +168,12 @@ def createarticle(request, errMsg=""):
     categoryFR = CategoryDetail.objects.filter(language='fr')
     categoryTW = CategoryDetail.objects.filter(language='tw')
     users = UserProfile.objects.all()
+    # Get variable details by geet request
+    try:
+        no = request.GET['no']
+    except:
+        no = 1
+    returnForm['currentNumero'] = float(no)
     returnForm['form'] = articleForm
     returnForm['categoryFR'] = categoryFR
     returnForm['categoryTW'] = categoryTW

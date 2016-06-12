@@ -368,4 +368,6 @@ def articleEditInfo(request, category, slg, errMsg="", msg=""):
 @login_required
 def settings(request):
     returnForm, language = init(request)
+    currentUser = UserProfile.objects.get(user=request.user)
+    returnForm['currentUser'] = currentUser
     return render(request, 'admin/settings.html',returnForm)

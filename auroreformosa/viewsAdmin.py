@@ -364,3 +364,8 @@ def articleEditInfo(request, category, slg, errMsg="", msg=""):
         returnForm['errMsg'] = errMsg
         returnForm['msg'] = msg
         return render(request, 'admin/editArticleInfo.html', returnForm)
+
+@login_required
+def settings(request):
+    returnForm, language = init(request)
+    return render(request, 'admin/settings.html',returnForm)

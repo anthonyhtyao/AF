@@ -81,10 +81,9 @@ def createComic(request, errMsg="", success="", warnMsg=""):
     # Get variable details by geet request
     try:
         no = request.GET['no']
-        currentNumero = Numero.objects.get(numero=no)
     except:
-        currentNumero = ""
-    returnForm['currentNumero'] = currentNumero
+        no = 1
+    returnForm['currentNumero'] = float(no)
     returnForm['form'] = comicForm
     returnForm['users'] = users
     returnForm['errMsg'] = errMsg
@@ -172,10 +171,9 @@ def createarticle(request, errMsg=""):
     # Get variable details by geet request
     try:
         no = request.GET['no']
-        currentNumero = Numero.objects.get(numero=no)
     except:
-        currentNumero = ""
-    returnForm['currentNumero'] = currentNumero
+        no = 1
+    returnForm['currentNumero'] = float(no)
     returnForm['form'] = articleForm
     returnForm['categoryFR'] = categoryFR
     returnForm['categoryTW'] = categoryTW

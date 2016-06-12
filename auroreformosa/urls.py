@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^createarticle', viewsAdmin.createarticle, name='createarticle'),
     url(r'^createcomic', viewsAdmin.createComic, name='createComic'),
     url(r'^session_language/$', views.session_language, name='session_language'),
+    url(r'^settings$', viewsAdmin.settings, name='seettings'),
     url(r'^comics/(?P<slg>.+)$', views.comics, name="comics"),
     url(r'^(?P<category>[a-z]+)/$', views.category, name='category'),
     url(r'^(?P<category>[a-z]+)/article/(?P<slg>.+)/edit$', viewsAdmin.articleEdit, name='articleEdit'),

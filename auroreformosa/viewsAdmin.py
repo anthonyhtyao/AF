@@ -78,6 +78,13 @@ def createComic(request, errMsg="", success="", warnMsg=""):
             return createComic(request, warnMsg = "Comic FR added successfully and Comic TW fail. <a class='FR' href=/comics/"+article.slg+"> Click to read Comic FR </a>")
     comicForm = ComicForm()
     users = UserProfile.objects.all()
+    # Get variable details by geet request
+    try:
+        no = request.GET['no']
+        currentNumero = Numero.objects.get(numero=no)
+    except:
+        currentNumero = ""
+    returnForm['currentNumero'] = currentNumero
     returnForm['form'] = comicForm
     returnForm['users'] = users
     returnForm['errMsg'] = errMsg

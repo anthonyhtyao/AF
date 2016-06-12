@@ -366,8 +366,31 @@ def articleEditInfo(request, category, slg, errMsg="", msg=""):
         return render(request, 'admin/editArticleInfo.html', returnForm)
 
 @login_required
-def settings(request):
+def settings(request,errMsg="", msg=""):
     returnForm, language = init(request)
     currentUser = UserProfile.objects.get(user=request.user)
+    if request.method =='POST':
+        data = request.POST
+        if not request.user.check_password(data['OldPassword']):
+            errMsg="Wrong password"
+            request.method=""
+            return settings(request,errMsg=errMsg)
+        else:
+            request.method=""
+            if currentUser.name != data['InputName']:
+                currentUser.name = data['InputName']
+                currentUser.save()
+                msg = "User's name is sucessfully changed. "
+            if data['InputPassword1'] != "":
+                if data['InputPassword1'] != data['InputPassword2']:
+                    errMsg = "These two new passwords don't match"
+                    return settings(request,errMsg=errMsg, msg=msg)
+                else:
+                    request.user.set_password(data['InputPassword1'])
+                    request.user.save()
+                    msg += "Password is successfully changed."
+            return settings(request,msg=msg)
     returnForm['currentUser'] = currentUser
+    returnForm['errMsg'] = errMsg
+    returnForm['msg'] = msg
     return render(request, 'admin/settings.html',returnForm)

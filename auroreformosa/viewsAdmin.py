@@ -92,7 +92,7 @@ def createComic(request, errMsg="", success="", warnMsg=""):
     return render(request, 'admin/createComic.html', returnForm)
 
 @login_required
-def createarticle(request, errMsg=""):
+def createarticle(request, errMsg="", msg=""):
     returnForm, language = init(request)
     if request.method == 'POST':
         form = ArticleForm(request.POST)
@@ -180,6 +180,7 @@ def createarticle(request, errMsg=""):
     returnForm['users'] = users
     returnForm['articles'] = articles
     returnForm['errMsg'] = errMsg
+    returnForm['msg'] = msg
     return render(request, 'admin/createArticle.html', returnForm)
 
 @login_required

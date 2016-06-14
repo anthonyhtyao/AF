@@ -10,19 +10,21 @@ from django.template import Context
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from auroreformosa.views import *
+from django.forms.models import formset_factory
 
 @login_required
 def uploadImg(request):
     returnForm, language = init(request)
+    ImageFormSet = formset_factory(form=ImgForm, extra = 3, max_num=10)
     if request.method == 'POST':
-        form = ImgForm(request.POST, request.FILES)
-        if form.is_valid():
-            title = str(request.FILES['imgfile']).split("/")[-1]
-            newImg = Img(imgfile = request.FILES['imgfile'],title=title)
-            newImg.save()
-    else:
-        form = ImgForm()
-    returnForm['form'] = form
+        formset = ImageFormSet(request.POST, request.FILES)
+        if formset.is_valid():
+            for form in formset.cleaned_data:
+                if form != {}:
+                    title = str(form['imgfile'])
+                    newImg = Img(imgfile = form['imgfile'], title=title)
+                    newImg.save()
+    returnForm['formset'] = ImageFormSet
     return render(request,'admin/upload.html', returnForm)
 
 @login_required

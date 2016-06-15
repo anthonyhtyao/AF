@@ -10,19 +10,21 @@ from django.template import Context
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from auroreformosa.views import *
-
+from django.forms.models import formset_factory
+from django.core.files.uploadedfile import InMemoryUploadedFile
 @login_required
 def uploadImg(request):
     returnForm, language = init(request)
+    ImageFormSet = formset_factory(form=ImgForm, extra = 3, max_num=10)
     if request.method == 'POST':
-        form = ImgForm(request.POST, request.FILES)
-        if form.is_valid():
-            title = str(request.FILES['imgfile']).split("/")[-1]
-            newImg = Img(imgfile = request.FILES['imgfile'],title=title)
-            newImg.save()
-    else:
-        form = ImgForm()
-    returnForm['form'] = form
+        formset = ImageFormSet(request.POST, request.FILES)
+        if formset.is_valid():
+            for form in formset.cleaned_data:
+                if form != {}:
+                    title = str(form['imgfile'])
+                    newImg = Img(imgfile = form['imgfile'], title=title)
+                    newImg.save()
+    returnForm['formset'] = ImageFormSet
     return render(request,'admin/upload.html', returnForm)
 
 @login_required
@@ -94,9 +96,12 @@ def createComic(request, errMsg="", success="", warnMsg=""):
 @login_required
 def createarticle(request, errMsg="", msg=""):
     returnForm, language = init(request)
+    # Gallery is a imgform set
+    ImageFormSet = formset_factory(form=ImgForm, extra = 3, max_num=10)
     if request.method == 'POST':
         form = ArticleForm(request.POST)
-        if form.is_valid():
+        formset = ImageFormSet(request.POST, request.FILES)
+        if form.is_valid() and formset.is_valid():
             try:
                 data = request.POST
                 print(data)
@@ -135,6 +140,15 @@ def createarticle(request, errMsg="", msg=""):
                         article.image = img
                     except:
                         pass
+
+                    # Upload gallery
+                    for f in formset.cleaned_data:
+                        if f != {}:
+                            title = str(f['imgfile'])
+                            newImg = Img(imgfile = f['imgfile'], title=title)
+                            newImg.save()
+                            article.gallery.add(newImg)
+
                     author = UserProfile.objects.get(id=data['author'])
                     if data['language'] == 'fr':
                         category = Category.objects.get(id=data['categoryFR'])
@@ -168,11 +182,12 @@ def createarticle(request, errMsg="", msg=""):
     categoryFR = CategoryDetail.objects.filter(language='fr')
     categoryTW = CategoryDetail.objects.filter(language='tw')
     users = UserProfile.objects.all()
-    # Get variable details by geet request
+    # Get no version details by get request
     try:
         no = request.GET['no']
     except:
         no = 1
+    returnForm['formset'] = ImageFormSet
     returnForm['currentNumero'] = float(no)
     returnForm['form'] = articleForm
     returnForm['categoryFR'] = categoryFR
@@ -290,6 +305,7 @@ def articleEdit(request, category, slg, errMsg="", msg=""):
         returnForm['currentArticleContent'] = currentArticleContent
         returnForm['currentCategory'] = currentArticle.category
         returnForm['currentNumero'] = currentArticle.numero
+        returnForm['currentGallery'] = currentArticle.gallery.all()
         msg = "Edit article <b>" + str(currentArticleContent) + "</b>. <br/>Can only edit title, abstract and content. <a href=/"+str(currentArticle.category)+"/article/"+currentArticle.slg+"/editinfo>Click here</a> to modify artilcle's information"
         articleForm = ArticleForm()
         articles = Article.objects.all()
@@ -311,14 +327,17 @@ def articleEdit(request, category, slg, errMsg="", msg=""):
 @login_required
 def articleEditInfo(request, category, slg, errMsg="", msg=""):
     returnForm, language = init(request)
+    ImageFormSet = formset_factory(form=ImgForm, extra = 3, max_num=10)
     try:
         currentArticle = Article.objects.get(slg=slg)
         currentArticleContent = currentArticle.article.get(language=language)
     except:
         return HttpResponseRedirect('/')
+    currentGallery = [{'imgfile':x.imgfile} for x in currentArticle.gallery.all()]
     if request.method == 'POST':
         data = request.POST
         numero = Numero.objects.get(id=data['numero'])
+        formset = ImageFormSet(request.POST, request.FILES,initial=currentGallery)
         try:
             if (data['isEdito']):
                 edito = True
@@ -342,6 +361,22 @@ def articleEditInfo(request, category, slg, errMsg="", msg=""):
             currentArticle.image = img
         except:
             pass
+
+        # Clean article gallery
+        currentArticle.gallery.clear()
+        for f in formset.cleaned_data:
+            if f != {}:
+                # Create a new class Img if image is new
+                if type(f['imgfile']) == InMemoryUploadedFile:
+                    title = str(f['imgfile'])
+                    newImg = Img(imgfile = f['imgfile'], title=title)
+                    newImg.save()
+                    currentArticle.gallery.add(newImg)
+                else:
+                    # Find Img object for a image file given
+                    img = Img.objects.get(imgfile=f['imgfile'])
+                    currentArticle.gallery.add(img)
+
         category = Category.objects.get(id=data['category'])
         currentArticle.numero = numero
         currentArticle.category = category
@@ -351,6 +386,8 @@ def articleEditInfo(request, category, slg, errMsg="", msg=""):
         request.method = ""
         return articleEdit(request,category,slg)
     else:
+        currentFormSet = ImageFormSet(initial=currentGallery)
+        returnForm['currentFormSet'] = currentFormSet
         returnForm['currentArticle'] = currentArticle
         returnForm['currentCategory'] = currentArticle.category
         returnForm['currentNumero'] = currentArticle.numero

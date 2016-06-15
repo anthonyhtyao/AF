@@ -305,6 +305,7 @@ def articleEdit(request, category, slg, errMsg="", msg=""):
         returnForm['currentArticleContent'] = currentArticleContent
         returnForm['currentCategory'] = currentArticle.category
         returnForm['currentNumero'] = currentArticle.numero
+        returnForm['currentGallery'] = currentArticle.gallery.all()
         msg = "Edit article <b>" + str(currentArticleContent) + "</b>. <br/>Can only edit title, abstract and content. <a href=/"+str(currentArticle.category)+"/article/"+currentArticle.slg+"/editinfo>Click here</a> to modify artilcle's information"
         articleForm = ArticleForm()
         articles = Article.objects.all()

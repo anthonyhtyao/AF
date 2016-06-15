@@ -34,18 +34,26 @@
     <br />
     Image:
     {% if currentArticle.image %}
-    <a title="" href="#" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{currentArticle.image.imgfile.url}}">{{currentArticle.image}}</a>
+      <a title="" href="#" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{currentArticle.image.imgfile.url}}">{{currentArticle.image}}</a>
+    {% else %}
+      <p><input type='file' name='imgfile' {% if currentArticle %} disabled {% endif %}> </p>
     {% endif %}
-    <p><input type='file' name='imgfile' {% if currentArticle %} disabled {% endif %}> </p>
     <!-- Here is for gallery, toggle when click triangle -->
-    <p>Gallery: <span id="toggleGallery" class="glyphicon glyphicon-triangle-bottom"></span></p>
-    <div id="articleGallery" class="col-md-offset-1" style="display:none">
-      {{ formset.management_form }}
-      {% for form in formset %}
-        <br/>
-        {{ form }}
+    <p>Gallery:
+    {% if currentGallery %}
+      {% for img in currentGallery %}
+        <a title="" href="#" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{img.imgfile.url}}">{{img}}</a>
       {% endfor %}
-    </div>
+    {% else %}
+      <span id="toggleGallery" class="glyphicon glyphicon-triangle-bottom"></span></p>
+      <div id="articleGallery" class="col-md-offset-1" style="display:none">
+        {{ formset.management_form }}
+        {% for form in formset %}
+          <br/>
+          {{ form }}
+        {% endfor %}
+      </div>
+    {% endif %}
     <br/>
     Author :
     <select name="author" {% if currentArticle %} disabled {% endif %}>

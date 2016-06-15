@@ -96,9 +96,12 @@ def createComic(request, errMsg="", success="", warnMsg=""):
 @login_required
 def createarticle(request, errMsg="", msg=""):
     returnForm, language = init(request)
+    # Gallery is a imgform set
+    ImageFormSet = formset_factory(form=ImgForm, extra = 3, max_num=10)
     if request.method == 'POST':
         form = ArticleForm(request.POST)
-        if form.is_valid():
+        formset = ImageFormSet(request.POST, request.FILES)
+        if form.is_valid() and formset.is_valid():
             try:
                 data = request.POST
                 print(data)
@@ -137,6 +140,15 @@ def createarticle(request, errMsg="", msg=""):
                         article.image = img
                     except:
                         pass
+
+                    # Upload gallery
+                    for f in formset.cleaned_data:
+                        if f != {}:
+                            title = str(f['imgfile'])
+                            newImg = Img(imgfile = f['imgfile'], title=title)
+                            newImg.save()
+                            article.gallery.add(newImg)
+
                     author = UserProfile.objects.get(id=data['author'])
                     if data['language'] == 'fr':
                         category = Category.objects.get(id=data['categoryFR'])
@@ -170,11 +182,12 @@ def createarticle(request, errMsg="", msg=""):
     categoryFR = CategoryDetail.objects.filter(language='fr')
     categoryTW = CategoryDetail.objects.filter(language='tw')
     users = UserProfile.objects.all()
-    # Get variable details by geet request
+    # Get no version details by get request
     try:
         no = request.GET['no']
     except:
         no = 1
+    returnForm['formset'] = ImageFormSet
     returnForm['currentNumero'] = float(no)
     returnForm['form'] = articleForm
     returnForm['categoryFR'] = categoryFR

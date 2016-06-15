@@ -3,6 +3,7 @@
 
 {% block body_block %}
   <br/><br/><br/>
+  <!-- Here is for message display-->
 <div class="col-md-12">
   {% if errMsg != "" %}
     <div class="alert alert-danger" role="alert">{{ errMsg }}</div>
@@ -36,6 +37,16 @@
     <a title="" href="#" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{currentArticle.image.imgfile.url}}">{{currentArticle.image}}</a>
     {% endif %}
     <p><input type='file' name='imgfile' {% if currentArticle %} disabled {% endif %}> </p>
+    <!-- Here is for gallery, toggle when click triangle -->
+    <p>Gallery: <span id="toggleGallery" class="glyphicon glyphicon-triangle-bottom"></span></p>
+    <div id="articleGallery" class="col-md-offset-1" style="display:none">
+      {{ formset.management_form }}
+      {% for form in formset %}
+        <br/>
+        {{ form }}
+      {% endfor %}
+    </div>
+    <br/>
     Author :
     <select name="author" {% if currentArticle %} disabled {% endif %}>
     {% for user in users %}
@@ -75,6 +86,7 @@
     <label class="checkbox-inline">
       <input type="checkbox" name="isHeadline" {% if headline %} checked {% endif %} {% if currentArticle %} disabled {% endif %}> Is Headline
     </label>
+    <br/>
     <p>Abstract :</p>
     <textarea id="newAbstract" type="text" name="abstract" cols ="80" rows="10"} >{{currentArticleContent.abstract}} </textarea>
     <p>Content : </p>
@@ -84,6 +96,7 @@
 </form>
 </div>
 </div>
+
 <script>
 $(document).ready(function(){
   $('#language').change(function(){
@@ -96,6 +109,10 @@ $(document).ready(function(){
       $('#category_fr').show();
       $('#category_tw').hide();
     }
+  });
+
+  $('#toggleGallery').click(function () {
+    $("#articleGallery").toggle();
   });
 });
 </script>

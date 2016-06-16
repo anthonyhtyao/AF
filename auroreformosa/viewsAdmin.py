@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from auroreformosa.views import *
 from django.forms.models import formset_factory
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.urlresolvers import reverse
 
 @login_required
 def uploadImg(request):
@@ -436,4 +437,10 @@ def settings(request,errMsg="", msg=""):
 
 @login_required
 def articlePreview(request,category,slg):
-    return article(request,category,slg,status=1)
+    if request.method == 'POST':
+        a = Article.objects.get(slg=slg)
+        a.status = 2
+        a.save()
+        return HttpResponseRedirect(reverse('article', args=(str(a.category),a.slg,)))
+    else:
+        return article(request,category,slg,status=1)

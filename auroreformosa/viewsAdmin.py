@@ -95,6 +95,7 @@ def createComic(request, errMsg="", success="", warnMsg=""):
     returnForm['success'] = success
     return render(request, 'admin/createComic.html', returnForm)
 
+# Set article's status to 1 (article editting) and go to preview page if success
 @login_required
 def createarticle(request, errMsg="", msg=""):
     returnForm, language = init(request)
@@ -162,7 +163,7 @@ def createarticle(request, errMsg="", msg=""):
                     article.edito = edito
                     article.headline = headline
                     article.save()
-                # Article already existes
+                # Article already existes and set its status to 1
                 else:
                     article = Article.objects.get(id=data['article'])
                     category = article.category
@@ -173,9 +174,11 @@ def createarticle(request, errMsg="", msg=""):
                 articleContent = form.save()
                 articleContent.article = article
                 articleContent.save()
-                #Return article created page
+                article.status = 1
+                article.save()
+                #Return article preview page
                 request.session['language'] = data['language']
-                return HttpResponseRedirect('/' + str(category) + '/article/' + article.slg)
+                return HttpResponseRedirect(reverse('articlePreview', args=(str(article.category),article.slg,)))
             except:
                 pass
     articleForm = ArticleForm()
@@ -297,7 +300,7 @@ def articleEdit(request, category, slg, errMsg="", msg=""):
         articleContent.abstract = data['abstract']
         articleContent.content = data['content']
         articleContent.save()
-        return HttpResponseRedirect('/' + str(category) + '/article/' + slg)
+        return HttpResponseRedirect(reverse('articlePreview', args=(str(category),slg,)))
     else:
         try:
             currentArticleContent = currentArticle.article.get(language=language)

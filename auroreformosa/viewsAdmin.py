@@ -252,7 +252,7 @@ def archiveEdit(request):
         except:
             dist["comics"] = ""
         articles = []
-        for a in  no.article.filter(edito = False).exclude(category = comicCat):
+        for a in  no.article.filter(edito = False).exclude(status = 0).exclude(category = comicCat):
             tmp = {"article":a}
             try:
                 tmp["articleFR"] = a.article.get(language="fr")

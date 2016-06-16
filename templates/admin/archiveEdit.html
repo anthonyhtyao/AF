@@ -69,16 +69,17 @@
             <li>
             FR :
             {% if article.articleFR != "" %}
-            <a class="FR" href="/{{article.article.category}}/article/{{article.article.slg}}">{{article.articleFR}}</a>
+            <a class="FR" href="/{{article.article.category}}/article/{{article.article.slg}}{% if article.article.status == 1 %}/preview{% endif %}">{{article.articleFR}}</a>
             {% else %}
             Not exists
             {% endif %}
              / TW :
             {% if article.articleTW != "" %}
-            <a class="TW" href="/{{article.article.category}}/article/{{article.article.slg}}">{{article.articleTW}}</a>
+            <a class="TW" href="/{{article.article.category}}/article/{{article.article.slg}}{% if article.article.status == 1 %}/preview{% endif %}">{{article.articleTW}}</a>
             {% else %}
             Not exists
             {% endif %}
+            ({% if article.article.status == 2%} public {% else %} editting {% endif %})
             </li>
           {% endfor %}
             <li>

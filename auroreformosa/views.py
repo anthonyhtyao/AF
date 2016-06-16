@@ -41,7 +41,7 @@ def init(request):
 # Return newest article's rule
 def newestArticle(request, comic, language):
     # Exclude edito and comic
-    articlesP = Article.objects.exclude(headline=True).exclude(category=comic).exclude(edito=True).order_by('-date')
+    articlesP = Article.objects.filter(status=2).exclude(headline=True).exclude(category=comic).exclude(edito=True).order_by('-date')
     # Get article list where article exists for language given
     articles = [a for a in articlesP if a.languageIsExist(language) ]
     l = len(articles)
@@ -102,7 +102,7 @@ def category(request, category):
             cat = Category.objects.get(category=category)
             category = cat.detail.get(language=language)
             articles = []
-            for a in Article.objects.filter(category=cat):
+            for a in Article.objects.filter(category=cat,status=2):
                 try:
                     articles.append(a.article.get(language=language))
                 except:

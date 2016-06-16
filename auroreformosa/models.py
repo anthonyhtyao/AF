@@ -47,6 +47,7 @@ class Tag(models.Model):
 # field image is the head image of article
 # field gallery store all images of this article, can be null
 # one edito and one headline for each numero, an article cannot be edito and headline in same time
+# There are three status for an article. 0 = deleted, 1 = editting(default) and 2 = public
 class Article(models.Model):
     author = models.ForeignKey(UserProfile, null = True)
     date = models.DateTimeField(auto_now_add = True, auto_now = False, null = True)
@@ -59,6 +60,7 @@ class Article(models.Model):
     edito = models.BooleanField(default=False)
     headline = models.BooleanField(default=False)
     tags = models.ManyToManyField(Tag, blank=True)
+    status = models.SmallIntegerField(default = 1)
 
     def __str__(self):
         return self.title

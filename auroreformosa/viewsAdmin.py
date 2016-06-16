@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from auroreformosa.views import *
 from django.forms.models import formset_factory
 from django.core.files.uploadedfile import InMemoryUploadedFile
+
 @login_required
 def uploadImg(request):
     returnForm, language = init(request)
@@ -432,3 +433,7 @@ def settings(request,errMsg="", msg=""):
     returnForm['errMsg'] = errMsg
     returnForm['msg'] = msg
     return render(request, 'admin/settings.html',returnForm)
+
+@login_required
+def articlePreview(request,category,slg):
+    return article(request,category,slg,status=1)

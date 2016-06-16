@@ -124,9 +124,10 @@ def add_categories(request, return_form):
     categories = CategoryDetail.objects.filter(language=request.session['language']).exclude(category = edito)
     return_form['categories'] = categories
 
-def article(request, category, slg):
+def article(request, category, slg, status=2):
     try:
         articleParent = Article.objects.get(slg=slg)
+        assert articleParent.status == status
         try:
             cat = Category.objects.get(category = category)
         except:

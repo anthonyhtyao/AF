@@ -300,6 +300,8 @@ def articleEdit(request, category, slg, errMsg="", msg=""):
         articleContent.abstract = data['abstract']
         articleContent.content = data['content']
         articleContent.save()
+        currentArticle.status = 1
+        currentArticle.save()
         return HttpResponseRedirect(reverse('articlePreview', args=(str(category),slg,)))
     else:
         try:

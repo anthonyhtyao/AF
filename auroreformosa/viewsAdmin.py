@@ -12,6 +12,8 @@ from django.contrib.auth.decorators import login_required
 from auroreformosa.views import *
 from django.forms.models import formset_factory
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.urlresolvers import reverse
+
 @login_required
 def uploadImg(request):
     returnForm, language = init(request)
@@ -93,6 +95,7 @@ def createComic(request, errMsg="", success="", warnMsg=""):
     returnForm['success'] = success
     return render(request, 'admin/createComic.html', returnForm)
 
+# Set article's status to 1 (article editting) and go to preview page if success
 @login_required
 def createarticle(request, errMsg="", msg=""):
     returnForm, language = init(request)
@@ -160,7 +163,7 @@ def createarticle(request, errMsg="", msg=""):
                     article.edito = edito
                     article.headline = headline
                     article.save()
-                # Article already existes
+                # Article already existes and set its status to 1
                 else:
                     article = Article.objects.get(id=data['article'])
                     category = article.category
@@ -171,9 +174,11 @@ def createarticle(request, errMsg="", msg=""):
                 articleContent = form.save()
                 articleContent.article = article
                 articleContent.save()
-                #Return article created page
+                article.status = 1
+                article.save()
+                #Return article preview page
                 request.session['language'] = data['language']
-                return HttpResponseRedirect('/' + str(category) + '/article/' + article.slg)
+                return HttpResponseRedirect(reverse('articlePreview', args=(str(article.category),article.slg,)))
             except:
                 pass
     articleForm = ArticleForm()
@@ -251,7 +256,7 @@ def archiveEdit(request):
         except:
             dist["comics"] = ""
         articles = []
-        for a in  no.article.filter(edito = False).exclude(category = comicCat):
+        for a in  no.article.filter(edito = False).exclude(status = 0).exclude(category = comicCat):
             tmp = {"article":a}
             try:
                 tmp["articleFR"] = a.article.get(language="fr")
@@ -295,7 +300,7 @@ def articleEdit(request, category, slg, errMsg="", msg=""):
         articleContent.abstract = data['abstract']
         articleContent.content = data['content']
         articleContent.save()
-        return HttpResponseRedirect('/' + str(category) + '/article/' + slg)
+        return HttpResponseRedirect(reverse('articlePreview', args=(str(category),slg,)))
     else:
         try:
             currentArticleContent = currentArticle.article.get(language=language)
@@ -432,3 +437,13 @@ def settings(request,errMsg="", msg=""):
     returnForm['errMsg'] = errMsg
     returnForm['msg'] = msg
     return render(request, 'admin/settings.html',returnForm)
+
+@login_required
+def articlePreview(request,category,slg):
+    if request.method == 'POST':
+        a = Article.objects.get(slg=slg)
+        a.status = 2
+        a.save()
+        return HttpResponseRedirect(reverse('article', args=(str(a.category),a.slg,)))
+    else:
+        return article(request,category,slg,status=1)

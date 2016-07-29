@@ -216,7 +216,7 @@ links.Timeline = function(container, options) {
         'clusterMaxItems': 5,
         'style': 'box',
         'customStackOrder': false, //a function(a,b) for determining stackorder amongst a group of items. Essentially a comparator, -ve value for "a before b" and vice versa
-        
+
         // i18n: Timeline only has built-in English text per default. Include timeline-locales.js to support more localized text.
         'locale': 'en',
         'MONTHS': ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
@@ -230,7 +230,7 @@ links.Timeline = function(container, options) {
         'NEW': "New",
         'CREATE_NEW_EVENT': "Create new event"
     };
-    
+
     //
     // Now we can set the givenproperties
     //
@@ -291,7 +291,7 @@ links.Timeline = function(container, options) {
  */
 links.Timeline.prototype.draw = function(data, options) {
     if (options) {
-        console.log("WARNING: Passing options in draw() is deprecated. Pass options to the constructur or use setOptions() instead!");       
+        console.log("WARNING: Passing options in draw() is deprecated. Pass options to the constructur or use setOptions() instead!");
         this.setOptions(options);
     }
 
@@ -947,7 +947,7 @@ links.Timeline.prototype.repaintFrame = function() {
     // main frame
     if (!dom.frame) {
         dom.frame = document.createElement("DIV");
-        dom.frame.className = "timeline-frame ui-widget ui-widget-content ui-corner-all";
+        dom.frame.className = "timeline-frame ui-widget   ui-corner-all";
         dom.container.appendChild(dom.frame);
         needsReflow = true;
     }
@@ -2988,7 +2988,7 @@ links.Timeline.prototype.onMouseUp = function (event) {
             // Note that the change can be canceled from within an event listener if
             // this listener calls the method cancelChange().
             this.trigger(params.addItem ? 'add' : 'changed');
-            
+
             //retrieve item data again to include changes made to it in the triggered event handlers
             item = this.items[params.itemIndex];
 
@@ -3762,9 +3762,9 @@ links.Timeline.ItemBox.prototype.reflow = function () {
  */
 links.Timeline.ItemBox.prototype.select = function () {
     var dom = this.dom;
-    links.Timeline.addClassName(dom, 'timeline-event-selected ui-state-active');
-    links.Timeline.addClassName(dom.line, 'timeline-event-selected ui-state-active');
-    links.Timeline.addClassName(dom.dot, 'timeline-event-selected ui-state-active');
+    links.Timeline.addClassName(dom, ' timeline-event-selected');
+    links.Timeline.addClassName(dom.line, ' timeline-event-selected');
+    links.Timeline.addClassName(dom.dot, ' timeline-event-selected');
 };
 
 /**
@@ -3773,9 +3773,9 @@ links.Timeline.ItemBox.prototype.select = function () {
  */
 links.Timeline.ItemBox.prototype.unselect = function () {
     var dom = this.dom;
-    links.Timeline.removeClassName(dom, 'timeline-event-selected ui-state-active');
-    links.Timeline.removeClassName(dom.line, 'timeline-event-selected ui-state-active');
-    links.Timeline.removeClassName(dom.dot, 'timeline-event-selected ui-state-active');
+    links.Timeline.removeClassName(dom, ' timeline-event-selected');
+    links.Timeline.removeClassName(dom.line, ' timeline-event-selected');
+    links.Timeline.removeClassName(dom.dot, ' timeline-event-selected');
 };
 
 /**
@@ -3881,9 +3881,9 @@ links.Timeline.ItemBox.prototype.updateDOM = function () {
         divBox.firstChild.innerHTML = this.content;
 
         // update class
-        divBox.className = "timeline-event timeline-event-box ui-widget ui-state-default";
-        divLine.className = "timeline-event timeline-event-line ui-widget ui-state-default";
-        divDot.className  = "timeline-event timeline-event-dot ui-widget ui-state-default";
+        divBox.className = "timeline-event timeline-event-box ui-widget ";
+        divLine.className = "timeline-event timeline-event-line ui-widget ";
+        divDot.className  = "timeline-event timeline-event-dot ui-widget ";
 
         if (this.isCluster) {
             links.Timeline.addClassName(divBox, 'timeline-event-cluster ui-widget-header');
@@ -4049,7 +4049,7 @@ links.Timeline.ItemRange.prototype = new links.Timeline.Item();
  */
 links.Timeline.ItemRange.prototype.select = function () {
     var dom = this.dom;
-    links.Timeline.addClassName(dom, 'timeline-event-selected ui-state-active');
+    links.Timeline.addClassName(dom, ' timeline-event-selected');
 };
 
 /**
@@ -4058,7 +4058,7 @@ links.Timeline.ItemRange.prototype.select = function () {
  */
 links.Timeline.ItemRange.prototype.unselect = function () {
     var dom = this.dom;
-    links.Timeline.removeClassName(dom, 'timeline-event-selected ui-state-active');
+    links.Timeline.removeClassName(dom, ' timeline-event-selected');
 };
 
 /**
@@ -4133,7 +4133,7 @@ links.Timeline.ItemRange.prototype.updateDOM = function () {
         divBox.firstChild.innerHTML = this.content;
 
         // update class
-        divBox.className = "timeline-event timeline-event-range ui-widget ui-state-default";
+        divBox.className = "timeline-event timeline-event-range ui-widget ";
 
         if (this.isCluster) {
             links.Timeline.addClassName(divBox, 'timeline-event-cluster ui-widget-header');
@@ -4263,7 +4263,7 @@ links.Timeline.ItemFloatingRange.prototype = new links.Timeline.Item();
  */
 links.Timeline.ItemFloatingRange.prototype.select = function () {
     var dom = this.dom;
-    links.Timeline.addClassName(dom, 'timeline-event-selected ui-state-active');
+    links.Timeline.addClassName(dom, ' timeline-event-selected');
 };
 
 /**
@@ -4272,7 +4272,7 @@ links.Timeline.ItemFloatingRange.prototype.select = function () {
  */
 links.Timeline.ItemFloatingRange.prototype.unselect = function () {
     var dom = this.dom;
-    links.Timeline.removeClassName(dom, 'timeline-event-selected ui-state-active');
+    links.Timeline.removeClassName(dom, ' timeline-event-selected');
 };
 
 /**
@@ -4347,7 +4347,7 @@ links.Timeline.ItemFloatingRange.prototype.updateDOM = function () {
         divBox.firstChild.innerHTML = this.content;
 
         // update class
-        divBox.className = "timeline-event timeline-event-range ui-widget ui-state-default";
+        divBox.className = "timeline-event timeline-event-range ui-widget ";
 
         if (this.isCluster) {
             links.Timeline.addClassName(divBox, 'timeline-event-cluster ui-widget-header');
@@ -4517,7 +4517,7 @@ links.Timeline.ItemDot.prototype.reflow = function () {
  */
 links.Timeline.ItemDot.prototype.select = function () {
     var dom = this.dom;
-    links.Timeline.addClassName(dom, 'timeline-event-selected ui-state-active');
+    links.Timeline.addClassName(dom, ' timeline-event-selected');
 };
 
 /**
@@ -4526,7 +4526,7 @@ links.Timeline.ItemDot.prototype.select = function () {
  */
 links.Timeline.ItemDot.prototype.unselect = function () {
     var dom = this.dom;
-    links.Timeline.removeClassName(dom, 'timeline-event-selected ui-state-active');
+    links.Timeline.removeClassName(dom, ' timeline-event-selected');
 };
 
 /**
@@ -4613,7 +4613,7 @@ links.Timeline.ItemDot.prototype.updateDOM = function () {
 
         // update classes
         divBox.className = "timeline-event-dot-container";
-        divDot.className  = "timeline-event timeline-event-dot ui-widget ui-state-default";
+        divDot.className  = "timeline-event timeline-event-dot ui-widget ";
 
         if (this.isCluster) {
             links.Timeline.addClassName(divBox, 'timeline-event-cluster ui-widget-header');
@@ -4784,7 +4784,7 @@ links.Timeline.prototype.getCluster = function (index) {
     var clusterData = {},
         cluster = this.clusters[index],
         clusterItems = cluster.items;
-    
+
     clusterData.start = new Date(cluster.start.valueOf());
     if (cluster.type) {
         clusterData.type = cluster.type;

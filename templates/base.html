@@ -49,7 +49,6 @@
   <script src="{% static "js/creative.js" %}"></script>
   <script src="{% static "js/jquerysession.js" %}"></script>
   <script src="{% static "js/functions.js" %}"></script>
-  <script type="text/javascript" src="http://www.google.com/jsapi"></script>
   <script src="{% static "js/tinymce/tinymce.min.js" %}"></script>
   {{ form.media }}
   <script>
@@ -196,9 +195,9 @@
         {% block body_block %} {% endblock %}
   </div>
 
+  <div id="mytimeline" class="col-md-10 col-md-offset-1"></div>
 
 {% block downpage_block %}
-  <div id="mytimeline" class="col-md-10 col-md-offset-1"></div>
 {% endblock downpage_block %}
         <footer>
             <div class="row">

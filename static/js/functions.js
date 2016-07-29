@@ -33,7 +33,7 @@ function drawVisualization() {
     data.push(
       {
         'start': new Date(2014,3,18),  // 'end': new Date(2010, 8, 2),  // end is optional
-        'content': '太陽花學運'
+        'content': '太陽花學運',
       },
       {
         'start': new Date(2013,8,3),
@@ -48,7 +48,7 @@ function drawVisualization() {
  var options = {
    "width":  "100%",
    "height": "300px",
-  //  "style": "box", // optional
+   "style": "box", // optional
    "scale": links.Timeline.StepDate.SCALE.YEAR,
    "step": 1,
    "zoomMax": 1000 * 60 * 60 * 24 * 31 * 12 * 20,
@@ -58,4 +58,5 @@ function drawVisualization() {
  var timeline = new links.Timeline(document.getElementById('mytimeline'));
  // Draw our timeline with the created data and options
  timeline.draw(data, options);
+ timeline.setSelection([{row:0}]);
 }

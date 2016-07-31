@@ -139,3 +139,22 @@ class TagDetail(models.Model):
 
     def __str__(self):
         return self.title
+
+class TimelineEvent(models.Model):
+    start = models.DateField()
+    end = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return "Timeline event " + str(self.id)
+
+class TimelineEventDetail(models.Model):
+    LANGUAGES = (
+        ('fr', 'Français'),
+        ('tw', '繁體中文'),
+    )
+    event = models.ForeignKey(TimelineEvent, null = True, related_name="detail")
+    content = models.CharField(max_length = 20)
+    language = models.CharField(max_length = 2, choices = LANGUAGES, default = 'fr')
+
+    def __str__(self):
+        return self.language + " " + self.content

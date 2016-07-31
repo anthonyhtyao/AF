@@ -10,6 +10,8 @@ from django.template import Context
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 import random
+from django.core import serializers
+import json
 
 def init(request):
     # Set default language to fr
@@ -282,4 +284,19 @@ def user_logout(request):
     logout(request)
 
     # Take the user back to the homepage.
+    return HttpResponseRedirect('/')
+
+def timelinedata(request):
+    returnForm, language = init(request)
+    if request.method == 'GET':
+        data = {}
+        # data['result'] = []
+        events = TimelineEvent.objects.all();
+        details = []
+        for event in events:
+            detail = event.detail.get(language=language)
+            details.append(detail)
+        data['events'] = serializers.serialize('json', events)
+        data['details'] = serializers.serialize('json', details)
+        return  HttpResponse(json.dumps(data), content_type="application/json")
     return HttpResponseRedirect('/')

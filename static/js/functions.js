@@ -28,35 +28,43 @@ function closeTooltip(x) {
 
 // Called when the Visualization API is loaded.
 function drawVisualization() {
- // Create and populate a data table.
-    var data = [];
-    data.push(
-      {
-        'start': new Date(2014,3,18),  // 'end': new Date(2010, 8, 2),  // end is optional
-        'content': '太陽花學運',
-      },
-      {
-        'start': new Date(2013,8,3),
-        'content': '八月雪運動'
-      },
-      {
-        'start': new Date(1947,2,28),
-        'content': '二二八事件'
+
+  function turnToDate(date) {
+    var lst = date.split("-");
+    return new Date(lst[0],lst[1],lst[2]);
+  };
+  $.ajax({
+      type:"GET",
+      url:"/timelinedata/",
+      data:{},
+      success: function(data) {
+        var events = JSON.parse(data['events']);
+        var details = JSON.parse(data['details']);
+        var d = [];
+        for (var i = 0; i<events.length;i++) {
+          var event = {};
+          event['start'] = turnToDate(events[i].fields.start);
+          if (events[i].fields.end != null) {
+            event['end'] = turnToDate(events[i].fields.end);
+          }
+          event['content'] = details[i].fields.content;
+          d.push(event);
+
+        }
+        var options = {
+          "width":  "100%",
+          "height": "200px",
+          "style": "box", // optional
+          "scale": links.Timeline.StepDate.SCALE.YEAR,
+          "step": 1,
+          "zoomMax": 1000 * 60 * 60 * 24 * 31 * 12 * 20,
+          "zoomMin": 1000 * 60 * 60 * 24 * 31 * 12 * 2
+        };
+        // Instantiate our timeline object.
+        var timeline = new links.Timeline(document.getElementById('mytimeline'));
+        // Draw our timeline with the created data and options
+        timeline.draw(d, options);
+        timeline.setSelection([{row:0}]);
       }
-    );
- // specify options
- var options = {
-   "width":  "100%",
-   "height": "300px",
-   "style": "box", // optional
-   "scale": links.Timeline.StepDate.SCALE.YEAR,
-   "step": 1,
-   "zoomMax": 1000 * 60 * 60 * 24 * 31 * 12 * 20,
-   "zoomMin": 1000 * 60 * 60 * 24 * 31 * 12 * 2
- };
- // Instantiate our timeline object.
- var timeline = new links.Timeline(document.getElementById('mytimeline'));
- // Draw our timeline with the created data and options
- timeline.draw(data, options);
- timeline.setSelection([{row:0}]);
+  });
 }

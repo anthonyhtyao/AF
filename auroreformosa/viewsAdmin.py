@@ -449,3 +449,8 @@ def articlePreview(request,category,slg):
         return HttpResponseRedirect(reverse('article', args=(str(a.category),a.slg,)))
     else:
         return article(request,category,slg,status=1)
+
+@login_required
+def timelineEdit(request):
+    returnForm, language = init(request)
+    return render(request, 'admin/timelineEdit.html',returnForm)

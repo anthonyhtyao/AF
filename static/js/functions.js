@@ -30,11 +30,50 @@ function closeTooltip(x) {
 function drawVisualization() {
   var e = document.getElementById('mytimeline');
   var ind = e.innerHTML;
-  console.log(ind);
+  var d = [];
   function turnToDate(date) {
     var lst = date.split("-");
     return new Date(lst[0],lst[1],lst[2]);
   };
+
+  function jsDateConvert(time) {
+    var s = "";
+    if (time) {
+      var date = new Date(time);
+      var year = date.getFullYear();
+      var month = date.getMonth();
+      var d = date.getDate();
+      s = year + "-" + month + "-" + d;
+    }
+    else
+      s = "N/A";
+    return s;
+  };
+  var options = {
+    "width":  "100%",
+    "height": "200px",
+    "style": "box", // optional
+    "scale": links.Timeline.StepDate.SCALE.YEAR,
+    "step": 1,
+    "zoomMax": 1000 * 60 * 60 * 24 * 31 * 12 * 40,
+    "zoomMin": 1000 * 60 * 60 * 24 * 31 * 12 * 10
+  };
+  if (ind == -1)
+    options['editable'] = true;
+  var timeline = new links.Timeline(e);
+
+  function onselect() {
+    var sel = timeline.getSelection();
+    if (sel.length) {
+      if (sel[0].row != undefined) {
+        var row = sel[0].row;
+        var info = document.getElementById('info');
+        info.innerHTML = "Start : " + jsDateConvert(d[row].start) + "<br>End : " + jsDateConvert(d[row].end) + "<br>Content : " + d[row].content;
+      }
+    }
+  };
+  if (ind == -1)
+    links.events.addListener(timeline,'select',onselect);
   $.ajax({
       type:"GET",
       url:"/timelinedata/",
@@ -42,7 +81,6 @@ function drawVisualization() {
       success: function(data) {
         var events = JSON.parse(data['events']);
         var details = JSON.parse(data['details']);
-        var d = [];
 
         for (var i = 0; i<events.length;i++) {
           var event = {};
@@ -55,21 +93,11 @@ function drawVisualization() {
             event['className'] = 'timeline-event-target';
           }
           d.push(event);
+          timeline.draw(d, options);
+          timeline.setSelection([{row:ind}]);
         }
-        var options = {
-          "width":  "100%",
-          "height": "200px",
-          "style": "box", // optional
-          "scale": links.Timeline.StepDate.SCALE.YEAR,
-          "step": 1,
-          "zoomMax": 1000 * 60 * 60 * 24 * 31 * 12 * 20,
-          "zoomMin": 1000 * 60 * 60 * 24 * 31 * 12 * 10
-        };
-        // Instantiate our timeline object.
-        var timeline = new links.Timeline(e);
-        // Draw our timeline with the created data and options
-        timeline.draw(d, options);
-        timeline.setSelection([{row:ind}]);
       }
   });
+  // Instantiate our timeline object.
+  // Draw our timeline with the created data and options
 }

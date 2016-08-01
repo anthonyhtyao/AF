@@ -61,6 +61,7 @@ class Article(models.Model):
     headline = models.BooleanField(default=False)
     tags = models.ManyToManyField(Tag, blank=True)
     status = models.SmallIntegerField(default = 1)
+    timeline = models.SmallIntegerField(default=-1)
 
     def __str__(self):
         return self.title

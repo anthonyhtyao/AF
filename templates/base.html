@@ -59,7 +59,7 @@
 
     <script>
      $(document).ready(function(){
-         drawVisualization();
+
        $("#buttonFR").click(function(){
          $.ajax({
             type:"POST",
@@ -86,7 +86,7 @@
 </script>
 </head>
 
-<body id="page-top">
+<body id="page-top" onload="drawVisualization()">
 
 
 {% block header_block %}
@@ -201,7 +201,6 @@
 <br>
 <br>
 <br>
-<div id="mytimeline" class="col-md-10 col-md-offset-1"></div>
         <footer>
             <div class="row">
                 <div class="col-lg-12">

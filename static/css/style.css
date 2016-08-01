@@ -30,3 +30,9 @@
 .fixHeight {
   height:100%;
 }
+
+div.timeline-event-target {
+    background-color:  	#FF69B4;
+    border-color: #ffc200;
+    z-index: 999;
+}

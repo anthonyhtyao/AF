@@ -28,7 +28,9 @@ function closeTooltip(x) {
 
 // Called when the Visualization API is loaded.
 function drawVisualization() {
-
+  var e = document.getElementById('mytimeline');
+  var ind = e.innerHTML;
+  console.log(ind);
   function turnToDate(date) {
     var lst = date.split("-");
     return new Date(lst[0],lst[1],lst[2]);
@@ -41,6 +43,7 @@ function drawVisualization() {
         var events = JSON.parse(data['events']);
         var details = JSON.parse(data['details']);
         var d = [];
+
         for (var i = 0; i<events.length;i++) {
           var event = {};
           event['start'] = turnToDate(events[i].fields.start);
@@ -48,8 +51,10 @@ function drawVisualization() {
             event['end'] = turnToDate(events[i].fields.end);
           }
           event['content'] = details[i].fields.content;
+          if (i==ind) {
+            event['className'] = 'timeline-event-target';
+          }
           d.push(event);
-
         }
         var options = {
           "width":  "100%",
@@ -58,13 +63,13 @@ function drawVisualization() {
           "scale": links.Timeline.StepDate.SCALE.YEAR,
           "step": 1,
           "zoomMax": 1000 * 60 * 60 * 24 * 31 * 12 * 20,
-          "zoomMin": 1000 * 60 * 60 * 24 * 31 * 12 * 2
+          "zoomMin": 1000 * 60 * 60 * 24 * 31 * 12 * 10
         };
         // Instantiate our timeline object.
-        var timeline = new links.Timeline(document.getElementById('mytimeline'));
+        var timeline = new links.Timeline(e);
         // Draw our timeline with the created data and options
         timeline.draw(d, options);
-        timeline.setSelection([{row:0}]);
+        timeline.setSelection([{row:ind}]);
       }
   });
 }

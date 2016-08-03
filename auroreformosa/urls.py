@@ -17,6 +17,7 @@ urlpatterns = [
     url(r'^comics/(?P<slg>.+)$', views.comics, name="comics"),
     url(r'^timelinedata/$', views.timelinedata, name="timelinedata"),
     url(r'^timeline/edit$', viewsAdmin.timelineEdit, name="timelineEdit"),
+    url(r'^timeline/save$', viewsAdmin.timelineSave, name="timelineSave"),
     url(r'^(?P<category>[a-z]+)/$', views.category, name='category'),
     url(r'^(?P<category>[a-z]+)/article/(?P<slg>.+)/edit$', viewsAdmin.articleEdit, name='articleEdit'),
     url(r'^(?P<category>[a-z]+)/article/(?P<slg>.+)/preview$', viewsAdmin.articlePreview, name='articlePreview'),

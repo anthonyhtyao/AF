@@ -34,5 +34,7 @@
 div.timeline-event-target {
     background-color:  	#FF69B4;
     border-color: #ffc200;
-    z-index: 999;
+    z-index: 500;
 }
+
+.ui-dialog { z-index: 1000 !important ;}

@@ -454,3 +454,20 @@ def articlePreview(request,category,slg):
 def timelineEdit(request):
     returnForm, language = init(request)
     return render(request, 'admin/timelineEdit.html',returnForm)
+
+@login_required
+def timelineSave(request):
+    returnForm, language = init(request)
+    if request.method=="POST":
+        data = request.POST
+        start = data['start']
+        end = data['end']
+        event = TimelineEvent.objects.create(start=start)
+        if end!="":
+            event.end = end
+        event.save()
+        detail_fr = TimelineEventDetail.objects.create(content=data['fr'],language="fr")
+        detail_fr.event=event
+        detail_fr.save();
+        return  HttpResponseRedirect('/timeline/edit')
+    return HttpResponseRedirect('/')

@@ -58,7 +58,7 @@ div.timeline-event {
 div.timeline-event-selected {
     background-color: #fff785;
     border-color: #ffc200;
-    z-index: 999;
+    z-index: 499;
 }
 
 div.timeline-event-cluster {
@@ -94,12 +94,12 @@ div.timeline-event-range {
 
 div.timeline-event-range-drag-left {
     cursor: w-resize;
-    z-index: 1000;
+    z-index: 500;
 }
 
 div.timeline-event-range-drag-right {
     cursor: e-resize;
-    z-index: 1000;
+    z-index: 500;
 }
 
 div.timeline-event-line {

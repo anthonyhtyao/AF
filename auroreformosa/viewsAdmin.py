@@ -162,6 +162,7 @@ def createarticle(request, errMsg="", msg=""):
                     article.category = category
                     article.edito = edito
                     article.headline = headline
+                    article.timeline = data['timeline']
                     article.save()
                 # Article already existes and set its status to 1
                 else:

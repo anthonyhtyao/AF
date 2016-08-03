@@ -97,6 +97,7 @@
     <br/>
     <!-- This block is for timeline setting -->
     <p>Choose timeline event : <span id="eventSelected">{% if timeline < 0 %} N/A {% endif %}</span>   <span id="toggleTimeline" class="glyphicon glyphicon-triangle-bottom"></span></p>
+    <input type="hidden" id="timeline_event_input" name="timeline" value=-1>
     <div id="mytimeline" style="display:none" data-action="select" data-value="-1"></div>
     <p>Abstract :</p>
     <textarea id="newAbstract" type="text" name="abstract" cols ="80" rows="10"} >{{currentArticleContent.abstract}} </textarea>

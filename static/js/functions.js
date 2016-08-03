@@ -85,6 +85,17 @@ function jsDateConvert(time) {
   s = "N/A";
   return s;
 };
+
+function cancelEventSelected() {
+  var e = document.getElementById('mytimeline');
+  e.setAttribute("data-value",-1);
+  var selected = document.getElementById("eventSelected");
+  selected.innerHTML = "";
+  var input = document.getElementById("timeline_event_input");
+  input.value=-1;
+  timeline.redraw();
+}
+
 // Called when the Visualization API is loaded.
 function drawVisualization() {
   var e = document.getElementById('mytimeline');
@@ -126,8 +137,10 @@ function drawVisualization() {
         }
         else if (action == "select") {
           e.setAttribute("data-value", eventSelected.id);
+          var input = document.getElementById("timeline_event_input");
+          input.value = eventSelected.id;
           var selected = document.getElementById("eventSelected");
-          selected.innerHTML = jsDateConvert(eventSelected.start) + " " + eventSelected.content;
+          selected.innerHTML = jsDateConvert(eventSelected.start) + " " + eventSelected.content + "<sup style='color:red' onclick='cancelEventSelected()'> X </sup>";
         }
       }
     }
@@ -141,7 +154,7 @@ function drawVisualization() {
       success: function(data) {
         var events = JSON.parse(data['events']);
         var details = JSON.parse(data['details']);
-
+        var row;
         for (var i = 0; i<events.length;i++) {
           var event = {};
           event['id'] = events[i].pk;
@@ -150,12 +163,13 @@ function drawVisualization() {
             event['end'] = turnToDate(events[i].fields.end);
           }
           event['content'] = details[i].fields.content;
-          if (i==ind) {
+          if (event.id==ind) {
             event['className'] = 'timeline-event-target';
+            row=i;
           }
           timeline_data.push(event);
           timeline.draw(timeline_data, options);
-          timeline.setSelection([{row:ind}]);
+          timeline.setSelection([{row:row}]);
         }
       }
   });

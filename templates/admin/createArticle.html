@@ -95,6 +95,9 @@
       <input type="checkbox" name="isHeadline" {% if headline %} checked {% endif %} {% if currentArticle %} disabled {% endif %}> Is Headline
     </label>
     <br/>
+    <!-- This block is for timeline setting -->
+    <p>Choose timeline event : <span id="eventSelected">{% if timeline < 0 %} N/A {% endif %}</span>   <span id="toggleTimeline" class="glyphicon glyphicon-triangle-bottom"></span></p>
+    <div id="mytimeline" style="display:none" data-action="select" data-value="-1"></div>
     <p>Abstract :</p>
     <textarea id="newAbstract" type="text" name="abstract" cols ="80" rows="10"} >{{currentArticleContent.abstract}} </textarea>
     <p>Content : </p>
@@ -121,6 +124,10 @@ $(document).ready(function(){
 
   $('#toggleGallery').click(function () {
     $("#articleGallery").toggle();
+  });
+  $('#toggleTimeline').click(function () {
+    $("#mytimeline").toggle();
+    timeline.redraw();
   });
 });
 </script>

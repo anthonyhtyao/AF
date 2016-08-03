@@ -88,7 +88,8 @@ function jsDateConvert(time) {
 // Called when the Visualization API is loaded.
 function drawVisualization() {
   var e = document.getElementById('mytimeline');
-  var ind = e.innerHTML;
+  var action = e.getAttribute("data-action");
+  var ind = e.getAttribute("data-value");
   timeline_data = [];
   function turnToDate(date) {
     var lst = date.split("-");
@@ -111,19 +112,27 @@ function drawVisualization() {
     if (sel.length) {
       if (sel[0].row != undefined) {
         var row = sel[0].row;
-        var info = document.getElementById('info');
-        info.innerHTML =
-          "<span>Detail : </span> <span onclick='openTimelineDialog()' style='color:green' class='glyphicon glyphicon-plus'></span>"
-          + "<span onclick='deleteEvent(" + row + ")' style='color:red' class='glyphicon glyphicon-minus'></span>"
-          + "<span onclick='openTimelineDialog(" + row + ")' class='glyphicon glyphicon-pencil'></span>"
-          + "<br>ID : " + timeline_data[row].id
-          + "<br>Start : " + jsDateConvert(timeline_data[row].start)
-          + "<br>End : " + jsDateConvert(timeline_data[row].end)
-          + "<br>Content : " + timeline_data[row].content;
+        var eventSelected = timeline_data[row];
+        if (action == "edit") {
+          var info = document.getElementById('info');
+          info.innerHTML =
+            "<span>Detail : </span> <span onclick='openTimelineDialog()' style='color:green' class='glyphicon glyphicon-plus'></span>"
+            + "<span onclick='deleteEvent(" + row + ")' style='color:red' class='glyphicon glyphicon-minus'></span>"
+            + "<span onclick='openTimelineDialog(" + row + ")' class='glyphicon glyphicon-pencil'></span>"
+            + "<br>ID : " + eventSelected.id
+            + "<br>Start : " + jsDateConvert(eventSelected.start)
+            + "<br>End : " + jsDateConvert(eventSelected.end)
+            + "<br>Content : " + eventSelected.content;
+        }
+        else if (action == "select") {
+          e.setAttribute("data-value", eventSelected.id);
+          var selected = document.getElementById("eventSelected");
+          selected.innerHTML = jsDateConvert(eventSelected.start) + " " + eventSelected.content;
+        }
       }
     }
   };
-  if (ind == -1)
+  if (action != "read")
     links.events.addListener(timeline,'select',onselect);
   $.ajax({
       type:"GET",

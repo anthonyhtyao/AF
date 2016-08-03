@@ -327,6 +327,7 @@ def articleEdit(request, category, slg, errMsg="", msg=""):
         returnForm['articles'] = articles
         returnForm['edito'] = currentArticle.edito
         returnForm['headline'] = currentArticle.headline
+        returnForm['timeline'] = currentArticle.timeline
         returnForm['errMsg'] = errMsg
         returnForm['msg'] = msg
         return render(request, 'admin/createArticle.html', returnForm)

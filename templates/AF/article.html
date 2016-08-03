@@ -13,7 +13,7 @@
     <span class="glyphicon glyphicon-time"></span> Posted on {{article.article.date}}
   <br>
   {% if article.article.timeline >= 0 %}
-  <div id="mytimeline" class="col-md-10 col-md-offset-1">{{article.article.timeline}}</div>
+  <div id="mytimeline" class="col-md-10 col-md-offset-1" data-action="read" data-value="{{article.article.timeline}}"></div>
   {% endif %}
   <div>
     {{article.content|safe}}

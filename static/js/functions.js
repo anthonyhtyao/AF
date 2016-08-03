@@ -88,7 +88,7 @@ function jsDateConvert(time) {
 
 function cancelEventSelected() {
   var e = document.getElementById('mytimeline');
-  e.setAttribute("data-value",-1);
+  e.setAttribute("data-value",0);
   var selected = document.getElementById("eventSelected");
   selected.innerHTML = "";
   var input = document.getElementById("timeline_event_input");

@@ -162,7 +162,7 @@ def createarticle(request, errMsg="", msg=""):
                     article.category = category
                     article.edito = edito
                     article.headline = headline
-                    article.timeline = data['timeline']
+                    article.timeline = TimelineEvent.objects.get(id=data['timeline'])
                     article.save()
                 # Article already existes and set its status to 1
                 else:
@@ -328,7 +328,9 @@ def articleEdit(request, category, slg, errMsg="", msg=""):
         returnForm['articles'] = articles
         returnForm['edito'] = currentArticle.edito
         returnForm['headline'] = currentArticle.headline
-        returnForm['timeline'] = currentArticle.timeline
+        returnForm['timeline'] = currentArticle.timeline.id
+        eventDetail = currentArticle.timeline.detail.get(language=language)
+        returnForm['timelineDetail'] = currentArticle.timeline.start.strftime('%Y-%m-%d') + " " + eventDetail.content
         returnForm['errMsg'] = errMsg
         returnForm['msg'] = msg
         return render(request, 'admin/createArticle.html', returnForm)
@@ -391,6 +393,7 @@ def articleEditInfo(request, category, slg, errMsg="", msg=""):
         currentArticle.category = category
         currentArticle.edito = edito
         currentArticle.headline = headline
+        currentArticle.timeline = TimelineEvent.objects.get(id=data['timeline'])
         currentArticle.save()
         request.method = ""
         return articleEdit(request,category,slg)
@@ -408,6 +411,9 @@ def articleEditInfo(request, category, slg, errMsg="", msg=""):
         returnForm['users'] = users
         returnForm['edito'] = currentArticle.edito
         returnForm['headline'] = currentArticle.headline
+        returnForm['timeline'] = currentArticle.timeline.id
+        eventDetail = currentArticle.timeline.detail.get(language=language)
+        returnForm['timelineDetail'] = currentArticle.timeline.start.strftime('%Y-%m-%d') + " " + eventDetail.content
         returnForm['errMsg'] = errMsg
         returnForm['msg'] = msg
         return render(request, 'admin/editArticleInfo.html', returnForm)

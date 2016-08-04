@@ -92,7 +92,7 @@ function cancelEventSelected() {
   var selected = document.getElementById("eventSelected");
   selected.innerHTML = "";
   var input = document.getElementById("timeline_event_input");
-  input.value=-1;
+  input.value=0;
   timeline.redraw();
 }
 

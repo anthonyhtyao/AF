@@ -162,7 +162,10 @@ def createarticle(request, errMsg="", msg=""):
                     article.category = category
                     article.edito = edito
                     article.headline = headline
-                    article.timeline = TimelineEvent.objects.get(id=data['timeline'])
+                    if data['timeline'] > "0":
+                        article.timeline = TimelineEvent.objects.get(id=data['timeline'])
+                    else:
+                        article.timeline = None
                     article.save()
                 # Article already existes and set its status to 1
                 else:
@@ -328,9 +331,13 @@ def articleEdit(request, category, slg, errMsg="", msg=""):
         returnForm['articles'] = articles
         returnForm['edito'] = currentArticle.edito
         returnForm['headline'] = currentArticle.headline
-        returnForm['timeline'] = currentArticle.timeline.id
-        eventDetail = currentArticle.timeline.detail.get(language=language)
-        returnForm['timelineDetail'] = currentArticle.timeline.start.strftime('%Y-%m-%d') + " " + eventDetail.content
+        try:
+            returnForm['timeline'] = currentArticle.timeline.id
+            eventDetail = currentArticle.timeline.detail.get(language=language)
+            returnForm['timelineDetail'] = currentArticle.timeline.start.strftime('%Y-%m-%d') + " " + eventDetail.content
+        except:
+            returnForm['timeline'] = 0
+            returnForm['timelineDetail'] = "Null"
         returnForm['errMsg'] = errMsg
         returnForm['msg'] = msg
         return render(request, 'admin/createArticle.html', returnForm)
@@ -393,7 +400,10 @@ def articleEditInfo(request, category, slg, errMsg="", msg=""):
         currentArticle.category = category
         currentArticle.edito = edito
         currentArticle.headline = headline
-        currentArticle.timeline = TimelineEvent.objects.get(id=data['timeline'])
+        if data['timeline'] > "0":
+            currentArticle.timeline = TimelineEvent.objects.get(id=data['timeline'])
+        else:
+            currentArticle.timeline = None
         currentArticle.save()
         request.method = ""
         return articleEdit(request,category,slg)
@@ -411,9 +421,13 @@ def articleEditInfo(request, category, slg, errMsg="", msg=""):
         returnForm['users'] = users
         returnForm['edito'] = currentArticle.edito
         returnForm['headline'] = currentArticle.headline
-        returnForm['timeline'] = currentArticle.timeline.id
-        eventDetail = currentArticle.timeline.detail.get(language=language)
-        returnForm['timelineDetail'] = currentArticle.timeline.start.strftime('%Y-%m-%d') + " " + eventDetail.content
+        try:
+            returnForm['timeline'] = currentArticle.timeline.id
+            eventDetail = currentArticle.timeline.detail.get(language=language)
+            returnForm['timelineDetail'] = currentArticle.timeline.start.strftime('%Y-%m-%d') + " " + eventDetail.content
+        except:
+            returnForm['timeline'] = 0
+            returnForm['timelineDetail'] = "Null"
         returnForm['errMsg'] = errMsg
         returnForm['msg'] = msg
         return render(request, 'admin/editArticleInfo.html', returnForm)

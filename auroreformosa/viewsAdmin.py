@@ -481,15 +481,29 @@ def timelineEdit(request):
 def timelineSave(request):
     returnForm, language = init(request)
     if request.method=="POST":
-        data = request.POST
-        start = data['start']
-        end = data['end']
-        event = TimelineEvent.objects.create(start=start)
-        if end!="":
-            event.end = end
-        event.save()
-        detail_fr = TimelineEventDetail.objects.create(content=data['fr'],language="fr")
-        detail_fr.event=event
-        detail_fr.save();
-        return  HttpResponseRedirect('/timeline/edit')
+        data = json.loads(request.body.decode('utf-8'))
+        for event in data:
+            if event['action'] == 'delete':
+                tmp = TimelineEvent.objects.get(id=event['id'])
+                print(tmp)
+                tmp.delete()
+            else:
+                if event['id']=='new':
+                    newEvent = TimelineEvent.objects.create(start=event['start'])
+                    try:
+                        newEvent.end = event['end']
+                    except:
+                        pass
+                    newEvent.save()
+                    newEventDetail = TimelineEventDetail.objects.create(content=event['content'],language=language)
+                    newEventDetail.event = newEvent
+                    newEventDetail.save()
+                else:
+                    eventSelected = TimelineEvent.objects.get(id=event['id'])
+                    eventSelectedDetail = eventSelected.detail.get(language=language)
+                    eventSelected.start = event['start']
+                    eventSelected.save()
+                    eventSelectedDetail.content = event['content']
+                    eventSelectedDetail.save()
+        print(data)
     return HttpResponseRedirect('/')

@@ -1,5 +1,6 @@
 var timeline;
 var timeline_data;
+var timeline_data_changed;
 $(document).ready( function() {
 
     $("#login-btn").click( function (event) {
@@ -28,6 +29,7 @@ function closeTooltip(x) {
 }
 
 //---------- Here is function for timeline -----------
+// Jump up timeline event edit dialog
 function openTimelineDialog(row=-1) {
   if (row>=0) {
     var event = timeline_data[row];
@@ -39,7 +41,61 @@ function openTimelineDialog(row=-1) {
   $("#timelineDialog").dialog("open");
 }
 
+// Send timeline_data_changed to djangos views
+function updateTimelineData() {
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+  }
+  var csrftoken = getCookie('csrftoken');
+  function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+  }
+  $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+      }
+  });
+  for (var i=0; i<timeline_data.length; i++) {
+    var obj = timeline_data[i];
+    if (obj.id == "new") {
+      var tmp = obj;
+      tmp.start = jsDateConvert(obj.start);
+      var end = jsDateConvert(obj.end);
+      if (end != 'N/A') {
+        tmp.end = end;
+      }
+      timeline_data_changed.push(tmp);
+    }
+  }
+  $.ajax({
+    type:"POST",
+    url:"/timeline/save",
+    data:JSON.stringify(timeline_data_changed)
+  });
+}
+
+// Delete event selected on timeline div, add event in timeline_data_changed
 function deleteEvent(row) {
+  var obj = timeline_data[row];
+  if (obj.id != 'new') {
+    obj['action'] = 'delete';
+    timeline_data_changed.push(obj);
+  }
   timeline.deleteItem(row);
   var info = document.getElementById('info');
   info.innerHTML =
@@ -49,24 +105,41 @@ function deleteEvent(row) {
 function saveEvent(row=-1) {
   var range = timeline.getVisibleChartRange();
   var start = new Date(document.getElementById("timeline_start").value);
+  var endValue = document.getElementById("timeline_end").value;
   var content = document.getElementById("timeline_content").value;
   $("#timelineDialog").dialog("close");
 
   if (row==-1) {
-    timeline.addItem({
-      'start': start,
-      'content': content,
-      'className': 'timeline-event-select',
-    });
-    var count = timeline_data.length;
+    var item = {'id':'new','start':start,'content':content,'className':'timeline-event-select','action':'edit'};
+    if (endValue) {
+      item['end'] = new Date(endValue);
+    }
+    timeline.addItem(item);
+    row = timeline_data.length-1;
     timeline.setSelection([{
-      'row': count-1
+      'row': row
     }]);
+    var info = document.getElementById('info');
+    console.log("open info");
+    info.innerHTML =
+      "<span>Detail : </span> <span onclick='openTimelineDialog()' style='color:green' class='glyphicon glyphicon-plus'></span>"
+      + "<span onclick='deleteEvent(" + row + ")' style='color:red' class='glyphicon glyphicon-minus'></span>"
+      + "<span onclick='openTimelineDialog(" + row + ")' class='glyphicon glyphicon-pencil'></span>"
+      + "<br>ID : new"
+      + "<br>Start : " + jsDateConvert(item.start)
+      + "<br>End : " + jsDateConvert(item.end)
+      + "<br>Content : " + content;
   }
   else {
     var event = timeline_data[row];
     event.start = start;
     event.content = content;
+    var tmp = {};
+    tmp.id = event.id;
+    tmp.content = event.content;
+    tmp.action = 'edit';
+    tmp.start = jsDateConvert(event.start);
+    timeline_data_changed.push(tmp);
     timeline.redraw();
     timeline.setSelection([{'row': row}]);
   }
@@ -102,6 +175,7 @@ function drawVisualization() {
   var action = e.getAttribute("data-action");
   var ind = e.getAttribute("data-value");
   timeline_data = [];
+  timeline_data_changed = [];
   function turnToDate(date) {
     var lst = date.split("-");
     return new Date(lst[0],lst[1],lst[2]);

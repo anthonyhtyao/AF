@@ -495,6 +495,10 @@ def timelineSave(request):
             newEventDetail = TimelineEventDetail.objects.create(content=data['content'],language=language)
             newEventDetail.event = newEvent
             newEventDetail.save()
+            d={}
+            d['id'] = newEvent.id;
+            return  HttpResponse(json.dumps(d), content_type="application/json")
+
         elif data['action']=='edit':
             eventSelected = TimelineEvent.objects.get(id=data['id'])
             eventSelectedDetail = eventSelected.detail.get(language=language)

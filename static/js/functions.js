@@ -101,7 +101,7 @@ function saveEvent(row=-1) {
   $("#timelineDialog").dialog("close");
   preAjax();
   if (row==-1) {
-    var item = {'id':'new','start':start,'content':content,'className':'timeline-event-select','action':'add'};
+    var item = {'start':start,'content':content,'className':'timeline-event-select','action':'add'};
     data={'action':'add','content':item.content,'start':jsDateConvert(item.start)};
     if (endValue) {
       item['end'] = new Date(endValue);
@@ -111,7 +111,8 @@ function saveEvent(row=-1) {
       type:"POST",
       url:"/timeline/save",
       data:JSON.stringify(data),
-      success: function() {
+      success: function(data) {
+        item.id = JSON.parse(data['id']);
         timeline.addItem(item);
         row = timeline_data.length-1;
         timeline.setSelection([{
@@ -123,7 +124,7 @@ function saveEvent(row=-1) {
         "<span>Detail : </span> <span onclick='openTimelineDialog()' style='color:green' class='glyphicon glyphicon-plus'></span>"
         + "<span onclick='deleteEvent(" + row + ")' style='color:red' class='glyphicon glyphicon-minus'></span>"
         + "<span onclick='openTimelineDialog(" + row + ")' class='glyphicon glyphicon-pencil'></span>"
-        + "<br>ID : new"
+        + "<br>ID : " + item.id
         + "<br>Start : " + jsDateConvert(item.start)
         + "<br>End : " + jsDateConvert(item.end)
         + "<br>Content : " + content;
@@ -155,7 +156,7 @@ function saveEvent(row=-1) {
         "<span>Detail : </span> <span onclick='openTimelineDialog()' style='color:green' class='glyphicon glyphicon-plus'></span>"
         + "<span onclick='deleteEvent(" + row + ")' style='color:red' class='glyphicon glyphicon-minus'></span>"
         + "<span onclick='openTimelineDialog(" + row + ")' class='glyphicon glyphicon-pencil'></span>"
-        + "<br>ID : new"
+        + "<br>ID : " + event.id
         + "<br>Start : " + jsDateConvert(event.start)
         + "<br>End : " + jsDateConvert(event.end)
         + "<br>Content : " + content;
@@ -169,7 +170,7 @@ function jsDateConvert(time) {
   if (time) {
     var date = new Date(time);
     var year = date.getFullYear();
-    var month = date.getMonth();
+    var month = date.getMonth()+1;
     var d = date.getDate();
     s = year + "-" + month + "-" + d;
   }
@@ -195,7 +196,7 @@ function drawVisualization() {
   timeline_data_changed = [];
   function turnToDate(date) {
     var lst = date.split("-");
-    return new Date(lst[0],lst[1],lst[2]);
+    return new Date(lst[0],lst[1]-1,lst[2]);
   };
 
   var options = {

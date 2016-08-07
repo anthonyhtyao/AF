@@ -482,28 +482,37 @@ def timelineSave(request):
     returnForm, language = init(request)
     if request.method=="POST":
         data = json.loads(request.body.decode('utf-8'))
-        for event in data:
-            if event['action'] == 'delete':
-                tmp = TimelineEvent.objects.get(id=event['id'])
-                print(tmp)
-                tmp.delete()
-            else:
-                if event['id']=='new':
-                    newEvent = TimelineEvent.objects.create(start=event['start'])
-                    try:
-                        newEvent.end = event['end']
-                    except:
-                        pass
-                    newEvent.save()
-                    newEventDetail = TimelineEventDetail.objects.create(content=event['content'],language=language)
-                    newEventDetail.event = newEvent
-                    newEventDetail.save()
-                else:
-                    eventSelected = TimelineEvent.objects.get(id=event['id'])
-                    eventSelectedDetail = eventSelected.detail.get(language=language)
-                    eventSelected.start = event['start']
-                    eventSelected.save()
-                    eventSelectedDetail.content = event['content']
-                    eventSelectedDetail.save()
-        print(data)
+        if data['action']=="delete":
+            event = TimelineEvent.objects.get(id=data['id'])
+            event.delete()
+        elif data['action']=='add':
+            newEvent = TimelineEvent.objects.create(start=data['start'])
+            try:
+                newEvent.end = data['end']
+            except:
+                pass
+            newEvent.save()
+            newEventDetail = TimelineEventDetail.objects.create(content=data['content'],language=language)
+            newEventDetail.event = newEvent
+            newEventDetail.save()
+        elif data['action']=='edit':
+            eventSelected = TimelineEvent.objects.get(id=data['id'])
+            eventSelectedDetail = eventSelected.detail.get(language=language)
+            eventSelected.start = data['start']
+            try:
+                eventSelected.end = data['end']
+            except:
+                pass
+            eventSelected.save()
+            eventSelectedDetail.content = data['content']
+            eventSelectedDetail.save()
+
+        # for event in data:
+        #     if event['action'] == 'delete':
+        #         tmp = TimelineEvent.objects.get(id=event['id'])
+        #         print(tmp)
+        #         tmp.delete()
+        #     else:
+        #         if event['id']=='new':
+        #         else:
     return HttpResponseRedirect('/')

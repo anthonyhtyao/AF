@@ -30,19 +30,7 @@ function closeTooltip(x) {
 
 //---------- Here is function for timeline -----------
 // Jump up timeline event edit dialog
-function openTimelineDialog(row=-1) {
-  if (row>=0) {
-    var event = timeline_data[row];
-    document.getElementById("timeline_start").value = jsDateConvert(event.start);
-    document.getElementById("timeline_end").value = jsDateConvert(event.end);
-    document.getElementById("timeline_content").value = event.content;
-  }
-  document.getElementById("timeline_save").setAttribute("onclick","saveEvent(" + row + ")");
-  $("#timelineDialog").dialog("open");
-}
-
-// Send timeline_data_changed to djangos views
-function updateTimelineData() {
+function preAjax() {
   function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -70,23 +58,17 @@ function updateTimelineData() {
           }
       }
   });
-  for (var i=0; i<timeline_data.length; i++) {
-    var obj = timeline_data[i];
-    if (obj.id == "new") {
-      var tmp = obj;
-      tmp.start = jsDateConvert(obj.start);
-      var end = jsDateConvert(obj.end);
-      if (end != 'N/A') {
-        tmp.end = end;
-      }
-      timeline_data_changed.push(tmp);
-    }
+}
+
+function openTimelineDialog(row=-1) {
+  if (row>=0) {
+    var event = timeline_data[row];
+    document.getElementById("timeline_start").value = jsDateConvert(event.start);
+    document.getElementById("timeline_end").value = jsDateConvert(event.end);
+    document.getElementById("timeline_content").value = event.content;
   }
-  $.ajax({
-    type:"POST",
-    url:"/timeline/save",
-    data:JSON.stringify(timeline_data_changed)
-  });
+  document.getElementById("timeline_save").setAttribute("onclick","saveEvent(" + row + ")");
+  $("#timelineDialog").dialog("open");
 }
 
 // Delete event selected on timeline div, add event in timeline_data_changed
@@ -96,10 +78,19 @@ function deleteEvent(row) {
     obj['action'] = 'delete';
     timeline_data_changed.push(obj);
   }
-  timeline.deleteItem(row);
-  var info = document.getElementById('info');
-  info.innerHTML =
-    "<span>Detail : </span> <span onclick='openTimelineDialog()' style='color:green' class='glyphicon glyphicon-plus'></span>";
+  var data={'action':'delete','id':obj.id};
+  preAjax();
+  $.ajax({
+    type:"POST",
+    url:"/timeline/save",
+    data:JSON.stringify(data),
+    success: function() {
+      timeline.deleteItem(row);
+      var info = document.getElementById('info');
+      info.innerHTML =
+      "<span>Detail : </span> <span onclick='openTimelineDialog()' style='color:green' class='glyphicon glyphicon-plus'></span>";
+    }
+  });
 }
 
 function saveEvent(row=-1) {
@@ -108,40 +99,68 @@ function saveEvent(row=-1) {
   var endValue = document.getElementById("timeline_end").value;
   var content = document.getElementById("timeline_content").value;
   $("#timelineDialog").dialog("close");
-
+  preAjax();
   if (row==-1) {
-    var item = {'id':'new','start':start,'content':content,'className':'timeline-event-select','action':'edit'};
+    var item = {'id':'new','start':start,'content':content,'className':'timeline-event-select','action':'add'};
+    data={'action':'add','content':item.content,'start':jsDateConvert(item.start)};
     if (endValue) {
       item['end'] = new Date(endValue);
+      data['end'] = endValue;
     }
-    timeline.addItem(item);
-    row = timeline_data.length-1;
-    timeline.setSelection([{
-      'row': row
-    }]);
-    var info = document.getElementById('info');
-    console.log("open info");
-    info.innerHTML =
-      "<span>Detail : </span> <span onclick='openTimelineDialog()' style='color:green' class='glyphicon glyphicon-plus'></span>"
-      + "<span onclick='deleteEvent(" + row + ")' style='color:red' class='glyphicon glyphicon-minus'></span>"
-      + "<span onclick='openTimelineDialog(" + row + ")' class='glyphicon glyphicon-pencil'></span>"
-      + "<br>ID : new"
-      + "<br>Start : " + jsDateConvert(item.start)
-      + "<br>End : " + jsDateConvert(item.end)
-      + "<br>Content : " + content;
+    $.ajax({
+      type:"POST",
+      url:"/timeline/save",
+      data:JSON.stringify(data),
+      success: function() {
+        timeline.addItem(item);
+        row = timeline_data.length-1;
+        timeline.setSelection([{
+          'row': row
+        }]);
+        var info = document.getElementById('info');
+
+        info.innerHTML =
+        "<span>Detail : </span> <span onclick='openTimelineDialog()' style='color:green' class='glyphicon glyphicon-plus'></span>"
+        + "<span onclick='deleteEvent(" + row + ")' style='color:red' class='glyphicon glyphicon-minus'></span>"
+        + "<span onclick='openTimelineDialog(" + row + ")' class='glyphicon glyphicon-pencil'></span>"
+        + "<br>ID : new"
+        + "<br>Start : " + jsDateConvert(item.start)
+        + "<br>End : " + jsDateConvert(item.end)
+        + "<br>Content : " + content;
+      }
+    });
   }
   else {
     var event = timeline_data[row];
     event.start = start;
     event.content = content;
-    var tmp = {};
-    tmp.id = event.id;
-    tmp.content = event.content;
-    tmp.action = 'edit';
-    tmp.start = jsDateConvert(event.start);
-    timeline_data_changed.push(tmp);
-    timeline.redraw();
-    timeline.setSelection([{'row': row}]);
+    var data = {};
+    data.id = event.id;
+    data.content = event.content;
+    data.action = 'edit';
+    data.start = jsDateConvert(event.start);
+    if (endValue) {
+      event.end = new Date(endValue);
+      data['end'] = endValue;
+    }
+    $.ajax({
+      type:'POST',
+      url:'/timeline/save',
+      data:JSON.stringify(data),
+      success: function(){
+        timeline.redraw();
+        timeline.setSelection([{'row': row}]);
+        var info = document.getElementById('info');
+        info.innerHTML =
+        "<span>Detail : </span> <span onclick='openTimelineDialog()' style='color:green' class='glyphicon glyphicon-plus'></span>"
+        + "<span onclick='deleteEvent(" + row + ")' style='color:red' class='glyphicon glyphicon-minus'></span>"
+        + "<span onclick='openTimelineDialog(" + row + ")' class='glyphicon glyphicon-pencil'></span>"
+        + "<br>ID : new"
+        + "<br>Start : " + jsDateConvert(event.start)
+        + "<br>End : " + jsDateConvert(event.end)
+        + "<br>Content : " + content;
+      }
+    });
   }
 };
 
@@ -154,8 +173,6 @@ function jsDateConvert(time) {
     var d = date.getDate();
     s = year + "-" + month + "-" + d;
   }
-  else
-  s = "N/A";
   return s;
 };
 

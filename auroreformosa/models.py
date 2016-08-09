@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
+from PIL import Image
 # Create your models here.
 
 class UserProfile(models.Model):
@@ -16,6 +17,19 @@ class Img(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        """
+        Save Photo after ensuring it is not blank.  Resize as needed.
+        """
+        super(Img, self).save(*args, **kwargs)
+
+        filename = self.imgfile.name
+        url = self.imgfile.url
+        image = Image.open(url[1:])
+        size = (1280,720)
+        image.thumbnail(size, Image.ANTIALIAS)
+        image.save(url[1:])
 
 class Numero(models.Model):
     numero = models.FloatField()

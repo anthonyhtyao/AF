@@ -162,6 +162,10 @@ def createarticle(request, errMsg="", msg=""):
                     article.category = category
                     article.edito = edito
                     article.headline = headline
+                    if data['timeline'] > "0":
+                        article.timeline = TimelineEvent.objects.get(id=data['timeline'])
+                    else:
+                        article.timeline = None
                     article.save()
                 # Article already existes and set its status to 1
                 else:
@@ -327,6 +331,13 @@ def articleEdit(request, category, slg, errMsg="", msg=""):
         returnForm['articles'] = articles
         returnForm['edito'] = currentArticle.edito
         returnForm['headline'] = currentArticle.headline
+        try:
+            returnForm['timeline'] = currentArticle.timeline.id
+            eventDetail = currentArticle.timeline.detail.get(language=language)
+            returnForm['timelineDetail'] = currentArticle.timeline.start.strftime('%Y-%m-%d') + " " + eventDetail.content
+        except:
+            returnForm['timeline'] = 0
+            returnForm['timelineDetail'] = "Null"
         returnForm['errMsg'] = errMsg
         returnForm['msg'] = msg
         return render(request, 'admin/createArticle.html', returnForm)
@@ -389,6 +400,10 @@ def articleEditInfo(request, category, slg, errMsg="", msg=""):
         currentArticle.category = category
         currentArticle.edito = edito
         currentArticle.headline = headline
+        if data['timeline'] > "0":
+            currentArticle.timeline = TimelineEvent.objects.get(id=data['timeline'])
+        else:
+            currentArticle.timeline = None
         currentArticle.save()
         request.method = ""
         return articleEdit(request,category,slg)
@@ -406,6 +421,13 @@ def articleEditInfo(request, category, slg, errMsg="", msg=""):
         returnForm['users'] = users
         returnForm['edito'] = currentArticle.edito
         returnForm['headline'] = currentArticle.headline
+        try:
+            returnForm['timeline'] = currentArticle.timeline.id
+            eventDetail = currentArticle.timeline.detail.get(language=language)
+            returnForm['timelineDetail'] = currentArticle.timeline.start.strftime('%Y-%m-%d') + " " + eventDetail.content
+        except:
+            returnForm['timeline'] = 0
+            returnForm['timelineDetail'] = "Null"
         returnForm['errMsg'] = errMsg
         returnForm['msg'] = msg
         return render(request, 'admin/editArticleInfo.html', returnForm)
@@ -449,3 +471,52 @@ def articlePreview(request,category,slg):
         return HttpResponseRedirect(reverse('article', args=(str(a.category),a.slg,)))
     else:
         return article(request,category,slg,status=1)
+
+@login_required
+def timelineEdit(request):
+    returnForm, language = init(request)
+    return render(request, 'admin/timelineEdit.html',returnForm)
+
+@login_required
+def timelineSave(request):
+    returnForm, language = init(request)
+    if request.method=="POST":
+        data = json.loads(request.body.decode('utf-8'))
+        if data['action']=="delete":
+            event = TimelineEvent.objects.get(id=data['id'])
+            event.delete()
+        elif data['action']=='add':
+            newEvent = TimelineEvent.objects.create(start=data['start'])
+            try:
+                newEvent.end = data['end']
+            except:
+                pass
+            newEvent.save()
+            newEventDetail = TimelineEventDetail.objects.create(content=data['content'],language=language)
+            newEventDetail.event = newEvent
+            newEventDetail.save()
+            d={}
+            d['id'] = newEvent.id;
+            return  HttpResponse(json.dumps(d), content_type="application/json")
+
+        elif data['action']=='edit':
+            eventSelected = TimelineEvent.objects.get(id=data['id'])
+            eventSelectedDetail = eventSelected.detail.get(language=language)
+            eventSelected.start = data['start']
+            try:
+                eventSelected.end = data['end']
+            except:
+                pass
+            eventSelected.save()
+            eventSelectedDetail.content = data['content']
+            eventSelectedDetail.save()
+
+        # for event in data:
+        #     if event['action'] == 'delete':
+        #         tmp = TimelineEvent.objects.get(id=event['id'])
+        #         print(tmp)
+        #         tmp.delete()
+        #     else:
+        #         if event['id']=='new':
+        #         else:
+    return HttpResponseRedirect('/')

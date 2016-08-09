@@ -44,6 +44,13 @@ class Tag(models.Model):
     def __str__(self):
         return self.tag
 
+class TimelineEvent(models.Model):
+    start = models.DateField()
+    end = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return "Timeline event at " + self.start.strftime('%Y-%m-%d')
+
 # field image is the head image of article
 # field gallery store all images of this article, can be null
 # one edito and one headline for each numero, an article cannot be edito and headline in same time
@@ -61,6 +68,7 @@ class Article(models.Model):
     headline = models.BooleanField(default=False)
     tags = models.ManyToManyField(Tag, blank=True)
     status = models.SmallIntegerField(default = 1)
+    timeline = models.ForeignKey(TimelineEvent,null=True,blank=True)
 
     def __str__(self):
         return self.title
@@ -139,3 +147,15 @@ class TagDetail(models.Model):
 
     def __str__(self):
         return self.title
+
+class TimelineEventDetail(models.Model):
+    LANGUAGES = (
+        ('fr', 'Français'),
+        ('tw', '繁體中文'),
+    )
+    event = models.ForeignKey(TimelineEvent, null = True, related_name="detail")
+    content = models.CharField(max_length = 20)
+    language = models.CharField(max_length = 2, choices = LANGUAGES, default = 'fr')
+
+    def __str__(self):
+        return self.language + " " + self.content

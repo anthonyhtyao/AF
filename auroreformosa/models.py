@@ -13,6 +13,7 @@ class UserProfile(models.Model):
 
 class Img(models.Model):
     imgfile = models.FileField(upload_to='img')
+    imgfile_m = models.FileField(upload_to='img/middle', null=True, blank=True)
     title = models.CharField(max_length=256, null=True)
 
     def __str__(self):
@@ -24,12 +25,18 @@ class Img(models.Model):
         """
         super(Img, self).save(*args, **kwargs)
 
-        filename = self.imgfile.name
         url = self.imgfile.url
         image = Image.open(url[1:])
         size = (1280,720)
         image.thumbnail(size, Image.ANTIALIAS)
         image.save(url[1:])
+        url_m = self.imgfile_m.url
+        image_m = Image.open(url[1:])
+        size_m = (500,500)
+        image_m.thumbnail(size_m, Image.ANTIALIAS)
+        image_m.save(url_m[1:])
+
+
 
 class Numero(models.Model):
     numero = models.FloatField()

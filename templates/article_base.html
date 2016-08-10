@@ -44,7 +44,7 @@
       <hr>
         <ul class="list-unstyled list-inline">
         {% for article in articleRelated %}
-          <li class="col-md-3"><div class ="thumbnail"><center><a href="#">{{ article.title }}</a></center><img src="{{ article.article.image.imgfile.url }}"></div></li>
+          <li class="col-md-3"><div class ="thumbnail"><center><a href="#">{{ article.title }}</a></center><img src="{{ article.article.image.imgfile_m.url }}"></div></li>
         {% endfor %}
         </ul>
       </div>

@@ -36,7 +36,7 @@
     <br />
     <p>Image:
     {% if currentArticle.image %}
-      <a title="" href="#" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{currentArticle.image.imgfile.url}}">{{currentArticle.image}}</a></p>
+      <a title="" href="#" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{currentArticle.image.imgfile_m.url}}">{{currentArticle.image}}</a></p>
     {% else %}
     </p>
       {% if not currentArticle %}
@@ -47,7 +47,7 @@
     <p>Gallery:
     {% if currentGallery %}
       {% for img in currentGallery %}
-        <a title="" href="#" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{img.imgfile.url}}">{{img}}</a>
+        <a title="" href="#" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{img.imgfile_m.url}}">{{img}}</a>
       {% endfor %}
     {% else %}
       <span id="toggleGallery" class="glyphicon glyphicon-triangle-bottom"></span></p>

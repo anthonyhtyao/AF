@@ -17,7 +17,7 @@
 </div>
 
 <div class="col-md-8 col-md-offset-2">
-  <p><img src="{{numero.image.imgfile.url}}" width="100%"></p>
+  <p><img src="{{numero.image.imgfile_m.url}}" width="100%"></p>
 </div>
 
 <div class="col-md-8 col-md-offset-2">
@@ -26,7 +26,7 @@
     <dl class="dl-horizontal">
       {% for comic in comics %}
         <dt>{{comic.article.category}}</dt>
-        <dd><a href="/comics/{{comic.article.slg}}" title="{{comic.article}}">{{comic}}</a></dd>        
+        <dd><a href="/comics/{{comic.article.slg}}" title="{{comic.article}}">{{comic}}</a></dd>
       {% endfor %}
       {% for article in articles %}
         <dt>{{article.article.category}}</dt>

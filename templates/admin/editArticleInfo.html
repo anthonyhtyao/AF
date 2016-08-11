@@ -17,7 +17,7 @@
     <br />
     Image:
     {% if currentArticle.image %}
-    <a title="" href="#" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{currentArticle.image.imgfile.url}}">{{currentArticle.image}}</a>
+    <a title="" href="#" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{currentArticle.image.imgfile_s.url}}">{{currentArticle.image}}</a>
     {% endif %}
     <p><input type='file' name='imgfile'> </p>
     <p>Gallery: <span id="toggleGallery" class="glyphicon glyphicon-triangle-bottom"></span></p>

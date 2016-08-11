@@ -24,7 +24,7 @@ def uploadImg(request):
             for form in formset.cleaned_data:
                 if form != {}:
                     title = str(form['imgfile'])
-                    newImg = Img(imgfile = form['imgfile'], imgfile_m = form['imgfile'], title=title)
+                    newImg = Img(imgfile = form['imgfile'], imgfile_m = form['imgfile'], imgfile_s = form['imgfile'], title=title)
                     newImg.save()
     returnForm['formset'] = ImageFormSet
     return render(request,'admin/upload.html', returnForm)

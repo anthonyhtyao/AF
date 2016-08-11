@@ -11,7 +11,7 @@
       <li> Image :
         {% if dist.image != None %}
         <!--Display archive image when mouse over -->
-        <a title="" href="#" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{dist.image.imgfile_m.url}}">{{dist.image}}</a>
+        <a title="" href="#" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{dist.image.imgfile_s.url}}">{{dist.image}}</a>
         {% else %}
         Not exists
         {% endif %}
@@ -44,12 +44,12 @@
           <li>
                FR :
             {% if c.comicFR != "" %}
-              <a class="FR" href="/comics/{{c.comicFR.article.slg}}" title="" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{c.comicFR.image.imgfile_m.url}}" >{{c.comicFR}}</a>
+              <a class="FR" href="/comics/{{c.comicFR.article.slg}}" title="" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{c.comicFR.image.imgfile_s.url}}" >{{c.comicFR}}</a>
             {% else %}
               Not exists
             {% endif %} / TW :
             {% if c.comicTW != "" %}
-              <a class="TW" href="/comics/{{c.comicTW.article.slg}}" title="" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{c.comicTW.image.imgfile_m.url}}" >{{c.comicTW}}</a>
+              <a class="TW" href="/comics/{{c.comicTW.article.slg}}" title="" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{c.comicTW.image.imgfile_s.url}}" >{{c.comicTW}}</a>
             {% else %}
               Not exists
             {% endif %}

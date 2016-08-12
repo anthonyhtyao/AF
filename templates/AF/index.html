@@ -32,7 +32,7 @@
               <h4><strong style="color:{{newestArticle1.article.category.color}}; ">▍</strong>{{newestArticle1Cat}}</h4>
             </div>
             <div class="colorOverlay"></div>
-            <img src="{{newestArticle1.article.image.imgfile.url}}" width="100%" height="100%">
+            <img src="{{newestArticle1.article.image.imgfile_m.url}}" width="100%" height="100%">
           </div>
         </a>
       </div>
@@ -46,7 +46,7 @@
               <h4><strong style="color:{{newestArticle2.article.category.color}}; ">▍</strong>{{newestArticle2Cat}}</h4>
             </div>
             <div class="colorOverlay"></div>
-            <img src="{{newestArticle2.article.image.imgfile.url}}" width="100%" height="100%">
+            <img src="{{newestArticle2.article.image.imgfile_m.url}}" width="100%" height="100%">
           </div>
         </a>
       </div>
@@ -59,7 +59,7 @@
               <h4><strong style="color:{{newestArticle3.article.category.color}}; ">▍</strong>{{newestArticle3Cat}}</h4>
             </div>
             <div class="colorOverlay"></div>
-            <img src="{{newestArticle3.article.image.imgfile.url}}" width="100%" height="100%">
+            <img src="{{newestArticle3.article.image.imgfile_m.url}}" width="100%" height="100%">
           </div>
         </a>
       </div>
@@ -75,7 +75,7 @@
               {% endif %}
             </div>
             <div class="colorOverlay"></div>
-            <img src="{{comicArticle.image.imgfile.url}}" width="100%" height="100%">
+            <img src="{{comicArticle.image.imgfile_m.url}}" width="100%" height="100%">
           </div>
         </a>
       </div>
@@ -91,7 +91,7 @@
       {% for numero in numeros.reverse|slice:":6"%}
       <div class="col-md-2 text-center">
         <a href="/no/{{numero}}" title="numero {{numero}}">
-          <img width="100%" src="{{numero.image.imgfile.url}}">
+          <img width="100%" src="{{numero.image.imgfile_s.url}}">
         </a>
       </div>
       {% endfor %}

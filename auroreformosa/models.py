@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
+from PIL import Image
 # Create your models here.
 
 class UserProfile(models.Model):
@@ -12,10 +13,40 @@ class UserProfile(models.Model):
 
 class Img(models.Model):
     imgfile = models.FileField(upload_to='img')
+    imgfile_m = models.FileField(upload_to='img/middle', null=True, blank=True)
+    imgfile_s = models.FileField(upload_to='img/small', null=True, blank=True)
     title = models.CharField(max_length=256, null=True)
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        """
+        Save Photo after ensuring it is not blank.  Resize as needed.
+        """
+        super(Img, self).save(*args, **kwargs)
+        url = self.imgfile.url
+        image = Image.open(url[1:])
+        width, height = image.size
+        if width/height >= 1:
+            size = (1280,1280)
+            size_m = (700,700)
+            size_s = (300,300)
+        else:
+            size = (1000,1000)
+            size_m = (500,500)
+            size_s = (200,200)
+
+        image.thumbnail(size, Image.ANTIALIAS)
+        image.save(url[1:])
+        url_m = self.imgfile_m.url
+        image_m = Image.open(url[1:])
+        image_m.thumbnail(size_m, Image.ANTIALIAS)
+        image_m.save(url_m[1:])
+        url_s = self.imgfile_s.url
+        image_s = Image.open(url_s[1:])
+        image_s.thumbnail(size_s, Image.ANTIALIAS)
+        image_s.save(url_s[1:])
 
 class Numero(models.Model):
     numero = models.FloatField()

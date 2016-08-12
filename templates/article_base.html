@@ -20,9 +20,9 @@
 {% endblock  %}
 
 {% block body_block %}
-{% if article.article.image.imgfile.url %}
+{% if article.article.image.imgfile_m.url %}
   <div class="col-md-10 col-md-offset-1">
-    <img src="{{article.article.image.imgfile.url}}" width="100%">
+    <img src="{{article.article.image.imgfile_m.url}}" width="100%">
   </div>
 {% endif %}
   <div class="container">
@@ -34,7 +34,7 @@
     <div style="height:100%">
       <ul class="list-unstyled list-inline fixHeight">
         {% for img in gallery %}
-        <li class="col-md-2 fixHeight"><img src="{{img.imgfile.url}}" height="100%"></li>
+        <li class="col-md-2 fixHeight"><img src="{{img.imgfile_s.url}}" height="100%"></li>
         {% endfor %}
       </ul>
     </div>
@@ -44,7 +44,7 @@
       <hr>
         <ul class="list-unstyled list-inline">
         {% for article in articleRelated %}
-          <li class="col-md-3"><div class ="thumbnail"><center><a href="#">{{ article.title }}</a></center><img src="{{ article.article.image.imgfile.url }}"></div></li>
+          <li class="col-md-3"><div class ="thumbnail"><center><a href="#">{{ article.title }}</a></center><img src="{{ article.article.image.imgfile_s.url }}"></div></li>
         {% endfor %}
         </ul>
       </div>

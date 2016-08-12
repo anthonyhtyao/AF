@@ -51,8 +51,9 @@ def createComic(request, errMsg="", success="", warnMsg=""):
             article.numero = numero
             article.save()
             try:
-                imgTitleFR = str(request.FILES['imgfileFR']).split("/")[-1]
-                imgFR = Img(imgfile = request.FILES['imgfileFR'],title=imgTitleFR)
+                form = request.FILES
+                imgTitleFR = str(form['imgfileFR']).split("/")[-1]
+                imgFR = Img(imgfile = form['imgfileFR'], imgfile_m = form['imgfileFR'], imgfile_s = form['imgfileFR'], title=imgTitleFR)
                 imgFR.save()
                 comic = Comic.objects.create(title = titleFR)
                 comic.article = article
@@ -65,8 +66,8 @@ def createComic(request, errMsg="", success="", warnMsg=""):
             titleTW = data['titleTW']
             if titleTW != "":
                 try:
-                    imgTitleTW = str(request.FILES['imgfileTW']).split("/")[-1]
-                    imgTW = Img(imgfile = request.FILES['imgfileTW'],title=imgTitleTW)
+                    imgTitleTW = str(form['imgfileTW']).split("/")[-1]
+                    imgTW = Img(imgfile = form['imgfileTW'], imgfile_m = form['imgfileTW'], imgfile_s = form['imgfileTW'], title=imgTitleTW)
                     imgTW.save()
                     comic = Comic.objects.create(title = titleTW)
                     comic.article = article
@@ -138,7 +139,7 @@ def createarticle(request, errMsg="", msg=""):
                     # Upload Image
                     try:
                         imgTitle = str(request.FILES['imgfile']).split("/")[-1]
-                        img = Img(imgfile = request.FILES['imgfile'],title=imgTitle)
+                        img = Img(imgfile = form['imgfile'], imgfile_m = form['imgfile'], imgfile_s = form['imgfile'], title=imgTitle)
                         img.save()
                         article.image = img
                     except:
@@ -148,7 +149,7 @@ def createarticle(request, errMsg="", msg=""):
                     for f in formset.cleaned_data:
                         if f != {}:
                             title = str(f['imgfile'])
-                            newImg = Img(imgfile = f['imgfile'], title=title)
+                            newImg = Img(imgfile = f['imgfile'], imgfile_m = f['imgfile'], imgfile_s = f['imgfile'], title=title)
                             newImg.save()
                             article.gallery.add(newImg)
 
@@ -373,8 +374,9 @@ def articleEditInfo(request, category, slg, errMsg="", msg=""):
         except:
             headline = False
         try:
-            imgTitle = str(request.FILES['imgfile']).split("/")[-1]
-            img = Img(imgfile = request.FILES['imgfile'],title=imgTitle)
+            f = request.FILES
+            imgTitle = str(f['imgfile']).split("/")[-1]
+            Img = Img(imgfile = f['imgfile'], imgfile_m = f['imgfile'], imgfile_s = f['imgfile'], title=imgTitle)
             img.save()
             currentArticle.image = img
         except:
@@ -387,7 +389,7 @@ def articleEditInfo(request, category, slg, errMsg="", msg=""):
                 # Create a new class Img if image is new
                 if type(f['imgfile']) == InMemoryUploadedFile:
                     title = str(f['imgfile'])
-                    newImg = Img(imgfile = f['imgfile'], title=title)
+                    newImg = Img(imgfile = f['imgfile'], imgfile_m = f['imgfile'], imgfile_s = f['imgfile'], title=title)
                     newImg.save()
                     currentArticle.gallery.add(newImg)
                 else:

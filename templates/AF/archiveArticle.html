@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% block title_block %}No {{numero}} {% if language == "fr" %}{{numero.titleFR}}{% else %}{{numero.titleTW}}{% endif %}{% endblock %}
 {% block body_block %}
 {% load static %}
 <!-- This page presents information of given numero, url for this page: /no/:id-->

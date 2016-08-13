@@ -139,7 +139,7 @@ def createarticle(request, errMsg="", msg=""):
                     # Upload Image
                     try:
                         imgTitle = str(request.FILES['imgfile']).split("/")[-1]
-                        img = Img(imgfile = form['imgfile'], imgfile_m = form['imgfile'], imgfile_s = form['imgfile'], title=imgTitle)
+                        img = Img(imgfile = request.FILES['imgfile'], imgfile_m = request.FILES['imgfile'], imgfile_s = request.FILES['imgfile'], title=imgTitle)
                         img.save()
                         article.image = img
                     except:

@@ -376,7 +376,7 @@ def articleEditInfo(request, category, slg, errMsg="", msg=""):
         try:
             f = request.FILES
             imgTitle = str(f['imgfile']).split("/")[-1]
-            Img = Img(imgfile = f['imgfile'], imgfile_m = f['imgfile'], imgfile_s = f['imgfile'], title=imgTitle)
+            img = Img(imgfile = f['imgfile'], imgfile_m = f['imgfile'], imgfile_s = f['imgfile'], title=imgTitle)
             img.save()
             currentArticle.image = img
         except:

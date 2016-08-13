@@ -55,6 +55,43 @@ function setLanguage(language) {
   });
 }
 
+// --------------------- For popup message --------------------------
+
+function dangerPopup(msg) {
+  var model = document.getElementById("popupMsg");
+  model.className = "alert alert-danger popup";
+  model.innerHTML = msg;
+  model.style.display = "block";
+  setTimeout(function(){model.style.display="none"}, 3000); // Hide popup after 3s
+}
+
+function successPopup(msg) {
+  var model = document.getElementById("popupMsg");
+  model.className = "alert alert-success popup";
+  model.innerHTML = msg;
+  model.style.display = "block";
+  setTimeout(function(){model.style.display="none"}, 3000); // Hide popup after 3s
+}
+
+function infoPopup(msg) {
+  var model = document.getElementById("popupMsg");
+  model.className = "alert alert-info popup";
+  model.innerHTML = msg;
+  model.style.display = "block";
+  setTimeout(function(){model.style.display="none"}, 3000); // Hide popup after 3s
+}
+
+function warningPopup(msg) {
+  var model = document.getElementById("popupMsg");
+  model.className = "alert alert-warning popup";
+  model.innerHTML = msg;
+  model.style.display = "block";
+  setTimeout(function(){model.style.display="none"}, 3000); // Hide popup after 3s
+}
+
+//---------- Here is function for timeline -----------
+// Jump up timeline event edit dialog
+
 function preAjax() {
   function getCookie(name) {
     var cookieValue = null;

@@ -66,7 +66,12 @@
         <option value = {{user.id}} {% if user in currentAuthors %} selected {% endif %}> {{ user }}</option>
       {% endfor %}
       </select>
-      Language : <select id='language' name="language" {% if currentArticle %} disabled {% endif %}> <option value='fr' selected> FR </option><option value='tw'>TW</option></select>
+      <!-- Language : <select id='language' name="language" {% if currentArticle %} disabled {% endif %}> <option value='fr' selected> FR </option><option value='tw'>TW</option></select> -->
+      Language : <select id='language' name="language" {% if currentArticle %} disabled {% endif %}>
+        {% for lang in LANGUAGES %}
+          <option value="{{lang.0}}" {% if lang.0 == "fr" %} selected {% endif %}> {{lang.1}} </option>
+        {% endfor %}
+        </select>
       Numéro :
       <select name="numero" {% if currentArticle %} disabled {% endif %}>
       {% for numero in numeros %}

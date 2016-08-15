@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 import random
 from django.core import serializers
 import json
+from django.conf import settings
 
 def init(request):
     # Set default language to fr
@@ -33,6 +34,7 @@ def init(request):
         except:
             pass
 
+    returnForm['LANGUAGES'] = settings.LANGUAGES
     returnForm['numeros'] = numeros
     returnForm['categories'] = categories
     returnForm['language'] = language

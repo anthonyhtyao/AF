@@ -108,7 +108,6 @@ def createarticle(request, errMsg="", msg=""):
         if form.is_valid() and formset.is_valid():
             try:
                 data = request.POST
-                print(data)
                 # Create Article
                 if (int(data['article']) == 0):
                     numero = Numero.objects.get(id=data['numero'])
@@ -152,14 +151,14 @@ def createarticle(request, errMsg="", msg=""):
                             newImg = Img(imgfile = f['imgfile'], imgfile_m = f['imgfile'], imgfile_s = f['imgfile'], title=title)
                             newImg.save()
                             article.gallery.add(newImg)
-
-                    author = UserProfile.objects.get(id=data['author'])
+                    for authorId in data.getlist('author'):
+                        author = UserProfile.objects.get(id=int(authorId))
+                        article.author.add(author)
                     if data['language'] == 'fr':
                         category = Category.objects.get(id=data['categoryFR'])
                     else:
                         category = Category.objects.get(id=data['categoryTW'])
                     article.numero = numero
-                    article.author = author
                     article.category = category
                     article.edito = edito
                     article.headline = headline

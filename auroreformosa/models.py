@@ -87,7 +87,7 @@ class TimelineEvent(models.Model):
 # one edito and one headline for each numero, an article cannot be edito and headline in same time
 # There are three status for an article. 0 = deleted, 1 = editting(default) and 2 = published
 class Article(models.Model):
-    author = models.ForeignKey(UserProfile, null = True)
+    author = models.ManyToManyField(UserProfile)
     date = models.DateTimeField(auto_now_add = True, auto_now = False, null = True)
     category = models.ForeignKey(Category, related_name="article", null=True)
     numero = models.ForeignKey(Numero, null=True, related_name="article", blank = True)

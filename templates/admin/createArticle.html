@@ -61,7 +61,7 @@
     {% endif %}
     <p>
       Author :
-      <select name="author" {% if currentArticle %} disabled {% endif %}>
+      <select name="author" {% if currentArticle %} disabled {% endif %} multiple>
       {% for user in users %}
         <option value = {{user.id}}> {{ user }}</option>
       {% endfor %}

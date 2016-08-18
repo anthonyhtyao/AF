@@ -155,7 +155,7 @@ def article(request, category, slg, status=2):
                 pass
             returnForm['category'] = category
             returnForm['article'] = article
-            # returnForm['authors'] = article.article.author.all()
+            returnForm['authors'] = article.article.author.all()
             returnForm['gallery'] = article.article.gallery.all()
             returnForm['articleRelated'] = articleRelated
             return render(request, 'AF/article.html', returnForm)

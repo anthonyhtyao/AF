@@ -357,15 +357,20 @@ def articleEditInfo(request, category, slg, errMsg="", msg=""):
         numero = Numero.objects.get(id=data['numero'])
         formset = ImageFormSet(request.POST, request.FILES,initial=currentGallery)
         try:
-            if (data['isEdito']):
-                edito = True
+            edito = bool(data['isEdito'])
+        except:
+            edito = False
+        if edito:
+            try:
                 if numero.article.get(edito=True) != currentArticle:
                     request.method = ""
                     return articleEditInfo(request, category,slg,errMsg="Edito already exists")
+            except:
+                pass
+        try:
+            headline = bool(data['isHeadline'])
         except:
-            edito = False
-
-        headline = data['isHeadline'] == "on"
+            headline = False
         if headline:
             try:
                 if numero.article.get(headline=True) != currentArticle:

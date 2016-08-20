@@ -317,6 +317,7 @@ def articleEdit(request, category, slg, errMsg="", msg=""):
         returnForm['currentCategory'] = currentArticle.category
         returnForm['currentNumero'] = currentArticle.numero
         returnForm['currentGallery'] = currentArticle.gallery.all()
+        returnForm['currentAuthors'] = currentArticle.author.all()
         msg = "Edit article <b>" + str(currentArticleContent) + "</b>. <br/>Can only edit title, abstract and content. <a href=/"+str(currentArticle.category)+"/article/"+currentArticle.slg+"/editinfo>Click here</a> to modify artilcle's information"
         articleForm = ArticleForm()
         articles = Article.objects.all()
@@ -356,6 +357,9 @@ def articleEditInfo(request, category, slg, errMsg="", msg=""):
         data = request.POST
         numero = Numero.objects.get(id=data['numero'])
         formset = ImageFormSet(request.POST, request.FILES,initial=currentGallery)
+        for authorId in data.getlist('author'):
+            author = UserProfile.objects.get(id=int(authorId))
+            currentArticle.author.add(author)
         try:
             edito = bool(data['isEdito'])
         except:
@@ -420,6 +424,7 @@ def articleEditInfo(request, category, slg, errMsg="", msg=""):
         returnForm['currentArticle'] = currentArticle
         returnForm['currentCategory'] = currentArticle.category
         returnForm['currentNumero'] = currentArticle.numero
+        returnForm['currentAuthors'] = currentArticle.author.all()
         msg = "Edit article <b>" + str(currentArticleContent) + "</b>'s information. <a href=/"+str(currentArticle.category)+"/article/"+currentArticle.slg+"/edit> Back to edit article </a>"
         numeros = Numero.objects.all()
         categories = CategoryDetail.objects.filter(language=language)

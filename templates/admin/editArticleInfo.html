@@ -29,9 +29,9 @@
       {% endfor %}
     </div>
     Author :
-    <select name="author">
+    <select name="author" multiple>
     {% for user in users %}
-      <option value = {{user.id}}> {{ user }}</option>
+      <option value = {{user.id}} {% if user in currentAuthors %} selected {% endif %}> {{ user }}</option>
     {% endfor %}
     </select>
     Numéro :

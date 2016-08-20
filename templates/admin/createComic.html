@@ -19,15 +19,23 @@
       TitleTW is needed if ImageTW exists.
     </div>
   </div>
+  {% if comicFR %}
+  <form id = "comic_form" method="post" action="/comics/{{comicFR.article.slg}}/edit" enctype="multipart/form-data">
+  {% else %}
   <form id = "comic_form" method="post" action="/createcomic" enctype="multipart/form-data">
+  {% endif %}
   {% csrf_token %}
   <br />
   <div class="form-inline">
     Author :
     <select name="author" multiple>
     {% for user in users %}
+      {% if authors %}
+      <option value = {{user.id}} {% if user in authors %} selected {% endif %}> {{ user }}</option>
     <!-- Set THK as default comic's author -->
+      {% else %}
       <option value = {{user.id}} {% if user.name == "THK" %} selected {% endif %}> {{ user }}</option>
+      {% endif %}
     {% endfor %}
     </select>
     Numéro :
@@ -46,23 +54,27 @@
   <div class="col-md-5">
     <div class="form-group">
       <label class="sr-only" for="titleFR">TitleFR : </label>
-      TitleFR : <input id="titleFR" class="form-control" type="text" placeholder="Title" name="titleFR" maxlength="128" value="">
+      TitleFR : <input id="titleFR" class="form-control" type="text" placeholder="Title" name="titleFR" maxlength="128" value="{{comicFR.title}}">
     </div>
+    {% if not comicFR %}
     ImageFR:
     <p><input type='file' name='imgfileFR'> </p>
+    {% endif %}
     <p>ContentFR :</p>
-    <textarea id="comicFR" class="tiny" type="text" name="contentFR" cols ="40" rows="10"} >{{article.abstract}} </textarea>
+    <textarea id="comicFR" class="tiny" type="text" name="contentFR" cols ="40" rows="10"} >{{comicFR.content}} </textarea>
   </div>
 
   <div class="col-md-5 col-md-offset-2">
     <div class="form-group">
       <label class="sr-only" for="titleTW">TitleTW : </label>
-      TitleTW : <input id="titleTW" class="form-control" type="text" placeholder="Title" name="titleTW" maxlength="128" value="">
+      TitleTW : <input id="titleTW" class="form-control" type="text" placeholder="Title" name="titleTW" maxlength="128" value="{{comicTW.title}}">
     </div>
+    {% if not comicTW %}
       ImageTW:
     <p><input type='file' name='imgfileTW'> </p>
+    {% endif %}
     <p>ContentTW : </p>
-    <textarea id="comicTW" class="tiny" type="text" name="contentTW" cols ="40" rows="10"} >{{article.content}} </textarea>
+    <textarea id="comicTW" class="tiny" type="text" name="contentTW" cols ="40" rows="10"} >{{comicTW.content}} </textarea>
   </div>
   <div class="col-md-12">
     <br />

@@ -14,6 +14,7 @@ urlpatterns = [
     url(r'^createcomic', viewsAdmin.createComic, name='createComic'),
     url(r'^session_language/$', views.session_language, name='session_language'),
     url(r'^settings$', viewsAdmin.settings, name='seettings'),
+    url(r'^comics/(?P<slg>.+)/edit$', viewsAdmin.comicsEdit, name="comicsEdit"),
     url(r'^comics/(?P<slg>.+)$', views.comics, name="comics"),
     url(r'^timelinedata/$', views.timelinedata, name="timelinedata"),
     url(r'^timeline/edit$', viewsAdmin.timelineEdit, name="timelineEdit"),

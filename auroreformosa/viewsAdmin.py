@@ -37,7 +37,6 @@ def createComic(request, errMsg="", success="", warnMsg=""):
         if form.is_valid():
             print(request.FILES)
             data = request.POST
-            author = UserProfile.objects.get(id=data['author'])
             comicCat = Category.objects.get(category="comics")
             numero = Numero.objects.get(id=data['numero'])
             titleFR = data['titleFR']
@@ -46,7 +45,9 @@ def createComic(request, errMsg="", success="", warnMsg=""):
             except:
                 request.method = ""
                 return createComic(request, errMsg = "Title already be used")
-            article.author = author
+            for authorId in data.getlist('author'):
+                author = UserProfile.objects.get(id=int(authorId))
+                article.author.add(author)
             article.category = comicCat
             article.numero = numero
             article.save()
@@ -89,6 +90,88 @@ def createComic(request, errMsg="", success="", warnMsg=""):
     except:
         no = 1
     returnForm['currentNumero'] = float(no)
+    returnForm['form'] = comicForm
+    returnForm['users'] = users
+    returnForm['errMsg'] = errMsg
+    returnForm['warnMsg'] = warnMsg
+    returnForm['success'] = success
+    return render(request, 'admin/createComic.html', returnForm)
+
+@login_required
+def comicsEdit(request, slg, errMsg="", success="", warnMsg=""):
+    returnForm, language = init(request)
+    articleParent = Article.objects.get(slg=slg)
+    comicFR = None
+    comicTW = None
+    try:
+        comicFR = articleParent.comic.get(language="fr")
+        returnForm['comicFR'] = comicFR
+    except:
+        pass
+        try:
+            comicTW = articleParent.comic.get(language="tw")
+            returnForm['comicTW'] = comicTW
+        except:
+            pass
+    if request.method == 'POST':
+        form = ComicForm(request.POST)
+        if form.is_valid():
+            print(request.FILES)
+            data = request.POST
+            numero = Numero.objects.get(id=data['numero'])
+            for authorId in data.getlist('author'):
+                author = UserProfile.objects.get(id=int(authorId))
+                articleParent.author.add(author)
+            articleParent.numero = numero
+            articleParent.save()
+            if comicFR:
+                comicFR.title = data['titleFR']
+                comicFR.content = data['contentFR']
+                comicFR.save()
+            else:
+                try:
+                    form = request.FILES
+                    imgTitleFR = str(form['imgfileFR']).split("/")[-1]
+                    imgFR = Img(imgfile = form['imgfileFR'], imgfile_m = form['imgfileFR'], imgfile_s = form['imgfileFR'], title=imgTitleFR)
+                    imgFR.save()
+                    comic = Comic.objects.create(title = data['titleFR'])
+                    comic.article = article
+                    comic.image = imgFR
+                    comic.content = data['contentFR']
+                    comic.save()
+                    comicFR = comic
+                except:
+                    request.method = ""
+                    return comicsEdit(request, errMsg = "ImageFR error")
+                if comicTW:
+                    comicTW.title = data['titleTW']
+                    comicTW.content = data['contentTW']
+                    comictW.save()
+                else:
+                    try:
+                        form = request.FILES
+                        imgTitleTW = str(form['imgfileTW']).split("/")[-1]
+                        imgTW = Img(imgfile = form['imgfileTW'], imgfile_m = form['imgfileTW'], imgfile_s = form['imgfileTW'], title=imgTitleTW)
+                        imgTW.save()
+                        comic = Comic.objects.create(title = data['titleTW'])
+                        comic.article = article
+                        comic.image = imgTW
+                        comic.content = data['contentTW']
+                        comic.save()
+                        comicTW = comic
+                    except:
+                        request.method = ""
+                        return comicsEdit(request, errMsg = "ImageTW error")
+
+    comicForm = ComicForm()
+    users = UserProfile.objects.all()
+    # Get variable details by geet request
+    try:
+        no = request.GET['no']
+    except:
+        no = 1
+    returnForm['currentNumero'] = float(no)
+    returnForm['authors'] = articleParent.author.all()
     returnForm['form'] = comicForm
     returnForm['users'] = users
     returnForm['errMsg'] = errMsg

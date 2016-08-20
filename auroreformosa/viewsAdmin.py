@@ -364,14 +364,15 @@ def articleEditInfo(request, category, slg, errMsg="", msg=""):
                     return articleEditInfo(request, category,slg,errMsg="Edito already exists")
         except:
             edito = False
-        try:
-            if (data['isHeadline']):
-                headline = True
+
+        headline = data['isHeadline'] == "on"
+        if headline:
+            try:
                 if numero.article.get(headline=True) != currentArticle:
                     request.method=""
                     return articleEditInfo(request, category,slg,errMsg="Headline already exists")
-        except:
-            headline = False
+            except:
+                pass
         try:
             f = request.FILES
             imgTitle = str(f['imgfile']).split("/")[-1]

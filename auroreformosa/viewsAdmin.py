@@ -108,11 +108,11 @@ def comicsEdit(request, slg, errMsg="", success="", warnMsg=""):
         returnForm['comicFR'] = comicFR
     except:
         pass
-        try:
-            comicTW = articleParent.comic.get(language="tw")
-            returnForm['comicTW'] = comicTW
-        except:
-            pass
+    try:
+        comicTW = articleParent.comic.get(language="tw")
+        returnForm['comicTW'] = comicTW
+    except:
+        pass
     if request.method == 'POST':
         form = ComicForm(request.POST)
         if form.is_valid():

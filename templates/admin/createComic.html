@@ -24,14 +24,10 @@
   <br />
   <div class="form-inline">
     Author :
-    <select name="author">
+    <select name="author" multiple>
     {% for user in users %}
     <!-- Set THK as default comic's author -->
-      {% if user.name == "THK" %}
-      <option value = {{user.id}} selected> {{ user }}</option>
-      {% else %}
-      <option value = {{user.id}}> {{ user }}</option>
-      {% endif %}
+      <option value = {{user.id}} {% if user.name == "THK" %} selected {% endif %}> {{ user }}</option>
     {% endfor %}
     </select>
     Numéro :

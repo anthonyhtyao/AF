@@ -24,7 +24,8 @@
   <center><h1>{{comic.title}}</h1></center>
   <center>
     <a href="/"><img src="{% static "img/logo_small.png" %}" width="10px" height="20px"></a> |
-    <a href="/{{category.category}}">{{category.title}}</a> |
+    <a href="/no/{{comic.article.numero}}" style="color:black"> No {{comic.article.numero}}</a> | 
+    <a href="#"  style="color:black">{% for author in authors %}{{author.name}} {% endfor %}</a>|
     <span class="glyphicon glyphicon-time"></span> Posted on {{comic.article.date}}
   </center>
   <br>

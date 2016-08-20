@@ -192,6 +192,7 @@ def comics(request, slg):
         returnForm['comic'] = comic
         returnForm['nextComic'] = nextComic
         returnForm['beforeComic'] = beforeComic
+        returnForm['authors'] = articleParent.author.all()
         return render(request, 'AF/comics.html', returnForm)
     except:
         return HttpResponseRedirect('/')

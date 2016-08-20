@@ -37,7 +37,6 @@ def createComic(request, errMsg="", success="", warnMsg=""):
         if form.is_valid():
             print(request.FILES)
             data = request.POST
-            author = UserProfile.objects.get(id=data['author'])
             comicCat = Category.objects.get(category="comics")
             numero = Numero.objects.get(id=data['numero'])
             titleFR = data['titleFR']
@@ -46,7 +45,9 @@ def createComic(request, errMsg="", success="", warnMsg=""):
             except:
                 request.method = ""
                 return createComic(request, errMsg = "Title already be used")
-            article.author = author
+            for authorId in data.getlist('author'):
+                author = UserProfile.objects.get(id=int(authorId))
+                article.author.add(author)
             article.category = comicCat
             article.numero = numero
             article.save()

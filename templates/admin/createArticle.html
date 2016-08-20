@@ -63,7 +63,7 @@
       Author :
       <select name="author" {% if currentArticle %} disabled {% endif %} multiple>
       {% for user in users %}
-        <option value = {{user.id}}> {{ user }}</option>
+        <option value = {{user.id}} {% if user in currentAuthors %} selected {% endif %}> {{ user }}</option>
       {% endfor %}
       </select>
       Language : <select id='language' name="language" {% if currentArticle %} disabled {% endif %}> <option value='fr' selected> FR </option><option value='tw'>TW</option></select>

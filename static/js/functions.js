@@ -28,6 +28,21 @@ function closeTooltip(x) {
     $(x).tooltip("close");
 }
 
+function deleteArticle(id) {
+  console.log(id);
+  data={'id':id};
+  preAjax();
+  $.ajax({
+    type:"POST",
+    url:"/article/delete",
+    data:JSON.stringify(data),
+    success: function() {
+      location.href="/";
+    }
+  });
+
+}
+
 //---------- Here is function for timeline -----------
 // Jump up timeline event edit dialog
 function preAjax() {

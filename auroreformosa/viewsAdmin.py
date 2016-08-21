@@ -617,3 +617,13 @@ def timelineSave(request):
         #         if event['id']=='new':
         #         else:
     return HttpResponseRedirect('/')
+
+@login_required
+def articleDelete(request):
+    if request.method=="POST":
+        data = json.loads(request.body.decode('utf-8'))
+        article = ArticleContent.objects.get(id=data['id'])
+        article.status = 0
+        article.save()
+        return HttpResponseRedirect('/')
+    return HttpResponseRedirect('/')

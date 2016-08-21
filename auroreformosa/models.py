@@ -98,7 +98,6 @@ class Article(models.Model):
     edito = models.BooleanField(default=False)
     headline = models.BooleanField(default=False)
     tags = models.ManyToManyField(Tag, blank=True)
-    status = models.SmallIntegerField(default = 1)
     timeline = models.ForeignKey(TimelineEvent,null=True,blank=True)
 
     def __str__(self):
@@ -130,6 +129,7 @@ class ArticleContent(models.Model):
     title = models.CharField(max_length = 128)
     abstract = models.TextField(null = True, blank=True)
     content = models.TextField(null = True)
+    status = models.SmallIntegerField(default = 1)
     language = models.CharField(max_length = 2, choices = LANGUAGES, default = 'fr')
 
     def inCategory(self,category):

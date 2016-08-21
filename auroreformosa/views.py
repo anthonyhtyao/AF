@@ -43,20 +43,27 @@ def init(request):
 # Return newest article's rule
 def newestArticle(request, comic, language):
     # Exclude edito and comic
-    articlesP = Article.objects.filter(status=2).exclude(headline=True).exclude(category=comic).exclude(edito=True).order_by('-date')
+    articlesP = Article.objects.exclude(headline=True).exclude(category=comic).exclude(edito=True).order_by('-date')
     # Get article list where article exists for language given
-    articles = [a for a in articlesP if a.languageIsExist(language) ]
+
+    articles = []
+    for a in articlesP:
+        try:
+            articles.append(a.article.get(language=language,status=2))
+        except:
+            pass
     l = len(articles)
+    print(l)
     if l >= 5:
         randomL = random.sample(range(5),3)
     else:
         randomL = random.sample(range(l),3)
-    newestArticle1 = articles[randomL[0]].article.get(language=language)
-    newestArticle1Cat = articles[randomL[0]].category.detail.get(language=language)
-    newestArticle2 = articles[randomL[1]].article.get(language=language)
-    newestArticle2Cat = articles[randomL[1]].category.detail.get(language=language)
-    newestArticle3 = articles[randomL[2]].article.get(language=language)
-    newestArticle3Cat = articles[randomL[2]].category.detail.get(language=language)
+    newestArticle1 = articles[randomL[0]]
+    newestArticle1Cat = articles[randomL[0]].article.category.detail.get(language=language)
+    newestArticle2 = articles[randomL[1]]
+    newestArticle2Cat = articles[randomL[1]].article.category.detail.get(language=language)
+    newestArticle3 = articles[randomL[2]]
+    newestArticle3Cat = articles[randomL[2]].article.category.detail.get(language=language)
     return newestArticle1, newestArticle1Cat, newestArticle2, newestArticle2Cat, newestArticle3, newestArticle3Cat
 
 def index(request, loginMsg=""):
@@ -104,9 +111,9 @@ def category(request, category):
             cat = Category.objects.get(category=category)
             category = cat.detail.get(language=language)
             articles = []
-            for a in Article.objects.filter(category=cat,status=2):
+            for a in Article.objects.filter(category=cat):
                 try:
-                    articles.append(a.article.get(language=language))
+                    articles.append(a.article.get(language=language,status=2))
                 except:
                     pass
             returnForm['category'] = category
@@ -129,7 +136,6 @@ def add_categories(request, return_form):
 def article(request, category, slg, status=2):
     try:
         articleParent = Article.objects.get(slg=slg)
-        assert articleParent.status == status
         try:
             cat = Category.objects.get(category = category)
         except:
@@ -139,6 +145,7 @@ def article(request, category, slg, status=2):
             category = CategoryDetail.objects.get(language=language, category=cat)
             try:
                 article = articleParent.article.get(language=language)
+                assert article.status == status
             except:
                 article = None
             i = 1

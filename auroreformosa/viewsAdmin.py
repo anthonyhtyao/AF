@@ -250,7 +250,7 @@ def createarticle(request, errMsg="", msg=""):
                     else:
                         article.timeline = None
                     article.save()
-                # Article already existes and set its status to 1
+                # Article already existes and set its content's status to 1
                 else:
                     article = Article.objects.get(id=data['article'])
                     category = article.category
@@ -260,9 +260,8 @@ def createarticle(request, errMsg="", msg=""):
                     return createarticle(request, "Article " + data['language'] + " already exists")
                 articleContent = form.save()
                 articleContent.article = article
+                articleContent.status = 1
                 articleContent.save()
-                article.status = 1
-                article.save()
                 #Return article preview page
                 request.session['language'] = data['language']
                 return HttpResponseRedirect(reverse('articlePreview', args=(str(article.category),article.slg,)))
@@ -343,16 +342,17 @@ def archiveEdit(request):
         except:
             dist["comics"] = ""
         articles = []
-        for a in  no.article.filter(edito = False).exclude(status = 0).exclude(category = comicCat):
+        for a in  no.article.filter(edito = False).exclude(category = comicCat):
             tmp = {"article":a}
             try:
-                tmp["articleFR"] = a.article.get(language="fr")
+                tmp["articleFR"] = a.article.exclude(status=0).get(language='fr')
             except:
                 tmp["articleFR"] = ""
             try:
-                tmp["articleTW"] = a.article.get(language="tw")
+                tmp["articleTW"] = a.article.exclude(status=0).get(language='tw')
             except:
                 tmp["articleTW"] = ""
+            print(tmp)
             articles.append(tmp)
         dist["articles"] = articles
         returnForm["data"].append(dist)
@@ -559,10 +559,12 @@ def settings(request,errMsg="", msg=""):
 
 @login_required
 def articlePreview(request,category,slg):
+    returnForm, language = init(request)
     if request.method == 'POST':
         a = Article.objects.get(slg=slg)
-        a.status = 2
-        a.save()
+        article = a.article.get(language=language)
+        article.status = 2
+        article.save()
         return HttpResponseRedirect(reverse('article', args=(str(a.category),a.slg,)))
     else:
         return article(request,category,slg,status=1)

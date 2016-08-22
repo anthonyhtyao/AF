@@ -177,9 +177,9 @@ def comics(request, slg):
         articleParent = Article.objects.get(slg=slg)
         cat = Category.objects.get(category="comics")
         category = CategoryDetail.objects.get(language=language, category=cat)
-        comics = cat.article.order_by('-date')
+        comics = [c for c in cat.article.order_by('-date') if c.languageIsExist(language)]
         try:
-            comic = articleParent.comic.get(language=language)
+            comic = articleParent.comic.exclude(status=0).get(language=language)
             l = len(comics)
             for i in range(l):
                 if comics[i] == articleParent:

@@ -622,8 +622,13 @@ def timelineSave(request):
 def articleDelete(request):
     if request.method=="POST":
         data = json.loads(request.body.decode('utf-8'))
-        article = ArticleContent.objects.get(id=data['id'])
-        article.status = 0
-        article.save()
+        if data['type'] == 'article':
+            article = ArticleContent.objects.get(id=data['id'])
+            article.status = 0
+            article.save()
+        else:
+            comic = Comic.objects.get(id=data['id'])
+            comic.status = 0
+            comic.save()
         return HttpResponseRedirect('/')
     return HttpResponseRedirect('/')

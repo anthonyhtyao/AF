@@ -28,9 +28,8 @@ function closeTooltip(x) {
     $(x).tooltip("close");
 }
 
-function deleteArticle(id) {
-  console.log(id);
-  data={'id':id};
+function deleteArticle(type,id) {
+  data={'type':type,'id':id};
   preAjax();
   $.ajax({
     type:"POST",
@@ -40,7 +39,6 @@ function deleteArticle(id) {
       location.href="/";
     }
   });
-
 }
 
 //---------- Here is function for timeline -----------

@@ -111,11 +111,11 @@ class Article(models.Model):
     def languageIsExist(self, language):
         b = False
         try:
-            b = b or self.article.filter(language=language).count() == 1
+            b = b or self.article.exclude(status=0).filter(language=language).count() == 1
         except:
             pass
         try:
-            b = b or self.comic.filter(language=language).count() == 1
+            b = b or self.comic.exclude(status=0).filter(language=language).count() == 1
         except:
             pass
         return b
@@ -150,6 +150,7 @@ class Comic(models.Model):
     title = models.CharField(max_length = 128)
     image = models.ForeignKey(Img, null=True)
     content = models.TextField(null = True, blank=True)
+    status = models.SmallIntegerField(default = 2)
     language = models.CharField(max_length = 2, choices = LANGUAGES, default = 'fr')
 
     def __str__(self):

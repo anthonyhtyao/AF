@@ -328,12 +328,12 @@ def archiveEdit(request):
             for a in comicP:
                 d = {}
                 try:
-                    comicFR = a.comic.get(language="fr")
+                    comicFR = a.comic.exclude(status=0).get(language="fr")
                     d["comicFR"] = comicFR
                 except:
                     d["comicFR"] = ""
                 try:
-                    comicTW = a.comic.get(language="tw")
+                    comicTW = a.comic.exclude(status=0).get(language="tw")
                     d["comicTW"] = comicTW
                 except:
                     d["comicTW"] = ""

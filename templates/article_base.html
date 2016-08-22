@@ -50,7 +50,7 @@
       </div>
   </div>
   <div class="col-md-12">
-    {% if article.article.status == 1 %}
+    {% if article.status == 1 %}
       <form method="post" action="{% url 'articlePreview' category.category article.article.slg %}">
         {% csrf_token %}
         <a href="{% url 'articleEdit' category.category article.article.slg %}" class="btn btn-default">Back to edit</a>

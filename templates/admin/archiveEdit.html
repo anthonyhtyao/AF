@@ -41,6 +41,7 @@
         <ul>
         {% if dist.comics != "" %}
           {% for c in dist.comics %}
+          {% if c.comicFR or c.comicTW %}
           <li>
                FR :
             {% if c.comicFR != "" %}
@@ -54,6 +55,7 @@
               Not exists
             {% endif %}
           </li>
+          {% endif %}
           {% endfor %}
         {% endif %}
           <li>
@@ -66,10 +68,12 @@
         Article :
         <ul>
           {% for article in dist.articles %}
+            {% if article.articleFR or article.articleTW %}
             <li>
             FR :
             {% if article.articleFR != "" %}
             <a class="FR" href="/{{article.article.category}}/article/{{article.article.slg}}{% if article.article.status == 1 %}/preview{% endif %}">{{article.articleFR}}</a>
+            {% if article.articleFR.status == 2%} (published) {% elif article.articleFR.status == 1 %} (editting) {% endif %}
             {% else %}
             Not exists
             {% endif %}
@@ -79,8 +83,9 @@
             {% else %}
             Not exists
             {% endif %}
-            ({% if article.article.status == 2%} published {% else %} editting {% endif %})
+            {% if article.articleTW.status == 2%} (published) {% elif article.articleTW.status == 1%} (editting) {% endif %}
             </li>
+            {% endif %}
           {% endfor %}
             <li>
               <a href="/createarticle?no={{dist.numero.numero}}"> Add new article </a>

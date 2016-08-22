@@ -215,10 +215,23 @@ def archive(request, numero):
         comics = []
         for a in  no.article.filter(edito = False):
             if a.category == comicCat:
-                comic = a.comic.get(language=language)
-                comics.append(comic)
+                try:
+                    comic = a.comic.get(language=language)
+                    comics.append(comic)
+                except:
+                    pass
             else:
-                articles.append(a.article.get(language=language))
+                d = {}
+                try:
+                    article = a.article.get(language=language,status=2)
+                    d['slg'] = a.slg
+                    d['category'] = str(a.category)
+                    d['title'] = str(article)
+                    d['catTranslate'] = str(a.category.detail.get(language=language))
+                    articles.append(d)
+                except:
+                    pass
+        print(articles)
         returnForm['numero'] = no
         returnForm['articles'] = articles
         returnForm['edito'] = edito

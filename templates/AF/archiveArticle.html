@@ -25,10 +25,10 @@
 <!-- Articles list of given numero, need CSS, model is http://auroreformosane.org/category/dernier-numero-fr/-->
   <div>
     <dl class="dl-horizontal">
-      {% for comic in comics %}
+      <!-- {% for comic in comics %}
         <dt>{{comic.article.category}}</dt>
         <dd><a href="/comics/{{comic.article.slg}}" title="{{comic.article}}">{{comic}}</a></dd>
-      {% endfor %}
+      {% endfor %} -->
       {% for article in articles %}
         <dt>{{article.catTranslate}}</dt>
         <dd><a href="/{{article.category}}/article/{{article.slg}}" title="{{article.title}}">{{article.title}}</a></dd>

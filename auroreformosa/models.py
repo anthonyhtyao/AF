@@ -2,7 +2,10 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 from PIL import Image
+from django.conf import settings
 # Create your models here.
+
+
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
@@ -121,16 +124,12 @@ class Article(models.Model):
         return b
 
 class ArticleContent(models.Model):
-    LANGUAGES = (
-        ('fr', 'Français'),
-        ('tw', '繁體中文'),
-    )
     article = models.ForeignKey(Article, null = True, related_name='article')
     title = models.CharField(max_length = 128)
     abstract = models.TextField(null = True, blank=True)
     content = models.TextField(null = True)
     status = models.SmallIntegerField(default = 1)
-    language = models.CharField(max_length = 2, choices = LANGUAGES, default = 'fr')
+    language = models.CharField(max_length = 2, choices = settings.LANGUAGES, default = 'fr')
 
     def inCategory(self,category):
         return self.article.category == category
@@ -142,52 +141,36 @@ class ArticleContent(models.Model):
         return self.title
 
 class Comic(models.Model):
-    LANGUAGES = (
-        ('fr', 'Français'),
-        ('tw', '繁體中文'),
-    )
     article = models.ForeignKey(Article, null = True, related_name='comic')
     title = models.CharField(max_length = 128)
     image = models.ForeignKey(Img, null=True)
     content = models.TextField(null = True, blank=True)
     status = models.SmallIntegerField(default = 2)
-    language = models.CharField(max_length = 2, choices = LANGUAGES, default = 'fr')
+    language = models.CharField(max_length = 2, choices = settings.LANGUAGES, default = 'fr')
 
     def __str__(self):
         return self.title
 
 class CategoryDetail(models.Model):
-    LANGUAGES = (
-        ('fr', 'Français'),
-        ('tw', '繁體中文'),
-    )
     category = models.ForeignKey(Category, null = True, related_name="detail")
     title = models.CharField(max_length = 20)
-    language = models.CharField(max_length = 2, choices = LANGUAGES, default = 'fr')
+    language = models.CharField(max_length = 2, choices = settings.LANGUAGES, default = 'fr')
 
     def __str__(self):
         return self.title
 
 class TagDetail(models.Model):
-    LANGUAGES = (
-        ('fr', 'Français'),
-        ('tw', '繁體中文'),
-    )
     tag = models.ForeignKey(Tag, null = True, related_name="detail")
     title = models.CharField(max_length = 20)
-    language = models.CharField(max_length = 2, choices = LANGUAGES, default = 'fr')
+    language = models.CharField(max_length = 2, choices = settings.LANGUAGES, default = 'fr')
 
     def __str__(self):
         return self.title
 
 class TimelineEventDetail(models.Model):
-    LANGUAGES = (
-        ('fr', 'Français'),
-        ('tw', '繁體中文'),
-    )
     event = models.ForeignKey(TimelineEvent, null = True, related_name="detail")
     content = models.CharField(max_length = 20)
-    language = models.CharField(max_length = 2, choices = LANGUAGES, default = 'fr')
+    language = models.CharField(max_length = 2, choices = settings.LANGUAGES, default = 'fr')
 
     def __str__(self):
         return self.language + " " + self.content

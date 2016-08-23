@@ -24,6 +24,7 @@ function tooltipArchiveImg(x) {
     var value = $(x).attr('value');
     $(x).tooltip({content:'<img width="100%" src=' + value + '/>'});
 }
+
 function closeTooltip(x) {
     $(x).tooltip("close");
 }
@@ -41,8 +42,19 @@ function deleteArticle(type,id) {
   });
 }
 
-//---------- Here is function for timeline -----------
-// Jump up timeline event edit dialog
+function setLanguage(language) {
+  preAjax();
+  $.ajax({
+     type:"POST",
+     url:"/session_language/",
+     data: { language:language},
+     success: function(){
+       $("#loading").hide();
+       document.location.reload();
+     }
+  });
+}
+
 function preAjax() {
   function getCookie(name) {
     var cookieValue = null;
@@ -72,6 +84,9 @@ function preAjax() {
       }
   });
 }
+
+//---------- Here is function for timeline -----------
+// Jump up timeline event edit dialog
 
 function openTimelineDialog(row=-1) {
   if (row>=0) {

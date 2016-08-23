@@ -113,10 +113,17 @@ def category(request, category):
             articles = []
             for a in Article.objects.filter(category=cat):
                 try:
-                    articles.append(a.article.get(language=language,status=2))
+                    d = {}
+                    article = a.article.get(language=language,status=2)
+                    d['title'] = article.title
+                    d['abstract'] = article.abstract
+                    d['slg'] = a.slg
+                    d['image'] = a.image
+                    articles.append(d)
                 except:
                     pass
-            returnForm['category'] = category
+            returnForm['category'] = cat
+            returnForm['catTranslate'] = str(category)
             returnForm['articles'] = articles
             return render(request, 'AF/category.html', returnForm)
         except:
@@ -212,17 +219,24 @@ def archive(request, numero):
         editoP = no.article.get(edito=True)
         edito = editoP.article.get(language=language)
         articles = []
-        comics = []
         for a in  no.article.filter(edito = False):
-            if a.category == comicCat:
-                comic = a.comic.get(language=language)
-                comics.append(comic)
-            else:
-                articles.append(a.article.get(language=language))
+            d = {}
+            try:
+                try:
+                    article = a.comic.get(language=language,status=2)
+                except:
+                    article = a.article.get(language=language,status=2)
+                d['slg'] = a.slg
+                d['category'] = str(a.category)
+                d['title'] = str(article)
+                d['catTranslate'] = str(a.category.detail.get(language=language))
+                articles.append(d)
+            except:
+                pass
+        print(articles)
         returnForm['numero'] = no
         returnForm['articles'] = articles
         returnForm['edito'] = edito
-        returnForm['comics'] = comics
         return render(request, 'AF/archiveArticle.html', returnForm)
     except:
         return HttpResponseRedirect('/')

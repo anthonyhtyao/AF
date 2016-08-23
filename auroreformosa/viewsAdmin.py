@@ -562,9 +562,9 @@ def articlePreview(request,category,slg):
     returnForm, language = init(request)
     if request.method == 'POST':
         a = Article.objects.get(slg=slg)
-        article = a.article.get(language=language)
-        article.status = 2
-        article.save()
+        tmp = a.article.get(language=language)
+        tmp.status = 2
+        tmp.save()
         return HttpResponseRedirect(reverse('article', args=(str(a.category),a.slg,)))
     else:
         return article(request,category,slg,status=1)

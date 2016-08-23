@@ -165,12 +165,8 @@ def comicsEdit(request, slg, errMsg="", success="", warnMsg=""):
 
     comicForm = ComicForm()
     users = UserProfile.objects.all()
-    # Get variable details by geet request
-    try:
-        no = request.GET['no']
-    except:
-        no = 1
-    returnForm['currentNumero'] = float(no)
+
+    returnForm['currentNumero'] = articleParent.numero
     returnForm['authors'] = articleParent.author.all()
     returnForm['form'] = comicForm
     returnForm['users'] = users

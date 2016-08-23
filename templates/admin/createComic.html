@@ -41,7 +41,7 @@
     Numéro :
     <select name="numero">
     {% for numero in numeros %}
-      {% if numero.numero == currentNumero %}
+      {% if numero == currentNumero %}
       <option value="{{numero.id}}" selected> {{ numero.numero }}</option>
       {% else %}
       <option value="{{numero.id}}"> {{ numero.numero }}</option>

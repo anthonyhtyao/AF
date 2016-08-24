@@ -75,11 +75,7 @@
       Numéro :
       <select name="numero" {% if currentArticle %} disabled {% endif %}>
       {% for numero in numeros %}
-        {% if numero.numero == currentNumero %}
-        <option value="{{numero.id}}" selected> {{ numero.numero }}</option>
-        {% else %}
-        <option value="{{numero.id}}"> {{ numero.numero }}</option>
-        {% endif %}
+        <option value="{{numero.id}}" {% if numero == currentNumero %} selected {% endif %}> {{ numero.numero }}</option>
       {% endfor %}
       </select>
       Catégorie :

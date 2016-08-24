@@ -544,8 +544,11 @@ def settings(request,errMsg="", msg=""):
                     errMsg = "These two new passwords don't match"
                     return settings(request,errMsg=errMsg, msg=msg)
                 else:
-                    request.user.set_password(data['InputPassword1'])
-                    request.user.save()
+                    user = request.user
+                    user.set_password(data['InputPassword1'])
+                    user.save()
+                    user.backend = 'django.contrib.auth.backends.ModelBackend'
+                    login(request, user)
                     msg += "Password is successfully changed."
             return settings(request,msg=msg)
     returnForm['currentUser'] = currentUser

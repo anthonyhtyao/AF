@@ -18,12 +18,12 @@
       </li>
       <li> Edito : FR :
         {% if dist.editoFR != "" %}
-        {{dist.editoFR}}
+        <a href="/edito/article/{{dist.editoFR.article.slg}}/edit">{{dist.editoFR}}</a>
         {% else %}
         Not exists
         {% endif %} / TW :
         {% if dist.editoTW != "" %}
-        {{dist.editoTW}}
+        <a href="/edito/article/{{dist.editoTW.article.slg}}/edit">{{dist.editoTW}}</a>
         {% else %}
         Not exists
         {% endif %}

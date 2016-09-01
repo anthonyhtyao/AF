@@ -126,12 +126,16 @@
                 {% endfor %}
                 </ul>
             </li>
-            <li>
-              <p class="navbar-btn">
-                {% for lang in LANGUAGES %}
-                    <a id="btnLanguage" onclick="setLanguage('{{lang.0}}')" class="btn" {% if lang.0 == language %} style="color:black" {% else %} style="color:#6E6E6E" {% endif %}>{{lang.1}}</a>
-                {% endfor %}
-              </p>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" style="color:black" data-toggle="dropdown">{{language}}</a>
+              <ul class="dropdown-menu">
+                  {% for lang in LANGUAGES %}
+                    {% if lang.0 == language %}
+                    {% else %}
+                      <li><a id="btnLanguage" onclick="setLanguage('{{lang.0}}')" class="btn" style="color:#6E6E6E" >{{lang.0}}</a></li>
+                    {% endif %}
+                  {% endfor %}
+              </ul>
             </li>
           </ul>
         </div>

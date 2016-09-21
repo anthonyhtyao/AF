@@ -161,11 +161,17 @@ def article(request, category, slg, status=2):
             articleRelated = []
             try:
                 for a in Article.objects.filter(category=cat).order_by('-date'):
+                    tmp = {}
                     if i > 4:
                         break
                     articleGet = a.article.get(language = language)
                     if article != articleGet:
-                        articleRelated.append(articleGet)
+                        tmp['title'] = articleGet.title
+                        tmp['categoryDetail'] = a.category.detail.get(language=language)
+                        tmp['category'] = a.category
+                        tmp['image'] = a.image
+                        tmp['slg'] = a.slg
+                        articleRelated.append(tmp)
                         i += 1
             except:
                 pass

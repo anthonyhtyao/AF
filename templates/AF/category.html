@@ -25,18 +25,17 @@
   <h1><a href="/"><img src="{% static "img/logo_small.png" %}" height="50px"></a> | <span style="color:{{category.color}}">{{catTranslate}}</span></h1>
 <br>
 {% for article in articles %}
-  <div class="col-sm-12 col-md-6" style="height:500px">
-    <div style="color:black">
+  <div class="col-sm-12 col-md-6" style="height:400px;color:black;">
+    <div style="height:200px;overflow:hidden">
       <a href="/{{category}}/article/{{article.slg}}">
-        <img src="{{article.image.imgfile.url}}" height="300px" width="100%">
+        <img src="{{article.image.imgfile.url}}" height="auto" width="100%">
       </a>
+    </div>
       <div>
         <h3><strong>{{article.title}}</strong></h3>
         <h5 style="color:black">{{article.abstract}}</h5>
         <h4 style="color:black"><strong style="color:{{category.color}}; ">▍</strong>{{catTranslate}}</h4>
       </div>
-    </div>
-
   </div>
 
 {% endfor %}

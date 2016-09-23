@@ -10,8 +10,8 @@
 
 
       <!-- Blog Post Content Column -->
-<div class="col-md-12" style="top:2%;height:30%">
-      <div class="col-md-8 fixHeight ">
+<div class="col-md-12" style="margin-top:20px; height:250px;overflow: hidden">
+      <div class="col-md-8 fixHeight">
         <a href="/{{headlineCat.category}}/article/{{headline.article.slg}}">
           <div class="textOnImage">
             <div class="text">
@@ -20,52 +20,53 @@
               <h4><strong style="color:{{headline.article.category.color}}; ">▍</strong>{{headlineCat}}</h4>
             </div>
             <div class="colorOverlay"></div>
-            <img src="{{headline.article.image.imgfile.url}}" width="100%" height="100%">
+            <img src="{{headline.article.image.imgfile.url}}" width="100%" max-height="100px" height="auto">
           </div>
         </a>
       </div>
       <div class="col-md-4 fixHeight">
         <a href="/{{newestArticle1Cat.category}}/article/{{newestArticle1.article.slg}}">
-          <div class="textOnImage fixHeight">
+          <div class="textOnImage">
             <div class="text">
               <h3><strong>{{newestArticle1}}</strong></h3>
               <h4><strong style="color:{{newestArticle1.article.category.color}}; ">▍</strong>{{newestArticle1Cat}}</h4>
             </div>
             <div class="colorOverlay"></div>
-            <img src="{{newestArticle1.article.image.imgfile_m.url}}" width="100%" height="100%">
+            <img src="{{newestArticle1.article.image.imgfile_m.url}}" width="100%" height="auto">
           </div>
         </a>
       </div>
 </div>
-<div class="col-md-12" style="top: 4%;height:30%">
+
+<div class="col-md-12" style="margin-top:20px;height:250px;overflow:hidden">
       <div class="col-md-4 fixHeight">
         <a href="/{{newestArticle2Cat.category}}/article/{{newestArticle2.article.slg}}">
-          <div class="textOnImage fixHeight">
+          <div class="textOnImage">
             <div class="text">
               <h3><strong>{{newestArticle2}}</strong></h3>
               <h4><strong style="color:{{newestArticle2.article.category.color}}; ">▍</strong>{{newestArticle2Cat}}</h4>
             </div>
             <div class="colorOverlay"></div>
-            <img src="{{newestArticle2.article.image.imgfile_m.url}}" width="100%" height="100%">
+            <img src="{{newestArticle2.article.image.imgfile_m.url}}" width="100%" height="auto">
           </div>
         </a>
       </div>
 
       <div class="col-md-4 fixHeight">
         <a href="/{{newestArticle3Cat.category}}/article/{{newestArticle3.article.slg}}">
-          <div class="textOnImage fixHeight">
+          <div class="textOnImage">
             <div class="text">
               <h3><strong>{{newestArticle3}}</strong></h3>
               <h4><strong style="color:{{newestArticle3.article.category.color}}; ">▍</strong>{{newestArticle3Cat}}</h4>
             </div>
             <div class="colorOverlay"></div>
-            <img src="{{newestArticle3.article.image.imgfile_m.url}}" width="100%" height="100%">
+            <img src="{{newestArticle3.article.image.imgfile_m.url}}" width="100%" height="auto">
           </div>
         </a>
       </div>
       <div class="col-md-4 fixHeight">
         <a href="/comics/{{comicArticle.article.slg}}">
-          <div class="textOnImage fixHeight">
+          <div class="textOnImage">
             <div class="text">
               <h3><strong>{{comicArticle.title}}</strong></h3>
               {% if request.session.language = "fr" %}
@@ -75,7 +76,7 @@
               {% endif %}
             </div>
             <div class="colorOverlay"></div>
-            <img src="{{comicArticle.image.imgfile_m.url}}" width="100%" height="100%">
+            <img src="{{comicArticle.image.imgfile_m.url}}" width="100%" height="auto">
           </div>
         </a>
       </div>
@@ -86,7 +87,7 @@
 
 
     <!-- <p class="col-lg-8 col-lg-offset-2 text-center">Ici les slides</p> -->
-    <div class="col-md-12" style="top:10%">
+    <div class="col-md-12" style="margin-top:40px">
 
       {% for numero in numeros.reverse|slice:":6"%}
       <div class="col-md-2 text-center">

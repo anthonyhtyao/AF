@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+
+{% block body_block %}
+  <br/><br/><br/>
+<div class="col-md-12">
+  {% if errMsg != "" %}
+    <div class="alert alert-danger" role="alert">{{ errMsg }}</div>
+  {% endif %}
+  {% if msg != "" %}
+    <div class="alert alert-info" role="alert">{{ msg | safe}}</div>
+  {% endif %}
+
+  <div class="col-md-12">
+    <form id = "articleinfo_form" method="post" action="/{{currentCategory}}/article/{{currentArticle.slg}}/editinfo" enctype="multipart/form-data">
+  {% csrf_token %}
+    <br />
+    Image:
+    {% if currentArticle.image %}
+    <a title="" href="#" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{currentArticle.image.imgfile_s.url}}">{{currentArticle.image}}</a>
+    {% endif %}
+    <p><input type='file' name='imgfile'> </p>
+    <p>Gallery: <span id="toggleGallery" class="glyphicon glyphicon-triangle-bottom"></span></p>
+    <div id="articleGallery" class="col-md-offset-1" style="display:none">
+      {{ currentFormSet.management_form }}
+      {% for form in currentFormSet %}
+        <br/>
+        {{ form }}
+      {% endfor %}
+    </div>
+    Author :
+    <select name="author" multiple>
+    {% for user in users %}
+      <option value = {{user.id}} {% if user in currentAuthors %} selected {% endif %}> {{ user }}</option>
+    {% endfor %}
+    </select>
+    Numéro :
+    <select name="numero">
+    {% for numero in numeros %}
+      {% if numero == currentNumero %}
+      <option value="{{numero.id}}" selected> {{ numero.numero }}</option>
+      {% else %}
+      <option value="{{numero.id}}"> {{ numero.numero }}</option>
+      {% endif %}
+    {% endfor %}
+    </select>
+    Catégorie :
+    <select id='category' name="category">
+    {% for category in categories %}
+      {% if category.category == currentCategory %}
+      <option value="{{category.category.id}}" selected> {{ category }}</option>
+      {% else %}
+      <option value="{{category.category.id}}"> {{ category }}</option>
+      {% endif %}
+    {% endfor %}
+    </select>
+    <br />
+    <label class="checkbox-inline">
+      <input type="checkbox" name="isEdito" {% if edito %} checked {% endif %}> Is Edito
+    </label>
+    <label class="checkbox-inline">
+      <input type="checkbox" name="isHeadline" {% if headline %} checked {% endif %}> Is Headline
+    </label>
+    <!-- This block is for timeline setting -->
+    <p>
+      Choose timeline event :
+      <span id="eventSelected">
+        {{timelineDetail}}
+        {% if timelineDetail != "Null" %}<sup style='color:red' onclick='cancelEventSelected()'> X </sup>{% endif %}
+      </span>
+      <span id="toggleTimeline" class="glyphicon glyphicon-triangle-bottom"></span></p>
+    <input type="hidden" id="timeline_event_input" name="timeline" value="{{timeline}}">
+    <div id="mytimeline" style="display:none" data-action="select" data-value="{{timeline}}"></div>
+
+<br/><br/>
+	<input type="submit" name="submit" value="Update">
+</form>
+</div>
+</div>
+<script>
+$(document).ready(function(){
+  $('#language').change(function(){
+    var language = $('#language option:selected').val();
+    if (language == 'tw') {
+      $('#category_tw').show();
+      $('#category_fr').hide();
+    }
+    else {
+      $('#category_fr').show();
+      $('#category_tw').hide();
+    }
+  });
+
+  $('#toggleGallery').click(function () {
+    $("#articleGallery").toggle();
+  });
+
+  $('#toggleTimeline').click(function () {
+    $("#mytimeline").toggle();
+    timeline.redraw();
+  });
+});
+</script>
+{% endblock %}

@@ -9,6 +9,10 @@ from django.template.loader import get_template
 from django.template import Context
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+import random
+from django.core import serializers
+import json
+from django.conf import settings
 
 def init(request):
     # Set default language to fr
@@ -18,7 +22,8 @@ def init(request):
     returnForm={}
     # Put categories list in return form
     edito = Category.objects.get(category="edito")
-    categories = CategoryDetail.objects.filter(language=language).exclude(category = edito)
+    cat = Category.objects.exclude(category=edito).order_by('order')
+    categories = [a.detail.get(language=language) for a in cat]
     numeros = Numero.objects.order_by('numero')
     newsCat = Category.objects.get(category="news")
     newsDetail = newsCat.detail.get(language=language)
@@ -28,7 +33,8 @@ def init(request):
             newsArticles.append(a.article.get(language=language))
         except:
             pass
-    
+
+    returnForm['LANGUAGES'] = settings.LANGUAGES
     returnForm['numeros'] = numeros
     returnForm['categories'] = categories
     returnForm['language'] = language
@@ -36,42 +42,63 @@ def init(request):
     returnForm['newsArticles'] = newsArticles
     return returnForm, language
 
+# Return newest article's rule
+def newestArticle(request, comic, language):
+    # Exclude edito and comic
+    articlesP = Article.objects.exclude(headline=True).exclude(category=comic).exclude(edito=True).order_by('-date')
+    # Get article list where article exists for language given
+
+    articles = []
+    for a in articlesP:
+        try:
+            articles.append(a.article.get(language=language,status=2))
+        except:
+            pass
+    l = len(articles)
+    print(l)
+    if l >= 5:
+        randomL = random.sample(range(5),3)
+    else:
+        randomL = random.sample(range(l),3)
+    newestArticle1 = articles[randomL[0]]
+    newestArticle1Cat = articles[randomL[0]].article.category.detail.get(language=language)
+    newestArticle2 = articles[randomL[1]]
+    newestArticle2Cat = articles[randomL[1]].article.category.detail.get(language=language)
+    newestArticle3 = articles[randomL[2]]
+    newestArticle3Cat = articles[randomL[2]].article.category.detail.get(language=language)
+    return newestArticle1, newestArticle1Cat, newestArticle2, newestArticle2Cat, newestArticle3, newestArticle3Cat
+
 def index(request, loginMsg=""):
     returnForm, language = init(request)
     comic = Category.objects.get(category="comics")
-    comicArticleP = Article.objects.filter(category=comic).order_by('-date')[0]
-    comicArticle = comicArticleP.comic.get(language=language)
-    headlineP = Article.objects.filter(headline=True).order_by('-date')[0]
-    headline = headlineP.article.get(language=language)
-    
+    for n in returnForm['numeros'][::-1]:
+        if int(n.numero) == n.numero:
+            returnForm['headerImage'] = n.image
+            break
+    newestNumero = returnForm['numeros'][::-1][0]
+    # Filter here can be optimised
+    comicArticleP = Article.objects.filter(category=comic).order_by("-date")
+    comicArticle = [a.comic.get(language=language) for a in comicArticleP if a.languageIsExist(language)][0]
+    headlineP = Article.objects.filter(headline=True).order_by("-date")
+    headline = [h.article.get(language=language) for h in headlineP if h.languageIsExist(language)][0]
+    headlineCat = headline.article.category.detail.get(language=language)
+    newestArticle1, newestArticle1Cat, newestArticle2, newestArticle2Cat, newestArticle3, newestArticle3Cat = newestArticle(request, comic, language)
+
+    returnForm['newestArticle1'] = newestArticle1
+    returnForm['newestArticle1Cat'] = newestArticle1Cat
+    returnForm['newestArticle2'] = newestArticle2
+    returnForm['newestArticle2Cat'] = newestArticle2Cat
+    returnForm['newestArticle3'] = newestArticle3
+    returnForm['newestArticle3Cat'] = newestArticle3Cat
     returnForm['comicArticle'] = comicArticle
     returnForm['loginMsg'] = loginMsg
     returnForm['headline'] = headline
+    returnForm['headlineCat'] = headlineCat
     return render(request, 'AF/index.html', returnForm)
 
 def about(request):
     returnForm, language = init(request)
     return render(request, 'AF/about.html', returnForm)
-
-@login_required
-def uploadImg(request):
-    if request.method == 'POST':
-        form = ImgForm(request.POST, request.FILES)
-        if form.is_valid():
-            title = str(request.FILES['imgfile']).split("/")[-1]
-            newImg = Img(imgfile = request.FILES['imgfile'],title=title)
-            newImg.save()
-    else:
-        form = ImgForm()
-    return render(request,'AF/upload.html',{'form':form})
-
-@login_required
-def createarticle(request):
-    articleForm = ArticleForm()
-    numeros = Numero.objects.all()
-    categoryFR = CategoryDetail.objects.filter(language='fr')
-    categoryTW = CategoryDetail.objects.filter(language='tw')
-    return render(request, 'AF/createArticle.html', {'form':articleForm, 'numeros':numeros, 'categoryFR':categoryFR, 'categoryTW':categoryTW})
 
 def category(request, category):
     if category == "comics":
@@ -79,7 +106,7 @@ def category(request, category):
         comic = comicCat.article.order_by('-date')[0]
         return HttpResponseRedirect('/comics/' + comic.slg)
     elif category == "edito":
-        return HttpResponseRedirect("/") 
+        return HttpResponseRedirect("/")
     else:
         returnForm, language = init(request)
         try:
@@ -88,10 +115,17 @@ def category(request, category):
             articles = []
             for a in Article.objects.filter(category=cat):
                 try:
-                    articles.append(a.article.get(language=language))
+                    d = {}
+                    article = a.article.get(language=language,status=2)
+                    d['title'] = article.title
+                    d['abstract'] = article.abstract
+                    d['slg'] = a.slg
+                    d['image'] = a.image
+                    articles.append(d)
                 except:
                     pass
-            returnForm['category'] = category
+            returnForm['category'] = cat
+            returnForm['catTranslate'] = str(category)
             returnForm['articles'] = articles
             return render(request, 'AF/category.html', returnForm)
         except:
@@ -108,7 +142,7 @@ def add_categories(request, return_form):
     categories = CategoryDetail.objects.filter(language=request.session['language']).exclude(category = edito)
     return_form['categories'] = categories
 
-def article(request, category, slg):
+def article(request, category, slg, status=2):
     try:
         articleParent = Article.objects.get(slg=slg)
         try:
@@ -116,23 +150,35 @@ def article(request, category, slg):
         except:
             cat = None
         if articleParent.category == cat:
-            returnForm, language = init(request) 
+            returnForm, language = init(request)
             category = CategoryDetail.objects.get(language=language, category=cat)
             try:
                 article = articleParent.article.get(language=language)
+                assert article.status == status
             except:
                 article = None
             i = 1
             articleRelated = []
-            for a in Article.objects.filter(category=cat).order_by('-date'):
-                if i > 4:
-                    break
-                articleGet = a.article.get(language = language)
-                if article != articleGet:
-                    articleRelated.append(articleGet)
-                    i += 1
+            try:
+                for a in Article.objects.filter(category=cat).order_by('-date'):
+                    tmp = {}
+                    if i > 4:
+                        break
+                    articleGet = a.article.get(language = language)
+                    if article != articleGet:
+                        tmp['title'] = articleGet.title
+                        tmp['categoryDetail'] = a.category.detail.get(language=language)
+                        tmp['category'] = a.category
+                        tmp['image'] = a.image
+                        tmp['slg'] = a.slg
+                        articleRelated.append(tmp)
+                        i += 1
+            except:
+                pass
             returnForm['category'] = category
             returnForm['article'] = article
+            returnForm['authors'] = article.article.author.all()
+            returnForm['gallery'] = article.article.gallery.all()
             returnForm['articleRelated'] = articleRelated
             return render(request, 'AF/article.html', returnForm)
         else:
@@ -146,9 +192,9 @@ def comics(request, slg):
         articleParent = Article.objects.get(slg=slg)
         cat = Category.objects.get(category="comics")
         category = CategoryDetail.objects.get(language=language, category=cat)
-        comics = cat.article.order_by('-date')
+        comics = [c for c in cat.article.order_by('date') if c.languageIsExist(language)]
         try:
-            comic = articleParent.comic.get(language=language)
+            comic = articleParent.comic.exclude(status=0).get(language=language)
             l = len(comics)
             for i in range(l):
                 if comics[i] == articleParent:
@@ -160,7 +206,7 @@ def comics(request, slg):
             if i == l-1:
                 nextComic = comics[0]
             else:
-                nextComic = comics[i+1]  
+                nextComic = comics[i+1]
         except:
             comic = None
             return HttpResponseRedirect("/")
@@ -168,27 +214,37 @@ def comics(request, slg):
         returnForm['comic'] = comic
         returnForm['nextComic'] = nextComic
         returnForm['beforeComic'] = beforeComic
+        returnForm['authors'] = articleParent.author.all()
         return render(request, 'AF/comics.html', returnForm)
     except:
-        return HttpResponseRedirect('/')    
+        return HttpResponseRedirect('/')
 
 def archive(request, numero):
     try:
         returnForm, language = init(request)
-        no = Numero.objects.get(numero=int(numero))
+        no = Numero.objects.get(numero=float(numero))
         comicCat = Category.objects.get(category="comics")
         editoP = no.article.get(edito=True)
         edito = editoP.article.get(language=language)
         articles = []
         for a in  no.article.filter(edito = False):
-            if a.category == comicCat:
-                comic = a.comic.get(language=language)
-            else:
-                articles.append(a.article.get(language=language))
+            d = {}
+            try:
+                try:
+                    article = a.comic.get(language=language,status=2)
+                except:
+                    article = a.article.get(language=language,status=2)
+                d['slg'] = a.slg
+                d['category'] = str(a.category)
+                d['title'] = str(article)
+                d['catTranslate'] = str(a.category.detail.get(language=language))
+                articles.append(d)
+            except:
+                pass
+        print(articles)
         returnForm['numero'] = no
         returnForm['articles'] = articles
         returnForm['edito'] = edito
-        returnForm['comic'] = comic
         return render(request, 'AF/archiveArticle.html', returnForm)
     except:
         return HttpResponseRedirect('/')
@@ -218,7 +274,7 @@ def abonnement(request):
                     action += " € , "
             except:
                 pass
-            try:            
+            try:
                 if request.POST['informer']:
                     action += "être informé(e)"
             except:
@@ -259,4 +315,19 @@ def user_logout(request):
     logout(request)
 
     # Take the user back to the homepage.
+    return HttpResponseRedirect('/')
+
+def timelinedata(request):
+    returnForm, language = init(request)
+    if request.method == 'GET':
+        data = {}
+        # data['result'] = []
+        events = TimelineEvent.objects.all();
+        details = []
+        for event in events:
+            detail = event.detail.get(language=language)
+            details.append(detail)
+        data['events'] = serializers.serialize('json', events)
+        data['details'] = serializers.serialize('json', details)
+        return  HttpResponse(json.dumps(data), content_type="application/json")
     return HttpResponseRedirect('/')

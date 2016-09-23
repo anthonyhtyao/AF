@@ -1,17 +1,43 @@
 {% extends 'base.html' %}
+{% block title_block %}{{category}}{% endblock %}
+{% block category_block %}
+  <div class="col-md-9 col-md-offset-2">
+    <ul class="nav navbar-nav col-md-12">
+      {% for cat in categories %}
+        <li class="" style="width:10%">
+          <h4>
+            <a class = "category"
+              {% if cat == category %}
+                style="color:{{category.category.color}}"
+              {% else %}
+                style="color:rgba(0,0,0,.5)"
+              {% endif %}
+              onmouseover="changeColor(this,'{{cat.category.color}}')" onmouseout="returnColor(this)" href="/{{cat.category}}"> {{cat.title}} </a>
+          </h4>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock  %}
 {% load static %}
 {% block body_block %}
 <div>
   <center><h1>{{comic.title}}</h1></center>
+  {% if user.is_authenticated %}
+    <a href="/comics/{{comic.article.slg}}/edit"><span class="glyphicon glyphicon-pencil"></span></a>
+    <span class="glyphicon glyphicon-trash" onclick="deleteArticle('comic',{{comic.id}})"></span>
+  {% endif %}
   <center>
     <a href="/"><img src="{% static "img/logo_small.png" %}" width="10px" height="20px"></a> |
-    <a href="/{{category.category}}">{{category.title}}</a> |
+    <a href="/no/{{comic.article.numero}}" style="color:black"> No {{comic.article.numero}}</a> |
+    <a href="#"  style="color:black">{% for author in authors %}{{author.name}} {% endfor %}</a>|
     <span class="glyphicon glyphicon-time"></span> Posted on {{comic.article.date}}
   </center>
   <br>
   <div class="col-md-8 col-md-offset-2">
     <img src="{{comic.image.imgfile.url}}" width="100%">
     <div>
+      <br>
       {{comic.content|safe}}
     </div>
     <center>
@@ -21,4 +47,3 @@
   </div>
 </div>
 {% endblock %}
-

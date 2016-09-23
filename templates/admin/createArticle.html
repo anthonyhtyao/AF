@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+
+{% block body_block %}
+  <br/><br/><br/>
+  <!-- Here is for message display-->
+<div class="col-md-12">
+  {% if errMsg != "" %}
+    <div class="alert alert-danger" role="alert">{{ errMsg }}</div>
+  {% endif %}
+  {% if msg != "" %}
+    <div class="alert alert-info" role="alert">{{ msg | safe}}</div>
+  {% endif %}
+
+{% if currentArticle %}
+  <div class="col-md-12"  style="color : gray">
+  <form id = "article_form" method="post" action="/{{currentCategory}}/article/{{currentArticle.slg}}/edit" enctype="multipart/form-data">
+{% else %}
+  <div class="col-md-12">
+  <form id = "article_form" method="post" action="/createarticle" enctype="multipart/form-data">
+{% endif %}
+
+  {% csrf_token %}
+    <span style="color:black">Title : <input id="title" type="text" name="title" maxlength="128" value="{{currentArticle.title}}"></span>
+    Article:
+    <select name="article" {% if currentArticle %} disabled {% endif %}>
+      <option value ="0"> </option>
+    {% for a in articles %}
+      {% if a == currentArticle %}
+      <option value = {{a.id}} selected> {{ a }}</option>
+      {% else %}
+      <option value = {{a.id}}> {{ a }}</option>
+      {% endif %}
+    {% endfor %}
+    </select>
+    <br />
+    <p>Image:
+    {% if currentArticle.image %}
+      <a title="" href="#" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{currentArticle.image.imgfile_s.url}}">{{currentArticle.image}}</a></p>
+    {% else %}
+    </p>
+      {% if not currentArticle %}
+      <p><input type='file' name='imgfile'> </p>
+      {% endif %}
+    {% endif %}
+    <!-- Here is for gallery, toggle when click triangle -->
+    <p>Gallery:
+    {% if currentGallery %}
+      {% for img in currentGallery %}
+        <a title="" href="#" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{img.imgfile_s.url}}">{{img}}</a>
+      {% endfor %}
+    {% else %}
+      <span id="toggleGallery" class="glyphicon glyphicon-triangle-bottom"></span></p>
+      <div id="articleGallery" class="col-md-offset-1" style="display:none">
+        {{ formset.management_form }}
+        {% for form in formset %}
+          <br/>
+          {{ form }}
+        {% endfor %}
+      </div>
+    {% endif %}
+    <p>
+      Author :
+      <select name="author" {% if currentArticle %} disabled {% endif %} multiple>
+      {% for user in users %}
+        <option value = {{user.id}} {% if user in currentAuthors %} selected {% endif %}> {{ user }}</option>
+      {% endfor %}
+      </select>
+      <!-- Language : <select id='language' name="language" {% if currentArticle %} disabled {% endif %}> <option value='fr' selected> FR </option><option value='tw'>TW</option></select> -->
+      Language : <select id='language' name="language" {% if currentArticle %} disabled {% endif %}>
+        {% for lang in LANGUAGES %}
+          <option value="{{lang.0}}" {% if lang.0 == "fr" %} selected {% endif %}> {{lang.1}} </option>
+        {% endfor %}
+        </select>
+      Numéro :
+      <select name="numero" {% if currentArticle %} disabled {% endif %}>
+      {% for numero in numeros %}
+        <option value="{{numero.id}}" {% if numero == currentNumero %} selected {% endif %}> {{ numero.numero }}</option>
+      {% endfor %}
+      </select>
+      Catégorie :
+      <select id='category_fr' name="categoryFR" {% if currentArticle %} disabled {% endif %}>
+      {% for category in categoryFR %}
+        {% if category.category == currentCategory %}
+        <option value="{{category.category.id}}" selected> {{ category }}</option>
+        {% else %}
+        <option value="{{category.category.id}}"> {{ category }}</option>
+        {% endif %}
+      {% endfor %}
+      </select>
+      <select id ='category_tw' style='display:none' name="categoryTW" {% if currentArticle %} disabled {% endif %}>
+      {% for category in categoryTW %}
+        <option value="{{category.category.id}}"> {{ category }}</option>
+      {% endfor %}
+      </select>
+    </p>
+    <p>
+      <label class="checkbox-inline">
+        <input type="checkbox" name="isEdito" {% if edito %} checked {% endif %} {% if currentArticle %} disabled {% endif %}> Is Edito
+      </label>
+      <label class="checkbox-inline">
+        <input type="checkbox" name="isHeadline" {% if headline %} checked {% endif %} {% if currentArticle %} disabled {% endif %}> Is Headline
+      </label>
+    </p>
+    <!-- This block is for timeline setting -->
+    <p>Choose timeline event : <span id="eventSelected">{{timelineDetail}}</span>
+    {% if not currentArticle %}
+      <span id="toggleTimeline" class="glyphicon glyphicon-triangle-bottom"></span></p>
+      <input type="hidden" id="timeline_event_input" name="timeline" value="{{timeline}}">
+      <div id="mytimeline" style="display:none" data-action="select" data-value="{{timeline}}"></div>
+    {% endif %}
+  </div>
+  <div class="col-md-12">
+    <p>Abstract :</p>
+    <textarea id="newAbstract" type="text" name="abstract" cols ="80" rows="10"} >{{currentArticleContent.abstract}} </textarea>
+    <p>Content : </p>
+    <textarea id="newContent" class="tiny" type="text" name="content" cols ="80" rows="30"} >{{currentArticleContent.content|safe}} </textarea>
+
+	<button type="submit" class="btn btn-default">Save</button>
+</form>
+</div>
+</div>
+
+<script>
+$(document).ready(function(){
+  $('#language').change(function(){
+    var language = $('#language option:selected').val();
+    if (language == 'tw') {
+      $('#category_tw').show();
+      $('#category_fr').hide();
+    }
+    else {
+      $('#category_fr').show();
+      $('#category_tw').hide();
+    }
+  });
+
+  $('#toggleGallery').click(function () {
+    $("#articleGallery").toggle();
+  });
+  $('#toggleTimeline').click(function () {
+    $("#mytimeline").toggle();
+    timeline.redraw();
+  });
+});
+</script>
+{% endblock %}

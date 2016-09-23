@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block body_block %}
+<br><br><br>
+<div id="mytimeline" class="col-md-12" data-action="edit" data-value="-1"></div>
+<div class="col-md-8 col-md-offset-2">
+  <br><br><br>
+  <div id="info">
+  <span>Detail : </span> <span style="color:green" class="glyphicon glyphicon-plus" onclick="openTimelineDialog();"></span>
+  </div>
+</div>
+<div id="timelineDialog" title="Edit">
+    <p id="timeline_id"></p>
+    <br/>
+    <p> Start : </p>
+    <input id="timeline_start" name="start" type="text">
+    <p> End : </p>
+    <input id="timeline_end" name="end" type="text">
+    <p> Content : </p>
+    <input id="timeline_content" name="fr" type="text">
+    <br/>
+    <button id="timeline_save">Save</button>
+</div>
+{% endblock %}

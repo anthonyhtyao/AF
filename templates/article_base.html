@@ -1,18 +1,70 @@
 {% extends 'base.html' %}
+{% block category_block %}
+  <div class="col-md-9 col-md-offset-2">
+    <ul class="nav navbar-nav col-md-12">
+      {% for cat in categories %}
+        <li class="" style="width:10%">
+          <h4>
+            <a class = "category"
+              {% if cat == category %}
+                style="color:{{category.category.color}}"
+              {% else %}
+                style="color:rgba(0,0,0,.5)"
+              {% endif %}
+              onmouseover="changeColor(this,'{{cat.category.color}}')" onmouseout="returnColor(this)" href="/{{cat.category}}"> {{cat.title}} </a>
+          </h4>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock  %}
+
 {% block body_block %}
+{% if article.article.image.imgfile_m.url %}
+  <div class="col-md-10 col-md-offset-1">
+    <img src="{{article.article.image.imgfile_m.url}}" width="100%">
+  </div>
+{% endif %}
   <div class="container">
-    <div class="row">
-      <div class="col-md-offset-2 col-md-8">
+      <div class="col-md-offset-1 col-md-10" style="height:110%">
         {% block article_content %} {% endblock %}
       </div>
+  </div>
+  <div class="col-md-12" style="height:15%">
+    <div style="height:100%">
+      <ul class="list-unstyled list-inline fixHeight">
+        {% for img in gallery %}
+        <li class="col-md-2 fixHeight"><img src="{{img.imgfile_s.url}}" height="100%"></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div/>
       <div class="col-md-8 col-md-offset-2">
       <hr>
-        <ul class="list-unstyled list-inline">
         {% for article in articleRelated %}
-          <li class="col-md-3"><div class ="thumbnail"><center><a href="#">{{ article.title }}</a></center><img src="{{ article.article.image.imgfile.url }}"></div></li>
+        <div class="col-sm-2 col-md-3">
+          <div style="color:black">
+            <a href="/{{article.category}}/article/{{article.slg}}">
+              <img src="{{article.image.imgfile_s.url}}" height="100px" width="100%">
+            </a>
+            <div>
+              {{article.title}}
+              <h4 style="color:black"><strong style="color:{{article.category.color}}; ">▍</strong>{{article.categoryDetail}}</h4>
+            </div>
+          </div>
+
+        </div>
         {% endfor %}
-        </ul>
       </div>
-    </div>
+  </div>
+  <div class="col-md-12">
+    {% if article.status == 1 %}
+      <form method="post" action="{% url 'articlePreview' category.category article.article.slg %}">
+        {% csrf_token %}
+        <a href="{% url 'articleEdit' category.category article.article.slg %}" class="btn btn-default">Back to edit</a>
+        <button type="submit" class="btn btn-default">Publish</button>
+      </form>
+    {% endif %}
   </div>
 {% endblock %}

@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% block body_block %}
+{% load static %}
+<!-- This page presents information of given numero, url for this page: /no/:id-->
+<div class="col-md-8 col-md-offset-2">
+<!-- title for this numero depends on language -->
+<p><a href="/admin/auroreformosa/numero/add/"> Add new archive </a></p>
+{% for dist in data %}
+    <h2>{{dist.numero}} {{dist.numero.titleFR}}/{{dist.numero.titleTW}}</h2>
+    <ul>
+      <li> Image :
+        {% if dist.image != None %}
+        <!--Display archive image when mouse over -->
+        <a title="" href="#" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{dist.image.imgfile_s.url}}">{{dist.image}}</a>
+        {% else %}
+        Not exists
+        {% endif %}
+      </li>
+      <li> Edito : FR :
+        {% if dist.editoFR != "" %}
+        <a href="/edito/article/{{dist.editoFR.article.slg}}/edit">{{dist.editoFR}}</a>
+        {% else %}
+        Not exists
+        {% endif %} / TW :
+        {% if dist.editoTW != "" %}
+        <a href="/edito/article/{{dist.editoTW.article.slg}}/edit">{{dist.editoTW}}</a>
+        {% else %}
+        Not exists
+        {% endif %}
+      </li>
+      <!-- Display the headline of certain numero-->
+      <li> Headline:
+        {% if dist.headline != "" %}
+        <a href="/{{dist.headline.category}}/article/{{dist.headline.slg}}">{{dist.headline}}</a>
+        {% else %}
+        Not exists
+        {% endif %}
+      </li>
+      <!-- Display all comics of certain numero-->
+      <li> Comic :
+        <ul>
+        {% if dist.comics != "" %}
+          {% for c in dist.comics %}
+          {% if c.comicFR or c.comicTW %}
+          <li>
+               FR :
+            {% if c.comicFR != "" %}
+              <a class="FR" href="/comics/{{c.comicFR.article.slg}}" title="" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{c.comicFR.image.imgfile_s.url}}" >{{c.comicFR}}</a>
+            {% else %}
+              Not exists
+            {% endif %} / TW :
+            {% if c.comicTW != "" %}
+              <a class="TW" href="/comics/{{c.comicTW.article.slg}}" title="" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{c.comicTW.image.imgfile_s.url}}" >{{c.comicTW}}</a>
+            {% else %}
+              Not exists
+            {% endif %}
+          </li>
+          {% endif %}
+          {% endfor %}
+        {% endif %}
+          <li>
+            <a href="/createcomic?no={{dist.numero}}"> Add new comic </a>
+          </li>
+        </ul>
+      </li>
+      <!-- Display all articles of certain numero-->
+      <li>
+        Article :
+        <ul>
+          {% for article in dist.articles %}
+            {% if article.articleFR or article.articleTW %}
+            <li>
+            FR :
+            {% if article.articleFR != "" %}
+            <a class="FR" href="/{{article.article.category}}/article/{{article.article.slg}}{% if article.article.status == 1 %}/preview{% endif %}">{{article.articleFR}}</a>
+            {% if article.articleFR.status == 2%} (published) {% elif article.articleFR.status == 1 %} (editting) {% endif %}
+            {% else %}
+            Not exists
+            {% endif %}
+             / TW :
+            {% if article.articleTW != "" %}
+            <a class="TW" href="/{{article.article.category}}/article/{{article.article.slg}}{% if article.article.status == 1 %}/preview{% endif %}">{{article.articleTW}}</a>
+            {% else %}
+            Not exists
+            {% endif %}
+            {% if article.articleTW.status == 2%} (published) {% elif article.articleTW.status == 1%} (editting) {% endif %}
+            </li>
+            {% endif %}
+          {% endfor %}
+            <li>
+              <a href="/createarticle?no={{dist.numero.numero}}"> Add new article </a>
+            </li>
+        </ul>
+      </li>
+    </ul>
+{% endfor %}
+
+<script>
+
+       $(".test").tooltip({ content:'<img width="100%" src="/media/img/v1.jpg" />'});
+       $(".FR").click(function(){
+         $.ajax({
+            type:"POST",
+            url:"/session_language/",
+            data: { language:'fr', csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success: function(){
+            }
+         });
+        });
+      $(".TW").click(function(){
+        $.ajax({
+            type:"POST",
+            url:"/session_language/",
+            data: { 'language':'tw', csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success: function(){
+            }
+        });
+     });
+</script>
+
+
+{% endblock %}

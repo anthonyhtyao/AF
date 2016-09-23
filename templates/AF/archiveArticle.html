@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% block title_block %}No {{numero}} {% if language == "fr" %}{{numero.titleFR}}{% else %}{{numero.titleTW}}{% endif %}{% endblock %}
 {% block body_block %}
 {% load static %}
 <!-- This page presents information of given numero, url for this page: /no/:id-->
@@ -13,22 +14,24 @@
   </center>
 
   <center><p><a href="/"><img src="{% static "img/logo_small.png" %}" width="10px" height="20px"></a> | no {{numero}}</p></center>
- 
+
 </div>
 
 <div class="col-md-8 col-md-offset-2">
-  <p><img src="{{numero.image.imgfile.url}}" width="100%"></p>
+  <p><img src="{{numero.image.imgfile_m.url}}" width="100%"></p>
 </div>
 
 <div class="col-md-8 col-md-offset-2">
-<!-- Articles list of given numero, need CSS, model is http://auroreformosane.org/category/dernier-numero-fr/-->  
+<!-- Articles list of given numero, need CSS, model is http://auroreformosane.org/category/dernier-numero-fr/-->
   <div>
     <dl class="dl-horizontal">
-        <dt><a href="/comics/{{comic.article.slg}}" title="{{comic.article}}">{{comic}}</a></dt>
-        <dd>{{comic.article.category}}</dd>
+      <!-- {% for comic in comics %}
+        <dt>{{comic.article.category}}</dt>
+        <dd><a href="/comics/{{comic.article.slg}}" title="{{comic.article}}">{{comic}}</a></dd>
+      {% endfor %} -->
       {% for article in articles %}
-        <dt><a href="/{{article.article.category}}/article/{{article.article.slg}}" title="{{article.article}}">{{article}}</a></dt>
-        <dd>{{article.article.category}}</dd>
+        <dt>{{article.catTranslate}}</dt>
+        <dd><a href="/{{article.category}}/article/{{article.slg}}" title="{{article.title}}">{{article.title}}</a></dd>
       {% endfor %}
     </dl>
   </div>
@@ -36,7 +39,7 @@
 <div class="col-md-12">
   <center>
     <h2>
-      {% if  language == "fr" %} Édito 
+      {% if  language == "fr" %} Édito
       {% elif language == "tw" %} 編者序
       {% endif %}
     </h2>

@@ -7,6 +7,7 @@ urlpatterns = [
     url(r'^login/$', views.userLogin, name='login'),
     url(r'^logout/$', views.user_logout, name='logout'),
     url(r'^abonnement', views.abonnement, name="abonnement"),
+    url(r'^checktitlevalidity', viewsAdmin.checkTitleValidity, name="checkTitleValidity"),
     url(r'^contact', views.contact, name="contact"),
     url(r'^createuser', viewsAdmin.createUser, name="createuser"),
     url(r'^upload', viewsAdmin.uploadImg, name='upload'),

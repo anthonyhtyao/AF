@@ -13,6 +13,7 @@ from auroreformosa.views import *
 from django.forms.models import formset_factory
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.urlresolvers import reverse
+from django.template.defaultfilters import slugify
 
 @login_required
 def uploadImg(request):
@@ -272,7 +273,7 @@ def createarticle(request, errMsg="", msg=""):
     numeros = Numero.objects.all()
     categoryFR = CategoryDetail.objects.filter(language='fr')
     categoryTW = CategoryDetail.objects.filter(language='tw')
-    users = UserProfile.objects.all()
+    users = UserProfile.objects.all().order_by('name')
     # Get no version details by get request
     try:
         no = request.GET['no']
@@ -395,16 +396,10 @@ def articleEdit(request, category, slg, errMsg="", msg=""):
         return HttpResponseRedirect(reverse('articlePreview', args=(str(category),slg,)))
     else:
         try:
-            currentArticleContent = currentArticle.article.get(language=language)
+            returnForm = getArticleInfo(slg,returnForm,language)
         except:
             return HttpResponseRedirect('/')
-        returnForm['currentArticle'] = currentArticle
-        returnForm['currentArticleContent'] = currentArticleContent
-        returnForm['currentCategory'] = currentArticle.category
-        returnForm['currentNumero'] = currentArticle.numero
-        returnForm['currentGallery'] = currentArticle.gallery.all()
-        returnForm['currentAuthors'] = currentArticle.author.all()
-        msg = "Edit article <b>" + str(currentArticleContent) + "</b>. <br/>Can only edit title, abstract and content. <a href=/"+str(currentArticle.category)+"/article/"+currentArticle.slg+"/editinfo>Click here</a> to modify artilcle's information"
+        msg = "Edit article <b>" + str(returnForm['currentArticleContent']) + "</b>. <br/>Can only edit title, abstract and content. <a href=/"+str(returnForm['currentCategory'])+"/article/"+slg+"/editinfo>Click here</a> to modify artilcle's information"
         articleForm = ArticleForm()
         articles = Article.objects.all()
         numeros = Numero.objects.all()
@@ -416,15 +411,6 @@ def articleEdit(request, category, slg, errMsg="", msg=""):
         returnForm['categoryTW'] = categoryTW
         returnForm['users'] = users
         returnForm['articles'] = articles
-        returnForm['edito'] = currentArticle.edito
-        returnForm['headline'] = currentArticle.headline
-        try:
-            returnForm['timeline'] = currentArticle.timeline.id
-            eventDetail = currentArticle.timeline.detail.get(language=language)
-            returnForm['timelineDetail'] = currentArticle.timeline.start.strftime('%Y-%m-%d') + " " + eventDetail.content
-        except:
-            returnForm['timeline'] = 0
-            returnForm['timelineDetail'] = "Null"
         returnForm['errMsg'] = errMsg
         returnForm['msg'] = msg
         return render(request, 'admin/createArticle.html', returnForm)
@@ -435,11 +421,12 @@ def articleEditInfo(request, category, slg, errMsg="", msg=""):
     returnForm = setMsg(returnForm)
     ImageFormSet = formset_factory(form=ImgForm, extra = 3, max_num=10)
     try:
-        currentArticle = Article.objects.get(slg=slg)
-        currentArticleContent = currentArticle.article.get(language=language)
+        returnForm = getArticleInfo(slg,returnForm,lang=language)
     except:
         return HttpResponseRedirect('/')
-    currentGallery = [{'imgfile':x.imgfile} for x in currentArticle.gallery.all()]
+    currentArticle = returnForm['currentArticle']
+    currentArticleContent = returnForm['currentArticleContent']
+    currentGallery = [{'imgfile':x.imgfile} for x in returnForm['currentGallery']]
     if request.method == 'POST':
         data = request.POST
         numero = Numero.objects.get(id=data['numero'])
@@ -508,25 +495,14 @@ def articleEditInfo(request, category, slg, errMsg="", msg=""):
     else:
         currentFormSet = ImageFormSet(initial=currentGallery)
         returnForm['currentFormSet'] = currentFormSet
-        returnForm['currentArticle'] = currentArticle
-        returnForm['currentCategory'] = currentArticle.category
-        returnForm['currentNumero'] = currentArticle.numero
-        returnForm['currentAuthors'] = currentArticle.author.all()
-        msg = "Edit article <b>" + str(currentArticleContent) + "</b>'s information. <a href=/"+str(currentArticle.category)+"/article/"+currentArticle.slg+"/edit> Back to edit article </a>"
+        msg = "Edit article <b>" + str(currentArticleContent) + "</b>'s information. <a href=/"+str(returnForm['currentCategory'])+"/article/"+slg+"/edit> Back to edit article </a>"
         numeros = Numero.objects.all()
         categories = CategoryDetail.objects.filter(language=language)
-        users = UserProfile.objects.all()
+        users = UserProfile.objects.all().order_by('name')
         returnForm['categories'] = categories
         returnForm['users'] = users
         returnForm['edito'] = currentArticle.edito
         returnForm['headline'] = currentArticle.headline
-        try:
-            returnForm['timeline'] = currentArticle.timeline.id
-            eventDetail = currentArticle.timeline.detail.get(language=language)
-            returnForm['timelineDetail'] = currentArticle.timeline.start.strftime('%Y-%m-%d') + " " + eventDetail.content
-        except:
-            returnForm['timeline'] = 0
-            returnForm['timelineDetail'] = "Null"
         returnForm['errMsg'] = errMsg
         returnForm['msg'] = msg
         return render(request, 'admin/editArticleInfo.html', returnForm)
@@ -648,4 +624,38 @@ def setMsg(returnForm):
     returnForm['msg'] = ''
     returnForm['errMsg'] = ''
     returnForm['warnMsg'] = ''
+    return returnForm
+
+@login_required
+def checkTitleValidity(request):
+    if request.method=="GET":
+        title = request.GET["title"]
+        slg = slugify(title)
+        n = Article.objects.filter(slg=slg).count()
+        if n==0:
+            return HttpResponse(1)
+        else:
+            return HttpResponse(0)
+
+# Take article's slg and a dictionary and return this dictionary with article's information
+# If parameter "lang" is given, add article's content and abstract in dictionary
+def getArticleInfo(slg,returnForm,lang=None):
+    currentArticle = Article.objects.get(slg=slg)
+    if lang:
+        currentArticleContent = currentArticle.article.get(language=lang)
+        returnForm['currentArticleContent'] = currentArticleContent
+    returnForm['currentArticle'] = currentArticle
+    returnForm['currentCategory'] = currentArticle.category
+    returnForm['currentNumero'] = currentArticle.numero
+    returnForm['currentGallery'] = currentArticle.gallery.all()
+    returnForm['currentAuthors'] = currentArticle.author.all()
+    returnForm['edito'] = currentArticle.edito
+    returnForm['headline'] = currentArticle.headline
+    try:
+        returnForm['timeline'] = currentArticle.timeline.id
+        eventDetail = currentArticle.timeline.detail.get(language=lang)
+        returnForm['timelineDetail'] = currentArticle.timeline.start.strftime('%Y-%m-%d') + " " + eventDetail.content
+    except:
+        returnForm['timeline'] = 0
+        returnForm['timelineDetail'] = "Null"
     return returnForm

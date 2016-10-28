@@ -9,8 +9,17 @@
 {% endif %}
 
   {% csrf_token %}
-    <span style="color:black">Title : <input id="title" type="text" name="title" maxlength="128" value="{{currentArticle.title}}"></span>
-    Article:
+  <div id="titleInput" class="form-group has-feedback">
+    <label for="title">Title</label>
+    <input id="title" type="text" name="title" class="form-control" aria-describedby="titleStatus" maxlength="64" oninput="checkTitleValidity(this)" value="{{currentArticle.title}}">
+    <span class="glyphicon glyphicon-ok form-control-feedback titleValided" aria-hidden="true"></span>
+    <span class="sr-only titleValided">(success)</span>
+    <label class="control-label titleValided" for="title">Valided title</label>
+    <span class="glyphicon glyphicon-remove form-control-feedback titleError" aria-hidden="true"></span>
+    <span class="sr-only titleError">(error)</span>
+    <label id="titleErrorMsg" class="control-label titleError" for="title"></label>
+  </div>
+    <!-- Article:
     <select name="article" {% if currentArticle %} disabled {% endif %}>
       <option value ="0"> </option>
     {% for a in articles %}
@@ -20,8 +29,7 @@
       <option value = {{a.id}}> {{ a }}</option>
       {% endif %}
     {% endfor %}
-    </select>
-    <br />
+    </select> -->
     <p>Image:
     {% if currentArticle.image %}
       <a title="" href="#" onmouseover="tooltipArchiveImg(this)" onmouseout="closeTooltip(this)" value="{{currentArticle.image.imgfile_s.url}}">{{currentArticle.image}}</a></p>
@@ -48,12 +56,16 @@
       </div>
     {% endif %}
     <p>
-      Author :
-      <select name="author" {% if currentArticle %} disabled {% endif %} multiple>
-      {% for user in users %}
-        <option value = {{user.id}} {% if user in currentAuthors %} selected {% endif %}> {{ user }}</option>
-      {% endfor %}
-      </select>
+      Author : <span id="authorList"></span><span id="toggleAuthor" class="glyphicon glyphicon-triangle-bottom"></span></p>
+      <div id="authorSelectDiv" style="display:none">
+        <select name="author" {% if currentArticle %} disabled {% endif %} multiple="multiple" id="authorSelect" name="my-select[]">
+        {% for user in users %}
+          <option value = {{user.id}} {% if user in currentAuthors %} selected {% endif %}> {{ user }}</option>
+        {% endfor %}
+        </select>
+      </div>
+    </p>
+    <p>
       <!-- Language : <select id='language' name="language" {% if currentArticle %} disabled {% endif %}> <option value='fr' selected> FR </option><option value='tw'>TW</option></select> -->
       Language : <select id='language' name="language" {% if currentArticle %} disabled {% endif %}>
         {% for lang in LANGUAGES %}
@@ -125,6 +137,9 @@ $(document).ready(function(){
 
   $('#toggleGallery').click(function () {
     $("#articleGallery").toggle();
+  });
+  $('#toggleAuthor').click(function () {
+    $("#authorSelectDiv").toggle();
   });
   $('#toggleTimeline').click(function () {
     $("#mytimeline").toggle();

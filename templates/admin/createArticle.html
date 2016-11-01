@@ -1,17 +1,5 @@
-{% extends 'base.html' %}
-
-
-{% block body_block %}
-  <br/><br/><br/>
-  <!-- Here is for message display-->
-<div class="col-md-12">
-  {% if errMsg != "" %}
-    <div class="alert alert-danger" role="alert">{{ errMsg }}</div>
-  {% endif %}
-  {% if msg != "" %}
-    <div class="alert alert-info" role="alert">{{ msg | safe}}</div>
-  {% endif %}
-
+{% extends 'admin_base.html' %}
+{% block admin_block %}
 {% if currentArticle %}
   <div class="col-md-12"  style="color : gray">
   <form id = "article_form" method="post" action="/{{currentCategory}}/article/{{currentArticle.slg}}/edit" enctype="multipart/form-data">

@@ -17,6 +17,7 @@ from django.core.urlresolvers import reverse
 @login_required
 def uploadImg(request):
     returnForm, language = init(request)
+    returnForm = setMsg(returnForm)
     ImageFormSet = formset_factory(form=ImgForm, extra = 3, max_num=10)
     if request.method == 'POST':
         formset = ImageFormSet(request.POST, request.FILES)
@@ -30,8 +31,9 @@ def uploadImg(request):
     return render(request,'admin/upload.html', returnForm)
 
 @login_required
-def createComic(request, errMsg="", success="", warnMsg=""):
+def createComic(request, errMsg="", msg="", warnMsg=""):
     returnForm, language = init(request)
+    returnForm = setMsg(returnForm)
     if request.method == 'POST':
         form = ComicForm(request.POST)
         if form.is_valid():
@@ -77,7 +79,7 @@ def createComic(request, errMsg="", success="", warnMsg=""):
                     comic.language = "tw"
                     comic.save()
                     request.method = ""
-                    return createComic(request, success="Commics FR and TW added successfully. <a class='FR' href=/comics/"+article.slg+"> Click to read Comic FR </a> and <a class='TW' href=/comics/"+article.slg+"> Click to read Comic TW </a>")
+                    return createComic(request, msg="Commics FR and TW added successfully. <a class='FR' href=/comics/"+article.slg+"> Click to read Comic FR </a> and <a class='TW' href=/comics/"+article.slg+"> Click to read Comic TW </a>")
                 except:
                     pass
             request.method = ""
@@ -94,12 +96,13 @@ def createComic(request, errMsg="", success="", warnMsg=""):
     returnForm['users'] = users
     returnForm['errMsg'] = errMsg
     returnForm['warnMsg'] = warnMsg
-    returnForm['success'] = success
+    returnForm['msg'] = msg
     return render(request, 'admin/createComic.html', returnForm)
 
 @login_required
-def comicsEdit(request, slg, errMsg="", success="", warnMsg=""):
+def comicsEdit(request, slg, errMsg="", msg="", warnMsg=""):
     returnForm, language = init(request)
+    returnForm = setMsg(returnForm)
     articleParent = Article.objects.get(slg=slg)
     comicFR = None
     comicTW = None
@@ -172,13 +175,14 @@ def comicsEdit(request, slg, errMsg="", success="", warnMsg=""):
     returnForm['users'] = users
     returnForm['errMsg'] = errMsg
     returnForm['warnMsg'] = warnMsg
-    returnForm['success'] = success
+    returnForm['msg'] = msg
     return render(request, 'admin/createComic.html', returnForm)
 
 # Set article's status to 1 (article editting) and go to preview page if success
 @login_required
 def createarticle(request, errMsg="", msg=""):
     returnForm, language = init(request)
+    returnForm = setMsg(returnForm)
     # Gallery is a imgform set
     ImageFormSet = formset_factory(form=ImgForm, extra = 3, max_num=10)
     if request.method == 'POST':
@@ -288,6 +292,7 @@ def createarticle(request, errMsg="", msg=""):
 @login_required
 def archiveEdit(request):
     returnForm, language = init(request)
+    returnForm = setMsg(returnForm)
     returnForm["data"] = []
     comicCat = Category.objects.get(category="comics")
     for no in returnForm['numeros'][::-1]:
@@ -357,6 +362,7 @@ def archiveEdit(request):
 @login_required
 def createUser(request, msg=""):
     returnForm,language = init(request)
+    returnForm = setMsg(returnForm)
     if request.POST:
         username = request.POST['username']
         email = request.POST['email']
@@ -374,6 +380,7 @@ def createUser(request, msg=""):
 @login_required
 def articleEdit(request, category, slg, errMsg="", msg=""):
     returnForm, language = init(request)
+    returnForm = setMsg(returnForm)
     currentArticle = Article.objects.get(slg=slg)
     if request.method == 'POST':
         form = ArticleForm(request.POST)
@@ -425,6 +432,7 @@ def articleEdit(request, category, slg, errMsg="", msg=""):
 @login_required
 def articleEditInfo(request, category, slg, errMsg="", msg=""):
     returnForm, language = init(request)
+    returnForm = setMsg(returnForm)
     ImageFormSet = formset_factory(form=ImgForm, extra = 3, max_num=10)
     try:
         currentArticle = Article.objects.get(slg=slg)
@@ -526,6 +534,7 @@ def articleEditInfo(request, category, slg, errMsg="", msg=""):
 @login_required
 def settings(request,errMsg="", msg=""):
     returnForm, language = init(request)
+    returnForm = setMsg(returnForm)
     currentUser = UserProfile.objects.get(user=request.user)
     if request.method =='POST':
         data = request.POST
@@ -559,6 +568,7 @@ def settings(request,errMsg="", msg=""):
 @login_required
 def articlePreview(request,category,slg):
     returnForm, language = init(request)
+    returnForm = setMsg(returnForm)
     if request.method == 'POST':
         a = Article.objects.get(slg=slg)
         tmp = a.article.get(language=language)
@@ -571,11 +581,13 @@ def articlePreview(request,category,slg):
 @login_required
 def timelineEdit(request):
     returnForm, language = init(request)
+    returnForm = setMsg(returnForm)
     return render(request, 'admin/timelineEdit.html',returnForm)
 
 @login_required
 def timelineSave(request):
     returnForm, language = init(request)
+    returnForm = setMsg(returnForm)
     if request.method=="POST":
         data = json.loads(request.body.decode('utf-8'))
         if data['action']=="delete":
@@ -631,3 +643,9 @@ def articleDelete(request):
             comic.save()
         return HttpResponseRedirect('/')
     return HttpResponseRedirect('/')
+
+def setMsg(returnForm):
+    returnForm['msg'] = ''
+    returnForm['errMsg'] = ''
+    returnForm['warnMsg'] = ''
+    return returnForm

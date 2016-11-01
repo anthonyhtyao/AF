@@ -1,15 +1,5 @@
-{% extends 'base.html' %}
-
-
-{% block body_block %}
-  <br/><br/><br/>
-  {% if errMsg != "" %}
-    <div class="alert alert-danger" role="alert">{{ errMsg }}</div>
-  {% elif warnMsg != "" %}
-    <div class="alert alert-warning" role="alert">{{ warnMsg|safe }}</div>
-  {% elif success != "" %}
-    <div class="alert alert-success" role="alert">{{ success|safe }}</div>
-  {% endif %}
+{% extends 'admin_base.html' %}
+{% block admin_block %}
   <div class="panel panel-info">
     <div class="panel-heading">
       Info

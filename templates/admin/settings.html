@@ -1,15 +1,6 @@
-{% extends 'base.html' %}
-{% block body_block %}
+{% extends 'admin_base.html' %}
+{% block admin_block %}
 <div>
-  <br>
-  <br>
-  <br>
-  {% if errMsg != "" %}
-    <div class="alert alert-danger" role="alert">{{ errMsg }}</div>
-  {% endif %}
-  {% if msg != "" %}
-    <div class="alert alert-info" role="alert">{{ msg | safe}}</div>
-  {% endif %}
   <center><b>{{user}}</b></center>
 </div>
 <form method="post" action="/settings">

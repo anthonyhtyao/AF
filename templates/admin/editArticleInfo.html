@@ -1,16 +1,5 @@
-{% extends 'base.html' %}
-
-
-{% block body_block %}
-  <br/><br/><br/>
-<div class="col-md-12">
-  {% if errMsg != "" %}
-    <div class="alert alert-danger" role="alert">{{ errMsg }}</div>
-  {% endif %}
-  {% if msg != "" %}
-    <div class="alert alert-info" role="alert">{{ msg | safe}}</div>
-  {% endif %}
-
+{% extends 'admin_base.html' %}
+{% block admin_block %}
   <div class="col-md-12">
     <form id = "articleinfo_form" method="post" action="/{{currentCategory}}/article/{{currentArticle.slg}}/editinfo" enctype="multipart/form-data">
   {% csrf_token %}

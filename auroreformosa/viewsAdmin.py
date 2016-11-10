@@ -383,6 +383,7 @@ def articleEdit(request, category, slg, errMsg="", msg=""):
     returnForm, language = init(request)
     returnForm = setMsg(returnForm)
     currentArticle = Article.objects.get(slg=slg)
+    ImageFormSet = formset_factory(form=ImgForm, extra=3, max_num=10)
     if request.method == 'POST':
         form = ArticleForm(request.POST)
         data = request.POST
@@ -406,6 +407,7 @@ def articleEdit(request, category, slg, errMsg="", msg=""):
         categoryFR = CategoryDetail.objects.filter(language='fr')
         categoryTW = CategoryDetail.objects.filter(language='tw')
         users = UserProfile.objects.all()
+        returnForm['formset'] = ImageFormSet(initial=[{'imgfile':x.imgfile} for x in returnForm['currentGallery']])
         returnForm['form'] = articleForm
         returnForm['categoryFR'] = categoryFR
         returnForm['categoryTW'] = categoryTW

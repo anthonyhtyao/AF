@@ -122,7 +122,9 @@ class Article(models.Model):
         except:
             pass
         return b
-
+# Status = 0 if content is deleted
+# Status = 1 if content is editting
+# Status = 2 if content is pubic
 class ArticleContent(models.Model):
     article = models.ForeignKey(Article, null = True, related_name='article')
     title = models.CharField(max_length = 128)

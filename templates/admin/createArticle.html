@@ -1,10 +1,20 @@
 {% extends 'adminArticle_base.html' %}
 {% block articleForm_block %}
   {% if currentArticle %}
-    <form id = "article_form" method="post" action="/{{currentCategory}}/article/{{currentArticle.slg}}/edit" enctype="multipart/form-data">
+    <form id = "article_form" method="post" action="/{{currentCategory}}/article/{{currentArticle.slg}}/edit?lang={{selectedLang}}" enctype="multipart/form-data">
   {% else %}
     <form id = "article_form" method="post" action="/createarticle" enctype="multipart/form-data">
   {% endif %}
+  <div id="titleInput" class="form-group has-feedback">
+    <label for="title">Title</label>
+    <input id="title" type="text" name="title" class="form-control" aria-describedby="titleStatus" maxlength="64" oninput="checkTitleValidity(this)" value="{{currentArticleContent.title}}">
+    <span class="glyphicon glyphicon-ok form-control-feedback titleValided" aria-hidden="true"></span>
+    <span class="sr-only titleValided">(success)</span>
+    <label class="control-label titleValided" for="title">Valided title</label>
+    <span class="glyphicon glyphicon-remove form-control-feedback titleError" aria-hidden="true"></span>
+    <span class="sr-only titleError">(error)</span>
+    <label id="titleErrorMsg" class="control-label titleError" for="title"></label>
+  </div>
 {% endblock %}
 {% block adminArticle_block %}
   <div class="col-md-12">
@@ -17,31 +27,4 @@
 </form>
 </div>
 </div>
-
-<script>
-$(document).ready(function(){
-  $('#language').change(function(){
-    var language = $('#language option:selected').val();
-    if (language == 'tw') {
-      $('#category_tw').show();
-      $('#category_fr').hide();
-    }
-    else {
-      $('#category_fr').show();
-      $('#category_tw').hide();
-    }
-  });
-
-  $('#toggleGallery').click(function () {
-    $("#articleGallery").toggle();
-  });
-  $('#toggleAuthor').click(function () {
-    $("#authorSelectDiv").toggle();
-  });
-  $('#toggleTimeline').click(function () {
-    $("#mytimeline").toggle();
-    timeline.redraw();
-  });
-});
-</script>
 {% endblock %}

@@ -142,7 +142,7 @@ def add_categories(request, return_form):
     categories = CategoryDetail.objects.filter(language=request.session['language']).exclude(category = edito)
     return_form['categories'] = categories
 
-def article(request, category, slg, status=2):
+def article(request, category, slg, status=2, selectedLang=None):
     try:
         articleParent = Article.objects.get(slg=slg)
         try:
@@ -151,9 +151,11 @@ def article(request, category, slg, status=2):
             cat = None
         if articleParent.category == cat:
             returnForm, language = init(request)
+            if not selectedLang:
+                selectedLang = language
             category = CategoryDetail.objects.get(language=language, category=cat)
             try:
-                article = articleParent.article.get(language=language)
+                article = articleParent.article.get(language=selectedLang)
                 assert article.status == status
             except:
                 article = None
@@ -175,6 +177,7 @@ def article(request, category, slg, status=2):
                         i += 1
             except:
                 pass
+            returnForm['selectedLang'] = selectedLang
             returnForm['category'] = category
             returnForm['article'] = article
             returnForm['authors'] = article.article.author.all()

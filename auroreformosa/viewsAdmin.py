@@ -347,13 +347,14 @@ def articleEdit(request, category, slg, errMsg="", msg=""):
             articleContent.content = data['content']
             articleContent.status = 1
             articleContent.save()
-            return HttpResponseRedirect(reverse('articlePreview', args=(str(category),slg,)))
+            path = reverse('articlePreview', args=(str(category),slg,),)
+            return HttpResponseRedirect(url_with_querystring(path,{'lang':selectedLang}))
     else:
         try:
             returnForm['msg'] += "Edit article <b>" + str(returnForm['currentArticleContent']) + " (Version : " + selectedLang + "). </b>"
         except:
             returnForm['msg'] += "Translate article <b> No. " + str(currentArticle.id) + " (Version : " + selectedLang + "). </b>"
-        if currentArticle.article.count != len(settings.LANGUAGES):
+        if currentArticle.article.count() != len(settings.LANGUAGES):
             returnForm['warnMsg'] += "This article's translations aren't completed. <a href='./status'> More detail </a>"
         articleForm = ArticleForm()
         numeros = Numero.objects.all()
@@ -457,14 +458,18 @@ def userSettings(request,errMsg="", msg=""):
 def articlePreview(request,category,slg):
     returnForm, language = init(request)
     returnForm = setMsg(returnForm)
+    selectedLang = request.GET.get('lang',language)
     if request.method == 'POST':
         a = Article.objects.get(slg=slg)
-        tmp = a.article.get(language=language)
+        try:
+            tmp = a.article.get(language=selectedLang)
+        except:
+            return HttpResponseRedirect('/')
         tmp.status = 2
         tmp.save()
         return HttpResponseRedirect(reverse('article', args=(str(a.category),a.slg,)))
     else:
-        return article(request,category,slg,status=1)
+        return article(request,category,slg,status=1,selectedLang=selectedLang)
 
 @login_required
 def timelineEdit(request):
@@ -637,3 +642,14 @@ def updateArticle(currentArticle,data,formset,files,language=None):
         currentArticle.timeline = None
     currentArticle.save()
     return True ,"Success"
+
+def url_with_querystring(path, d):
+    i = 0
+    for key, value in d.items():
+        if i == 0:
+            path += '?'
+        else:
+            path += '&'
+        path = path + key + '=' + value
+        i += 1
+    return path

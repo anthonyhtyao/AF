@@ -151,6 +151,7 @@ def article(request, category, slg, status=2, selectedLang=None):
             cat = None
         if articleParent.category == cat:
             returnForm, language = init(request)
+            selectedLang = request.GET.get('lang',selectedLang)
             if not selectedLang:
                 selectedLang = language
             category = CategoryDetail.objects.get(language=language, category=cat)

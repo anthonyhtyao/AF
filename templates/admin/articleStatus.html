@@ -15,21 +15,25 @@
         <tr> <th> LANGUAGE </th> <th> TITLE </th> <th> STATUS </th> </tr>
     {% for t in statusLst %}
       {% if t.status == 2 %}
-        <tr class="success"> <td> {{t.language}} </td> <td> {{t.title}} </td> <td> Public </td> </tr>
+        <tr class="success read" data-value="{{t.language}}"> <td> {{t.language}} </td> <td> {{t.title}} </td> <td> Public </td> </tr>
       {% elif t.status == 1 %}
-        <tr class="warning"> <td> {{t.language}} </td> <td> {{t.title}} </td> <td> Editting </td> </tr>
+        <tr class="warning edit" data-value="{{t.language}}"> <td> {{t.language}} </td> <td> {{t.title}} </td> <td> Editting </td> </tr>
       {% else %}
-        <tr class="danger translate" data-value="{{t.language}}"> <td> {{t.language}} </td> <td> {{t.title}} </td> <td> Null </td> </tr>
+        <tr class="danger edit" data-value="{{t.language}}"> <td> {{t.language}} </td> <td> {{t.title}} </td> <td> Null </td> </tr>
       {% endif %}
     {% endfor %}
   </table>
 </div>
 <script>
-  $(".translate").click(function (x) {
+  $(".read").click(function (x) {
+    var lang=$(x.currentTarget).data("value");
+    var url = $(location).attr('href');
+    window.location.href = url.substring(0,url.length-7)+"?lang="+lang;
+  });
+  $(".edit").click(function (x) {
     var lang=$(x.currentTarget).data("value");
     var url = $(location).attr('href');
     window.location.href = url.substring(0,url.length-6)+"edit?lang="+lang;
-
-  })
+  });
 </script>
 {% endblock %}

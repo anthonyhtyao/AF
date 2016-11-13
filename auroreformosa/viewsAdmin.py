@@ -13,6 +13,9 @@ from auroreformosa.views import *
 from django.forms.models import formset_factory
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.urlresolvers import reverse
+from django.template.defaultfilters import slugify
+from django.conf import settings
+from operator import itemgetter
 
 @login_required
 def uploadImg(request):
@@ -186,107 +189,44 @@ def createarticle(request, errMsg="", msg=""):
     # Gallery is a imgform set
     ImageFormSet = formset_factory(form=ImgForm, extra = 3, max_num=10)
     if request.method == 'POST':
+        data = request.POST
         form = ArticleForm(request.POST)
-        formset = ImageFormSet(request.POST, request.FILES)
+        formset = ImageFormSet(data, request.FILES)
         if form.is_valid() and formset.is_valid():
+            currentArticle = Article.objects.create(title=data['title'])
             try:
-                data = request.POST
-                # Create Article
-                if (int(data['article']) == 0):
-                    numero = Numero.objects.get(id=data['numero'])
-                    # Verify edito and headline are unique
-                    try:
-                        if (data['isEdito']):
-                            edito = True
-                            if numero.article.filter(edito=True).exists():
-                                request.method = ""
-                                return createarticle(request, "Edito already exists")
-                    except:
-                        edito = False
-                    try:
-                        if (data['isHeadline']):
-                            headline = True
-                            if numero.article.filter(headline=True).exists():
-                                request.method=""
-                                return createarticle(request, "Headline already exists")
-                    except:
-                        headline = False
-                    # Create article if title is unique else return
-                    try:
-                        article = Article.objects.create(title=data['title'])
-                    except:
-                        request.method = ""
-                        return createarticle(request, "Title already be used")
-
-                    # Upload Image
-                    try:
-                        imgTitle = str(request.FILES['imgfile']).split("/")[-1]
-                        img = Img(imgfile = request.FILES['imgfile'], imgfile_m = request.FILES['imgfile'], imgfile_s = request.FILES['imgfile'], title=imgTitle)
-                        img.save()
-                        article.image = img
-                    except:
-                        pass
-
-                    # Upload gallery
-                    for f in formset.cleaned_data:
-                        if f != {}:
-                            title = str(f['imgfile'])
-                            newImg = Img(imgfile = f['imgfile'], imgfile_m = f['imgfile'], imgfile_s = f['imgfile'], title=title)
-                            newImg.save()
-                            article.gallery.add(newImg)
-                    for authorId in data.getlist('author'):
-                        author = UserProfile.objects.get(id=int(authorId))
-                        article.author.add(author)
-                    if data['language'] == 'fr':
-                        category = Category.objects.get(id=data['categoryFR'])
-                    else:
-                        category = Category.objects.get(id=data['categoryTW'])
-                    article.numero = numero
-                    article.category = category
-                    article.edito = edito
-                    article.headline = headline
-                    if data['timeline'] > "0":
-                        article.timeline = TimelineEvent.objects.get(id=data['timeline'])
-                    else:
-                        article.timeline = None
-                    article.save()
-                # Article already existes and set its content's status to 1
+                success, label = updateArticle(currentArticle,data,formset,request.FILES)
+                if not success:
+                    currentArticle.delete()
+                    request.method = ""
+                    return createarticle(request,errMsg=label)
                 else:
-                    article = Article.objects.get(id=data['article'])
-                    category = article.category
-                # Create Article Content
-                if article.article.filter(language=data['language']):
-                    request.method=""
-                    return createarticle(request, "Article " + data['language'] + " already exists")
-                articleContent = form.save()
-                articleContent.article = article
-                articleContent.status = 1
-                articleContent.save()
-                #Return article preview page
-                request.session['language'] = data['language']
-                return HttpResponseRedirect(reverse('articlePreview', args=(str(article.category),article.slg,)))
+                    articleContent = form.save()
+                    articleContent.article = currentArticle
+                    articleContent.status = 1
+                    articleContent.save()
+                    #Return article preview page
+                    request.session['language'] = data['language']
+                    return HttpResponseRedirect(reverse('articlePreview', args=(str(currentArticle.category),currentArticle.slg,)))
             except:
                 pass
     articleForm = ArticleForm()
-    articles = Article.objects.all()
     numeros = Numero.objects.all()
     categoryFR = CategoryDetail.objects.filter(language='fr')
     categoryTW = CategoryDetail.objects.filter(language='tw')
-    users = UserProfile.objects.all()
+    users = UserProfile.objects.all().order_by('name')
     # Get no version details by get request
     try:
         no = request.GET['no']
     except:
         no = 1
+    returnForm['selectedLang'] = language
     returnForm['formset'] = ImageFormSet
     returnForm['currentNumero'] = float(no)
     returnForm['form'] = articleForm
     returnForm['categoryFR'] = categoryFR
     returnForm['categoryTW'] = categoryTW
     returnForm['users'] = users
-    returnForm['articles'] = articles
-    returnForm['errMsg'] = errMsg
-    returnForm['msg'] = msg
     return render(request, 'admin/createArticle.html', returnForm)
 
 @login_required
@@ -382,157 +322,106 @@ def articleEdit(request, category, slg, errMsg="", msg=""):
     returnForm, language = init(request)
     returnForm = setMsg(returnForm)
     currentArticle = Article.objects.get(slg=slg)
+    ImageFormSet = formset_factory(form=ImgForm, extra=3, max_num=10)
+    selectedLang = request.GET.get('lang',language)
+    try:
+        returnForm = getArticleInfo(slg,returnForm,selectedLang)
+    except:
+        return HttpResponseRedirect('/')
+    if not selectedLang in [ a[0] for a in settings.LANGUAGES]:
+        return HttpResponseRedirect('/')
     if request.method == 'POST':
         form = ArticleForm(request.POST)
         data = request.POST
-        articleContent = currentArticle.article.get(language=language)
-        articleContent.title = data['title']
-        articleContent.abstract = data['abstract']
-        articleContent.content = data['content']
-        articleContent.save()
-        currentArticle.status = 1
-        currentArticle.save()
-        return HttpResponseRedirect(reverse('articlePreview', args=(str(category),slg,)))
+        files = request.FILES
+        currentGallery = [{'imgfile':x.imgfile} for x in returnForm['currentGallery']]
+        formset = ImageFormSet(data,files,initial=currentGallery)
+        success, label = updateArticle(currentArticle,data,formset,files,language=selectedLang)
+        if success:
+            try:
+                articleContent = currentArticle.article.get(language=selectedLang)
+            except:
+                articleContent = ArticleContent.objects.create(language=selectedLang,title=data['title'],article=currentArticle)
+            articleContent.title = data['title']
+            articleContent.abstract = data['abstract']
+            articleContent.content = data['content']
+            articleContent.status = 1
+            articleContent.save()
+            path = reverse('articlePreview', args=(str(category),slg,),)
+            return HttpResponseRedirect(url_with_querystring(path,{'lang':selectedLang}))
     else:
         try:
-            currentArticleContent = currentArticle.article.get(language=language)
+            returnForm['msg'] += "Edit article <b>" + str(returnForm['currentArticleContent']) + " (Version : " + selectedLang + "). </b>"
         except:
-            return HttpResponseRedirect('/')
-        returnForm['currentArticle'] = currentArticle
-        returnForm['currentArticleContent'] = currentArticleContent
-        returnForm['currentCategory'] = currentArticle.category
-        returnForm['currentNumero'] = currentArticle.numero
-        returnForm['currentGallery'] = currentArticle.gallery.all()
-        returnForm['currentAuthors'] = currentArticle.author.all()
-        msg = "Edit article <b>" + str(currentArticleContent) + "</b>. <br/>Can only edit title, abstract and content. <a href=/"+str(currentArticle.category)+"/article/"+currentArticle.slg+"/editinfo>Click here</a> to modify artilcle's information"
+            returnForm['msg'] += "Translate article <b> No. " + str(currentArticle.id) + " (Version : " + selectedLang + "). </b>"
+        if currentArticle.article.count() != len(settings.LANGUAGES):
+            returnForm['warnMsg'] += "This article's translations aren't completed. <a href='./status'> More detail </a>"
         articleForm = ArticleForm()
-        articles = Article.objects.all()
         numeros = Numero.objects.all()
         categoryFR = CategoryDetail.objects.filter(language='fr')
         categoryTW = CategoryDetail.objects.filter(language='tw')
         users = UserProfile.objects.all()
+        returnForm['selectedLang'] = selectedLang
+        returnForm['formset'] = ImageFormSet(initial=[{'imgfile':x.imgfile} for x in returnForm['currentGallery']])
         returnForm['form'] = articleForm
         returnForm['categoryFR'] = categoryFR
         returnForm['categoryTW'] = categoryTW
         returnForm['users'] = users
-        returnForm['articles'] = articles
-        returnForm['edito'] = currentArticle.edito
-        returnForm['headline'] = currentArticle.headline
-        try:
-            returnForm['timeline'] = currentArticle.timeline.id
-            eventDetail = currentArticle.timeline.detail.get(language=language)
-            returnForm['timelineDetail'] = currentArticle.timeline.start.strftime('%Y-%m-%d') + " " + eventDetail.content
-        except:
-            returnForm['timeline'] = 0
-            returnForm['timelineDetail'] = "Null"
-        returnForm['errMsg'] = errMsg
-        returnForm['msg'] = msg
+        returnForm['action'] = 'edit'
         return render(request, 'admin/createArticle.html', returnForm)
 
 @login_required
-def articleEditInfo(request, category, slg, errMsg="", msg=""):
+def articleStatus(request, category, slg, errMsg="", msg=""):
     returnForm, language = init(request)
     returnForm = setMsg(returnForm)
-    ImageFormSet = formset_factory(form=ImgForm, extra = 3, max_num=10)
+    currentArticle = Article.objects.get(slg=slg)
     try:
-        currentArticle = Article.objects.get(slg=slg)
-        currentArticleContent = currentArticle.article.get(language=language)
+        returnForm = getArticleInfo(slg,returnForm,language)
     except:
         return HttpResponseRedirect('/')
-    currentGallery = [{'imgfile':x.imgfile} for x in currentArticle.gallery.all()]
+    currentGallery = [{'imgfile':x.imgfile} for x in returnForm['currentGallery']]
+    ImageFormSet = formset_factory(form=ImgForm, extra=3, max_num=10)
     if request.method == 'POST':
+        form = ArticleForm(request.POST)
         data = request.POST
-        numero = Numero.objects.get(id=data['numero'])
-        formset = ImageFormSet(request.POST, request.FILES,initial=currentGallery)
-        for authorId in data.getlist('author'):
-            author = UserProfile.objects.get(id=int(authorId))
-            currentArticle.author.add(author)
-        try:
-            edito = bool(data['isEdito'])
-        except:
-            edito = False
-        if edito:
-            try:
-                if numero.article.get(edito=True) != currentArticle:
-                    request.method = ""
-                    return articleEditInfo(request, category,slg,errMsg="Edito already exists")
-            except:
-                pass
-        try:
-            headline = bool(data['isHeadline'])
-        except:
-            headline = False
-        if headline:
-            try:
-                if numero.article.get(headline=True) != currentArticle:
-                    request.method=""
-                    return articleEditInfo(request, category,slg,errMsg="Headline already exists")
-            except:
-                pass
-        try:
-            f = request.FILES
-            imgTitle = str(f['imgfile']).split("/")[-1]
-            img = Img(imgfile = f['imgfile'], imgfile_m = f['imgfile'], imgfile_s = f['imgfile'], title=imgTitle)
-            img.save()
-            currentArticle.image = img
-        except:
-            pass
-
-        # Clean article gallery
-        currentArticle.gallery.clear()
-        for f in formset.cleaned_data:
-            if f != {}:
-                # Create a new class Img if image is new
-                if type(f['imgfile']) == InMemoryUploadedFile:
-                    title = str(f['imgfile'])
-                    newImg = Img(imgfile = f['imgfile'], imgfile_m = f['imgfile'], imgfile_s = f['imgfile'], title=title)
-                    newImg.save()
-                    currentArticle.gallery.add(newImg)
-                else:
-                    # Find Img object for a image file given
-                    img = Img.objects.get(imgfile=f['imgfile'])
-                    currentArticle.gallery.add(img)
-
-        category = Category.objects.get(id=data['category'])
-        currentArticle.numero = numero
-        currentArticle.category = category
-        currentArticle.edito = edito
-        currentArticle.headline = headline
-        if data['timeline'] > "0":
-            currentArticle.timeline = TimelineEvent.objects.get(id=data['timeline'])
+        files = request.FILES
+        formset = ImageFormSet(data,files,initial=currentGallery)
+        success, label = updateArticle(currentArticle,data,formset,files,language=language)
+        request.method=""
+        if success:
+            return articleStatus(request, category, slg, msg=label)
         else:
-            currentArticle.timeline = None
-        currentArticle.save()
-        request.method = ""
-        return articleEdit(request,category,slg)
+            return articleStatus(request, category, slg, errMsg=label)
     else:
-        currentFormSet = ImageFormSet(initial=currentGallery)
-        returnForm['currentFormSet'] = currentFormSet
-        returnForm['currentArticle'] = currentArticle
-        returnForm['currentCategory'] = currentArticle.category
-        returnForm['currentNumero'] = currentArticle.numero
-        returnForm['currentAuthors'] = currentArticle.author.all()
-        msg = "Edit article <b>" + str(currentArticleContent) + "</b>'s information. <a href=/"+str(currentArticle.category)+"/article/"+currentArticle.slg+"/edit> Back to edit article </a>"
+        returnForm["msg"] += "Status of article <b> No. " + str(currentArticle.id) + "</b>."
+        articleForm = ArticleForm()
         numeros = Numero.objects.all()
-        categories = CategoryDetail.objects.filter(language=language)
+        categoryFR = CategoryDetail.objects.filter(language='fr')
+        categoryTW = CategoryDetail.objects.filter(language='tw')
         users = UserProfile.objects.all()
-        returnForm['categories'] = categories
+        contentStatus = currentArticle.article.values("status","title","language").all()
+        statusLst = []
+        for lang in settings.LANGUAGES:
+            exists = False
+            for t in contentStatus:
+                if t['language']==lang[0]:
+                    exists=True
+                    statusLst.append(t)
+                    break
+            if not exists:
+                statusLst.append({'status':0,'title':'','language':lang[0]})
+        returnForm['statusLst'] = sorted(statusLst, key=itemgetter('language'))
+        returnForm['formset'] = ImageFormSet(initial=currentGallery)
+        returnForm['form'] = articleForm
+        returnForm['categoryFR'] = categoryFR
+        returnForm['categoryTW'] = categoryTW
         returnForm['users'] = users
-        returnForm['edito'] = currentArticle.edito
-        returnForm['headline'] = currentArticle.headline
-        try:
-            returnForm['timeline'] = currentArticle.timeline.id
-            eventDetail = currentArticle.timeline.detail.get(language=language)
-            returnForm['timelineDetail'] = currentArticle.timeline.start.strftime('%Y-%m-%d') + " " + eventDetail.content
-        except:
-            returnForm['timeline'] = 0
-            returnForm['timelineDetail'] = "Null"
-        returnForm['errMsg'] = errMsg
-        returnForm['msg'] = msg
-        return render(request, 'admin/editArticleInfo.html', returnForm)
+        returnForm['action'] = 'status'
+        returnForm['selectedLang'] = language
+        return render(request, 'admin/articleStatus.html', returnForm)
 
 @login_required
-def settings(request,errMsg="", msg=""):
+def userSettings(request,errMsg="", msg=""):
     returnForm, language = init(request)
     returnForm = setMsg(returnForm)
     currentUser = UserProfile.objects.get(user=request.user)
@@ -541,7 +430,7 @@ def settings(request,errMsg="", msg=""):
         if not request.user.check_password(data['OldPassword']):
             errMsg="Wrong password"
             request.method=""
-            return settings(request,errMsg=errMsg)
+            return userSettings(request,errMsg=errMsg)
         else:
             request.method=""
             if currentUser.name != data['InputName']:
@@ -551,7 +440,7 @@ def settings(request,errMsg="", msg=""):
             if data['InputPassword1'] != "":
                 if data['InputPassword1'] != data['InputPassword2']:
                     errMsg = "These two new passwords don't match"
-                    return settings(request,errMsg=errMsg, msg=msg)
+                    return userSettings(request,errMsg=errMsg, msg=msg)
                 else:
                     user = request.user
                     user.set_password(data['InputPassword1'])
@@ -559,7 +448,7 @@ def settings(request,errMsg="", msg=""):
                     user.backend = 'django.contrib.auth.backends.ModelBackend'
                     login(request, user)
                     msg += "Password is successfully changed."
-            return settings(request,msg=msg)
+            return userSettings(request,msg=msg)
     returnForm['currentUser'] = currentUser
     returnForm['errMsg'] = errMsg
     returnForm['msg'] = msg
@@ -569,14 +458,18 @@ def settings(request,errMsg="", msg=""):
 def articlePreview(request,category,slg):
     returnForm, language = init(request)
     returnForm = setMsg(returnForm)
+    selectedLang = request.GET.get('lang',language)
     if request.method == 'POST':
         a = Article.objects.get(slg=slg)
-        tmp = a.article.get(language=language)
+        try:
+            tmp = a.article.get(language=selectedLang)
+        except:
+            return HttpResponseRedirect('/')
         tmp.status = 2
         tmp.save()
         return HttpResponseRedirect(reverse('article', args=(str(a.category),a.slg,)))
     else:
-        return article(request,category,slg,status=1)
+        return article(request,category,slg,status=1,selectedLang=selectedLang)
 
 @login_required
 def timelineEdit(request):
@@ -649,3 +542,114 @@ def setMsg(returnForm):
     returnForm['errMsg'] = ''
     returnForm['warnMsg'] = ''
     return returnForm
+
+@login_required
+def checkTitleValidity(request):
+    if request.method=="GET":
+        title = request.GET["title"]
+        slg = slugify(title)
+        n = Article.objects.filter(slg=slg).count()
+        if n==0:
+            return HttpResponse(1)
+        else:
+            return HttpResponse(0)
+
+# Take article's slg and a dictionary and return this dictionary with article's information
+# If parameter "lang" is given, add article's content and abstract in dictionary
+def getArticleInfo(slg,returnForm,lang=None):
+    currentArticle = Article.objects.get(slg=slg)
+    if lang:
+        try:
+            currentArticleContent = currentArticle.article.get(language=lang)
+            returnForm['currentArticleContent'] = currentArticleContent
+        except:
+            pass
+    returnForm['currentArticle'] = currentArticle
+    returnForm['currentCategory'] = currentArticle.category
+    returnForm['currentNumero'] = currentArticle.numero
+    returnForm['currentGallery'] = currentArticle.gallery.all()
+    returnForm['currentAuthors'] = currentArticle.author.all()
+    returnForm['edito'] = currentArticle.edito
+    returnForm['headline'] = currentArticle.headline
+    try:
+        returnForm['timeline'] = currentArticle.timeline.id
+        eventDetail = currentArticle.timeline.detail.get(language=lang)
+        returnForm['timelineDetail'] = currentArticle.timeline.start.strftime('%Y-%m-%d') + " " + eventDetail.content
+    except:
+        returnForm['timeline'] = 0
+        returnForm['timelineDetail'] = "Null"
+    return returnForm
+
+def updateArticle(currentArticle,data,formset,files,language=None):
+    numero = Numero.objects.get(id=data['numero'])
+    for authorId in data.getlist('author'):
+        author = UserProfile.objects.get(id=int(authorId))
+        currentArticle.author.add(author)
+    try:
+        edito = bool(data['isEdito'])
+    except:
+        edito = False
+    if edito:
+        try:
+            if numero.article.get(edito=True) != currentArticle:
+                return False, "Edito already exists"
+        except:
+            pass
+    try:
+        headline = bool(data['isHeadline'])
+    except:
+        headline = False
+    if headline:
+        try:
+            if numero.article.get(headline=True) != currentArticle:
+                return False, "Headline already exists"
+        except:
+            pass
+    try:
+        imgTitle = str(files['imgfile']).split("/")[-1]
+        img = Img(imgfile = files['imgfile'], imgfile_m = files['imgfile'], imgfile_s = files['imgfile'], title=imgTitle)
+        img.save()
+        currentArticle.image = img
+    except:
+        pass
+    # Clean article gallery
+    currentArticle.gallery.clear()
+    print(formset.cleaned_data)
+    for f in formset.cleaned_data:
+        if f != {}:
+            # Create a new class Img if image is new
+            if type(f['imgfile']) == InMemoryUploadedFile:
+                title = str(f['imgfile'])
+                newImg = Img(imgfile = f['imgfile'], imgfile_m = f['imgfile'], imgfile_s = f['imgfile'], title=title)
+                newImg.save()
+                currentArticle.gallery.add(newImg)
+            else:
+                # Find Img object for a image file given
+                img = Img.objects.get(imgfile=f['imgfile'])
+                currentArticle.gallery.add(img)
+    if language:
+        lang = language
+    else:
+        lang = data['language']
+    category = Category.objects.get(id=data['category_'+lang])
+    currentArticle.numero = numero
+    currentArticle.category = category
+    currentArticle.edito = edito
+    currentArticle.headline = headline
+    if data['timeline'] > "0":
+        currentArticle.timeline = TimelineEvent.objects.get(id=data['timeline'])
+    else:
+        currentArticle.timeline = None
+    currentArticle.save()
+    return True ,"Success"
+
+def url_with_querystring(path, d):
+    i = 0
+    for key, value in d.items():
+        if i == 0:
+            path += '?'
+        else:
+            path += '&'
+        path = path + key + '=' + value
+        i += 1
+    return path

@@ -26,6 +26,7 @@
   <!-- Custom CSS -->
   <link rel="stylesheet" href="{% static "css/creative.css" %}" type="text/css">
   <link rel="stylesheet" href="{% static "css/timeline.css" %}" type="text/css">
+  <link rel="stylesheet" href="{% static "css/multi-select.css" %}" type="text/css">
   <link rel="stylesheet" href="{% static "css/style.css" %}" type="text/css">
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -49,8 +50,9 @@
   <!-- Custom Theme JavaScript -->
   <script src="{% static "js/creative.js" %}"></script>
   <script src="{% static "js/jquerysession.js" %}"></script>
-  <script src="{% static "js/functions.js" %}"></script>
   <script src="{% static "js/tinymce/tinymce.min.js" %}"></script>
+  <script src="{% static "js/jquery.multi-select.js" %}"></script>
+  <script src="{% static "js/functions.js" %}"></script>
   {{ form.media }}
   <script>
     tinymce.init({

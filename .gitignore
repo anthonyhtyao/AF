@@ -1,5 +1,6 @@
 db.sqlite3
 *.pyc
-auroreformosa/migrations/
+*/migrations/*.py
+*/__init__.py
 media/
 *.swp

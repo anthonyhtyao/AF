@@ -13,6 +13,7 @@ import random
 from django.core import serializers
 import json
 from django.conf import settings
+from django.contrib.auth.models import User
 
 def init(request):
     # Set default language to fr
@@ -120,6 +121,8 @@ def category(request, category):
                     d['title'] = article.title
                     d['abstract'] = article.abstract
                     d['slg'] = a.slg
+                    d['category'] = a.category
+                    d['catTranslate'] = str(a.category.detail.get(language=language))
                     d['image'] = a.image
                     articles.append(d)
                 except:
@@ -335,3 +338,32 @@ def timelinedata(request):
         data['details'] = serializers.serialize('json', details)
         return  HttpResponse(json.dumps(data), content_type="application/json")
     return HttpResponseRedirect('/')
+
+def userArticle(request, user):
+    returnForm, language = init(request)
+    try:
+        print(123)
+        usr = User.objects.get(username=user)
+        print(23)
+        usrP = UserProfile.objects.get(user=usr)
+        print(3)
+        articles = []
+        for a in usrP.article_set.all().order_by('-date'):
+            print(a)
+            try:
+                d = {}
+                article = a.article.get(language=language,status=2)
+                d['title'] = article.title
+                d['abstract'] = article.abstract
+                d['slg'] = a.slg
+                d['category'] = a.category
+                d['catTranslate'] = str(a.category.detail.get(language=language))
+                d['image'] = a.image
+                articles.append(d)
+            except:
+                pass
+        returnForm['catTranslate'] = str(usrP)
+        returnForm['articles'] = articles
+        return render(request, 'AF/category.html', returnForm)
+    except:
+        return HttpResponseRedirect('/')

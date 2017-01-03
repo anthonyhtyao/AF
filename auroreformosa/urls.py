@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^(?P<category>[a-z]+)/article/(?P<slg>.+)/preview$', viewsAdmin.articlePreview, name='articlePreview'),
     url(r'^(?P<category>[a-z]+)/article/(?P<slg>.+)/status$', viewsAdmin.articleStatus, name='articleStatus'),
     url(r'^(?P<category>[a-z]+)/article/(?P<slg>.+)$', views.article, name='article'),
+    url(r'^user/(?P<user>[a-z.\-]+)/article$', views.userArticle, name='userArticle'),
     url(r'^no/(?P<numero>[0-9.]+)$', views.archive, name='archive'),
     url(r'^no/edit$', viewsAdmin.archiveEdit, name='archiveEdit'),
 ]

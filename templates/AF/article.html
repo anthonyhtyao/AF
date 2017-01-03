@@ -11,7 +11,7 @@
     <a href="{{article.article.slg}}/edit"><span class="glyphicon glyphicon-pencil"></span></a>
     <span class="glyphicon glyphicon-trash" onclick="deleteArticle('article',{{article.id}})"></span>
   {% endif %}
-  <h5><a href="#"  style="color:black">{% for author in authors %}{{author.name}} {% endfor %}</a></h5>
+  <h5>{% for author in authors %} <a href="{% url "userArticle" author.user.username %}"  style="color:black">{{author.name}} </a>{% endfor %}</h5>
     <a href="/"><img src="{% static "img/logo_small.png" %}" width="10px" height="20px"></a> |
     <a href="/no/{{article.article.numero}}" style="color:black"> No {{article.article.numero}}</a> |
     <span class="glyphicon glyphicon-time"></span> Posted on {{article.article.date}}

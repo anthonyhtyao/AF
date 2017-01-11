@@ -1,0 +1,15 @@
+{% extends 'baseAbo.html' %}
+{% load static %}
+{% load tags %}
+{% block body_block %}
+<div class="panel panel-warning">
+<div class="panel-heading"><span class="glyphicon glyphicon-user"> </span> {{client.get_civilite_display}} {{client.name}} {{client.family_name}}</div>
+<table class="table">
+  <tr><td> EMAIL </td><td>{{client.email}}</td></tr>   
+  <tr><td> ADRESS </td><td>{{client.adress | replace_linebr}}</td></tr>   
+  <tr><td> INFORMÉ </td><td>{{client.info}}</td></tr>   
+  <tr><td> NOTE </td><td>{{client.remark}}</td></tr>   
+</table>
+</div>
+<hr/>
+{% endblock %}

@@ -27,14 +27,14 @@
 {% for article in articles %}
   <div class="col-sm-12 col-md-6" style="height:400px;color:black;">
     <div style="height:200px;overflow:hidden">
-      <a href="/{{category}}/article/{{article.slg}}">
+      <a href="/{{article.category}}/article/{{article.slg}}">
         <img src="{{article.image.imgfile.url}}" height="auto" width="100%">
       </a>
     </div>
       <div>
         <h3><strong>{{article.title}}</strong></h3>
         <h5 style="color:black">{{article.abstract}}</h5>
-        <h4 style="color:black"><strong style="color:{{category.color}}; ">▍</strong>{{catTranslate}}</h4>
+        <h4 style="color:black"><strong style="color:{{article.category.color}}; ">▍</strong>{{article.catTranslate}}</h4>
       </div>
   </div>
 

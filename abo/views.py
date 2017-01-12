@@ -16,5 +16,9 @@ def index(request):
 def clientDetail(request,client):
     returnForm = {}
     client = Subscriber.objects.get(id=int(client))
+    dons = Donation.objects.filter(donor=client)
+    subs = Subscription.objects.filter(subscriber=client)
     returnForm['client'] = client
+    returnForm['dons'] = dons
+    returnForm['subs'] = subs
     return render(request, 'abo/clientDetail.html',returnForm)

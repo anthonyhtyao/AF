@@ -3,7 +3,7 @@
 {% load tags %}
 {% block body_block %}
 <div class="panel panel-warning">
-<div class="panel-heading"><span class="glyphicon glyphicon-user"> </span> {{client.get_civilite_display}} {{client.name}} {{client.family_name}}</div>
+<div class="panel-heading"><span class="glyphicon glyphicon-user"> </span> {{client.get_civilite_display}} {{client.name}} {{client.family_name|upper}}</div>
 <table class="table">
   <tr><td> EMAIL </td><td>{{client.email}}</td></tr>   
   <tr><td> ADRESS </td><td>{{client.adress | replace_linebr}}</td></tr>   
@@ -11,5 +11,43 @@
   <tr><td> NOTE </td><td>{{client.remark}}</td></tr>   
 </table>
 </div>
-<hr/>
+<hr />
+{% if dons  %}
+<div class="panel panel-warning">
+<div class="panel-heading">捐款</div>
+<table class="table">
+<tr><th>#</th><th>金額</th><th>已付款</th><th>收據</th></tr>
+{% for don in dons %}
+<tr>
+  <td>{{forloop.counter}}</td>
+  <td>{{don.amount}}</td>
+  <td>{{don.received}}</td>
+  <td>{{don.receipt}}</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+<hr />
+{% endif %}
+
+{% if subs %}
+<div class="panel panel-warning">
+<div class="panel-heading">訂閱</div>
+<table class="table">
+<tr><th>#</th><th>開始</th><th>結束</th><th>數量</th><th>付款</th></tr>
+{% for sub in subs %}
+<center>
+<tr>
+  <td>{{forloop.counter}}</td>
+  <td>{{sub.start}}</td>
+  <td>{{sub.end}}</td>
+  <td>{{sub.quantity}}</td>
+  <td>{{sub.get_payment_display}}</td>
+</tr>
+</center>
+{% endfor %}
+</table>
+</div>
+{% endif %}
+
 {% endblock %}

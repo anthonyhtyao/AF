@@ -38,7 +38,6 @@
 </table>
 </div>
 <hr />
-{% if dons  %}
 <div class="panel panel-warning">
 <div class="panel-heading">捐款</div>
 <table class="table">
@@ -54,9 +53,7 @@
 </table>
 </div>
 <hr />
-{% endif %}
 
-{% if subs %}
 <div class="panel panel-warning">
 <div class="panel-heading">訂閱</div>
 <table class="table">
@@ -74,8 +71,6 @@
 {% endfor %}
 </table>
 </div>
-{% endif %}
-
 <script>
 $(document).on('click', '#editClient', function() {
     $("#saveClient").show();

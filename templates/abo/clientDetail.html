@@ -17,23 +17,23 @@
     <td>
       <div class="input-group">
       <span class="input-group-addon" id="basic-addon1">@</span>
-      <input type="text" class="form-control" value="{{client.email}}" aria-describedby="basic-addon1">
+      <input id="clientEmail" type="text" class="form-control" value="{{client.email}}" aria-describedby="basic-addon1">
       </div>
     </td>
   </tr>   
   <tr class="clientInfoEdit">
     <td> ADRESS </td>
-    <td><textarea class="form-control" rows="3">{{client.adress}}</textarea></td>
+    <td><textarea id="clientAdress" class="form-control" rows="3">{{client.adress}}</textarea></td>
   </tr> 
   <tr class="clientInfoEdit">
     <td> INFORMÉ </td>
     <td>
-      <input type="checkbox" {% if client.info %}checked{% endif %}> être informé
+      <input id="clientInfo" type="checkbox" {% if client.info %}checked{% endif %}> être informé
     </td>
   </tr>   
   <tr class="clientInfoEdit">
     <td> NOTE </td>
-    <td><input class="form-control" type="text" value="{{client.remark}}"></td>
+    <td><input id="clientRemark" class="form-control" type="text" value="{{client.remark}}"></td>
   </tr>   
 </table>
 </div>
@@ -85,8 +85,29 @@ $(document).on('click', '#editClient', function() {
 });
 
 $(document).on('click', '#saveClient', function() {
-        $("#editClient").show();
-        $("#saveClient").hide();
+    editClient();
+    $("#editClient").show();
+    $("#saveClient").hide();
+    $('.clientInfo').show();
+    $('.clientInfoEdit').hide();
 });
+function editClient() {
+    var clientEmail = $("#clientEmail").val();
+    var clientAdress = $("#clientAdress").val();
+    var clientInfo = $("#clientInfo").is(':checked')?1:0;
+    var clientRemark = $("#clientRemark").val();
+    data = {clientEmail:clientEmail, clientAdress:clientAdress, clientInfo:clientInfo, clientRemark:clientRemark}
+    preAjax();
+    $.ajax({
+        type:"POST",
+        url: window.location+"/edit",
+        data: JSON.stringify(data),
+        success: function(data) {
+            if (data=='1') {
+                location.reload();
+            }
+        }
+    });
+};
 </script>
 {% endblock %}

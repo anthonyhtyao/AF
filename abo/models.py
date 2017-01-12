@@ -19,7 +19,7 @@ class Donation(models.Model):
     received = models.BooleanField(default=False)
     receipt = models.BooleanField(default=False)
     status = models.SmallIntegerField(default=1)
-    auditor = models.ForeignKey(User)
+    auditor = models.ForeignKey(User,null=True)
 
 class Subscription(models.Model):
     PAYMENT = {('Y','Yes'),('N','No'),('P','Point'),('E','Exempte')}
@@ -29,4 +29,4 @@ class Subscription(models.Model):
     quantity = models.IntegerField(default=1)
     payment = models.CharField(max_length=1, choices=PAYMENT, default='N')
     status = models.SmallIntegerField(default=1)
-    auditor = models.ForeignKey(User)
+    auditor = models.ForeignKey(User,null=True)

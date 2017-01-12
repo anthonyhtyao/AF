@@ -3,12 +3,38 @@
 {% load tags %}
 {% block body_block %}
 <div class="panel panel-warning">
-<div class="panel-heading"><span class="glyphicon glyphicon-user"> </span> {{client.get_civilite_display}} {{client.name}} {{client.family_name|upper}}</div>
+<div class="panel-heading">
+  <span class="glyphicon glyphicon-user"> </span> {{client.get_civilite_display}} {{client.name}} {{client.family_name|upper}}
+  <div style="float:right"><span id="editClient" class="glyphicon glyphicon-pencil"></span><span id="saveClient" class="glyphicon glyphicon-floppy-disk" style="display:none"></span></div>
+</div>
 <table class="table">
-  <tr><td> EMAIL </td><td>{{client.email}}</td></tr>   
-  <tr><td> ADRESS </td><td>{{client.adress | replace_linebr}}</td></tr>   
-  <tr><td> INFORMÉ </td><td>{{client.info}}</td></tr>   
-  <tr><td> NOTE </td><td>{{client.remark}}</td></tr>   
+  <tr class="clientInfo"><td> EMAIL </td><td>{{client.email}}</td></tr>   
+  <tr class="clientInfo"><td> ADRESS </td><td>{{client.adress}}</td></tr>   
+  <tr class="clientInfo"><td> INFORMÉ </td><td>{{client.info}}</td></tr>   
+  <tr class="clientInfo"><td> NOTE </td><td>{{client.remark}}</td></tr>   
+  <tr class="clientInfoEdit">
+    <td> EMAIL </td>
+    <td>
+      <div class="input-group">
+      <span class="input-group-addon" id="basic-addon1">@</span>
+      <input type="text" class="form-control" value="{{client.email}}" aria-describedby="basic-addon1">
+      </div>
+    </td>
+  </tr>   
+  <tr class="clientInfoEdit">
+    <td> ADRESS </td>
+    <td><textarea class="form-control" rows="3">{{client.adress}}</textarea></td>
+  </tr> 
+  <tr class="clientInfoEdit">
+    <td> INFORMÉ </td>
+    <td>
+      <input type="checkbox" {% if client.info %}checked{% endif %}> être informé
+    </td>
+  </tr>   
+  <tr class="clientInfoEdit">
+    <td> NOTE </td>
+    <td><input class="form-control" type="text" value="{{client.remark}}"></td>
+  </tr>   
 </table>
 </div>
 <hr />
@@ -50,4 +76,17 @@
 </div>
 {% endif %}
 
+<script>
+$(document).on('click', '#editClient', function() {
+    $("#saveClient").show();
+    $("#editClient").hide();
+    $('.clientInfo').hide();
+    $('.clientInfoEdit').show();
+});
+
+$(document).on('click', '#saveClient', function() {
+        $("#editClient").show();
+        $("#saveClient").hide();
+});
+</script>
 {% endblock %}

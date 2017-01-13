@@ -7,12 +7,25 @@ from django.conf import settings
 from abo.models import *
 import json
 from django.forms.models import model_to_dict
+from auroreformosa.models import Numero
+from django.db.models import Max, Sum
+from operator import itemgetter
+
+currentNo = int(Numero.objects.all().aggregate(Max('numero'))['numero__max'])
 
 @login_required
 def index(request):
     returnForm = {}
     
-    return render(request, 'abo/index.html',{})
+    clientsLst = Subscriber.objects.all()
+    clients = []
+    for client in clientsLst:
+        tmp={'id':client.id,'name':client.name,'family_name':client.family_name,'email':client.email}
+        tmp['don']=int(client.donations.aggregate(Sum('amount'))['amount__sum'] or 0)
+        tmp['end']=int(client.subscriptions.aggregate(Max('end'))['end__max'] or 0)
+        clients.append(tmp)
+    returnForm['clients'] = sorted(clients, key=itemgetter('end'),reverse=True)
+    return render(request, 'abo/index.html',returnForm)
 
 @login_required
 def clientDetail(request,client):

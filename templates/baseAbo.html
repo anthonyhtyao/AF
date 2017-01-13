@@ -29,6 +29,9 @@
   <link rel="stylesheet" href="{% static "css/multi-select.css" %}" type="text/css">
   <link rel="stylesheet" href="{% static "css/style.css" %}" type="text/css">
 
+  <!-- Bootstrap Toggle -->
+  <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
@@ -52,6 +55,9 @@
   <script src="{% static "js/jquerysession.js" %}"></script>
   <script src="{% static "js/tinymce/tinymce.min.js" %}"></script>
   <script src="{% static "js/jquery.multi-select.js" %}"></script>
+  <!-- Bootstrap Toggle -->
+  <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+  <script src="{% static "js/abo.js" %}"></script>
   <script src="{% static "js/functions.js" %}"></script>
   {{ form.media }}
   <script>
@@ -167,6 +173,10 @@
     </ul>
   </div>
 {% endblock category_block %}
+</div>
+<div class="col-md-2"> 
+{% block side_block %}
+{% endblock %}
 </div>
   <div class="container">
         {% block body_block %} {% endblock %}

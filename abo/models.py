@@ -13,6 +13,8 @@ class Subscriber(models.Model):
     info = models.BooleanField(default=False)
     remark = models.CharField(max_length=128)
 
+    def __str__(self):
+        return self.name + " " + self.family_name
 class Donation(models.Model):
     donor = models.ForeignKey(Subscriber, related_name='donations')
     amount = models.IntegerField(default=0)

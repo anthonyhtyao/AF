@@ -1,6 +1,7 @@
 {% extends 'baseAbo.html' %}
 {% load static %}
 {% block side_block %}
+<div style="float:right">
 <div class="form-group">
   <label for="aboSearchEmail">Email</label>
   <input oninput="searchClient(this)" class="form-control" id="aboSearchEmail" placeholder="Email" data-value="email">
@@ -31,6 +32,7 @@
 <div class="form-group">
   <label>訂閱未付款</label>
   <input onchange="searchClient(this)" data-width="100%" data-toggle="toggle" data-on="尚未付款" data-off="Null" data-onstyle="danger" data-offstyle="" data-value="payment" type="checkbox">
+</div>
 </div>
 {% endblock %}
 {% block body_block %}

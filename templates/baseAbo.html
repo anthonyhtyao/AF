@@ -77,13 +77,8 @@
       <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-inner">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
           <a class="navbar-brand page-scroll" href="/"><img src="{% static "img/Logo.png" %}" height="30px"></a>
+          <a class="navbar-brand page-scroll" href="/abo"><span class="glyphicon glyphicon-backward"></span> Back to Abo </a> 
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -94,57 +89,9 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Admin </a>
               <ul class = "dropdown-menu">
                 <li><a href="/settings">Settings</a></li>
-                <li><a href="/createcomic">Add Comic</a></li>
-                <li><a href="/no/edit">Archive Detail</a></li>
-                <li><a href="/createarticle">Create Article</a></li>
-                <li><a href="/createuser">Create User</a></li>
-                <li><a href="/timeline/edit">Timeline</a></li>
-                <li><a href="/upload">Upload Image</a></li>
               </ul>
             </li>
             {% endif %}
-            {% if language == "fr" %}
-            <li>
-              <a href="/about">A propos</a>
-            </li>
-            <li>
-              <a href="/abonnement">Abonnement</a>
-            </li>
-            <li>
-              <a href="/contact">Contact</a>
-            </li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Bibliothèque</a>
-            {% elif language == "tw" %}
-            <li>
-              <a href="/about">關於黎島</a>
-            </li>
-            <li>
-              <a href="/abonnement">訂閱/捐款</a>
-            </li>
-            <li>
-              <a href="/contact">聯絡我們</a>
-            </li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">檔案室</a>
-            {% endif %}
-                <ul class="dropdown-menu">
-                {% for numero in numeros %}
-                  <li><a href="/no/{{numero}}">{{numero}}</a></li>
-                {% endfor %}
-                </ul>
-            </li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" style="color:black" data-toggle="dropdown">{{language}}</a>
-              <ul class="dropdown-menu">
-                  {% for lang in LANGUAGES %}
-                    {% if lang.0 == language %}
-                    {% else %}
-                      <li><a id="btnLanguage" onclick="setLanguage('{{lang.0}}')" class="btn" style="color:#6E6E6E" >{{lang.0}}</a></li>
-                    {% endif %}
-                  {% endfor %}
-              </ul>
-            </li>
           </ul>
         </div>
         <!-- /.navbar-collapse -->
@@ -159,21 +106,7 @@
     </div>
 
   </header>
-<div class="col-md-12">
-{% block category_block %}
-  <div class="col-md-9 col-md-offset-2">
-    <ul class="nav navbar-nav col-md-12">
-      {% for category in categories %}
-        <li class="" style="width:10%">
-          <h4>
-            <a class = "category" style="color:rgba(0,0,0,.5)" onmouseover="changeColor(this,'{{category.category.color}}')" onmouseout="returnColor(this)" href="/{{category.category}}"> {{category.title}} </a>
-          </h4>
-        </li>
-      {% endfor %}
-    </ul>
-  </div>
-{% endblock category_block %}
-</div>
+<div style="min-height:90%">
 <div class="col-md-2"> 
 {% block side_block %}
 {% endblock %}
@@ -187,6 +120,7 @@
 <br>
 <br>
 <br>
+</div>
         <footer class="col-md-12">
             <div class="row">
                 <div >

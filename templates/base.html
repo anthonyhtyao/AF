@@ -63,7 +63,6 @@
 
 <body id="page-top" onload="drawVisualization()">
 
-
 {% block header_block %}
   <header>
 {% endblock header_block %}
@@ -153,6 +152,9 @@
     </div>
 
   </header>
+{% block body_min_height %}
+<div style="min-height:90%">
+{% endblock %}
 <div class="col-md-12">
 {% block category_block %}
   <div class="col-md-9 col-md-offset-2">
@@ -174,7 +176,7 @@
 
 {% block downpage_block %}
 {% endblock downpage_block %}
-<br>
+</div>
         <footer class="col-md-12">
             <div class="row">
                 <div >

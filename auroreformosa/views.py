@@ -116,7 +116,7 @@ def category(request, category):
             cat = Category.objects.get(category=category)
             category = cat.detail.get(language=language)
             articles = []
-            for a in Article.objects.filter(category=cat):
+            for a in Article.objects.filter(category=cat).order_by('-date'):
                 try:
                     d = {}
                     article = a.article.get(language=language,status=2)

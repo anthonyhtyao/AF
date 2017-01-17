@@ -20,6 +20,7 @@
   </div>
 {% endblock  %}
 {% load static %}
+{% load afTags %}
 {% block body_block %}
 <div>
   <center><h1>{{comic.title}}</h1></center>
@@ -41,8 +42,8 @@
       {{comic.content|safe}}
     </div>
     <center>
-        <a href="/comics/{{beforeComic.slg}}"><span title="{{beforeComic.title}}" class="glyphicon glyphicon-chevron-left"></a>
-        <a href="/comics/{{nextComic.slg}}"><span title="No.{{nextComic.numero}} {{nextComic.title}}" class="glyphicon glyphicon-chevron-right"></a>
+	    <a href="/comics/{{beforeComic.slg}}"><span title="{{beforeComic.numero|numeroNoBar}}{{beforeComic.title}}" class="glyphicon glyphicon-chevron-left"></a>
+        <a href="/comics/{{nextComic.slg}}"><span title="{{nextComic.numero|numeroNoBar}}{{nextComic.title}}" class="glyphicon glyphicon-chevron-right"></a>
     </center>
   </div>
 </div>

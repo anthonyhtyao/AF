@@ -38,3 +38,7 @@ div.timeline-event-target {
 }
 
 .ui-dialog { z-index: 1000 !important ;}
+
+.clientInfoEdit {
+    display: none;
+}

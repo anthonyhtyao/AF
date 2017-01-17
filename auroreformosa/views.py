@@ -14,6 +14,8 @@ from django.core import serializers
 import json
 from django.conf import settings
 from django.contrib.auth.models import User
+from abo.models import *
+from django.db.models import Max
 
 def init(request):
     # Set default language to fr
@@ -260,38 +262,50 @@ def abonnement(request):
     returnForm, language = init(request)
     if request.method=="POST":
         form = AbonnementForm(request.POST)
+        titles = {'M.':'Ms','Mme':'Mm','Mlle':'Ml'}
+        currentNo = int(Numero.objects.all().aggregate(Max('numero'))['numero__max'])
         if form.is_valid():
-            print(request.POST)
+            data = request.POST
+            print(data)
+            familyName = data['familyName']
+            name = data['name']
+            adressClient = data['adresse']+'\r'+data['codepostal']+" "+data['city']+" "+data['country']
+### Create client object
+            client = Subscriber.objects.create(civilite=titles[data['title']],family_name=familyName,name=name,email=data['email'],adress=adressClient,country=data['country'])
             emailTxt = get_template('email.txt')
             emailHtml = get_template('email.html')
-            adresse = request.POST['adresse'] + " " + request.POST['city'] + " " + request.POST['country'] + " " + request.POST['codepostal']
+            adresse = data['adresse'] + " " + data['city'] + " " + data['country'] + " " + data['codepostal']
             action =""
             try:
-                if request.POST['abonnement']:
+                if data['abonnement']:
                     action += "s'abonner , "
+                    Subscription.objects.create(subscriber=client,start=currentNo,end=currentNo+4)
             except:
                 pass
             try:
-                if request.POST['don']:
+                if data['don']:
                     action += "faire un don de "
                     try:
-                        action += request.POST['amount']
+                        action += data['amount']
+                        Donation.objects.create(donor=client,amount=int(data['amount']))
                     except:
                         action += "0"
                     action += " € , "
             except:
                 pass
             try:
-                if request.POST['informer']:
+                if data['informer']:
                     action += "être informé(e)"
+                    client.info = True
+                    client.save()
             except:
                 pass
-            d = Context({'title':request.POST['title'], 'name':request.POST['name'], 'email':request.POST['email'], 'adresse':adresse, 'action':action, 'message':request.POST['message']})
+            d = Context({'title':data['title'], 'familyName':data['familyName'], 'name':data['name'], 'email':data['email'], 'adresse':adresse, 'action':action, 'message':data['message']})
             textContent = emailTxt.render(d)
             htmlContent = emailHtml.render(d)
             msg = EmailMultiAlternatives("New Subscription", textContent, 'anthonyhtyao@gmail.com', ['anthonyhtyao@gmail.com', 'yulinhuang23@gmail.com', 'jhihhuang.li@gmail.com', 'sun.yujung@gmail.com', 'turtlelin1210@gmail.com'])
             msg.attach_alternative(htmlContent, "text/html")
-            msg.send()
+    #        msg.send()
     form = AbonnementForm()
     returnForm['form'] = form
     return render(request,'AF/abonnement.html', returnForm)

@@ -8,7 +8,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 from django.template import Context
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
 from auroreformosa.views import *
 from django.forms.models import formset_factory
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -17,7 +17,10 @@ from django.template.defaultfilters import slugify
 from django.conf import settings
 from operator import itemgetter
 
-@login_required
+def isStaff(user):
+    return user.is_staff
+    
+@user_passes_test(isStaff)
 def uploadImg(request):
     returnForm, language = init(request)
     returnForm = setMsg(returnForm)
@@ -34,6 +37,7 @@ def uploadImg(request):
     return render(request,'admin/upload.html', returnForm)
 
 @login_required
+@permission_required('auroreformosa.add_article')
 def createComic(request, errMsg="", msg="", warnMsg=""):
     returnForm, language = init(request)
     returnForm = setMsg(returnForm)
@@ -103,10 +107,15 @@ def createComic(request, errMsg="", msg="", warnMsg=""):
     return render(request, 'admin/createComic.html', returnForm)
 
 @login_required
+@permission_required('auroreformosa.change_article')
 def comicsEdit(request, slg, errMsg="", msg="", warnMsg=""):
     returnForm, language = init(request)
     returnForm = setMsg(returnForm)
     articleParent = Article.objects.get(slg=slg)
+    try:
+        assert request.user.is_staff or request.user.userprofile in articleParent.authors
+    except:
+        return HttpResponseRedirect(reverse('comics', args=(slg,)))
     comicFR = None
     comicTW = None
     try:
@@ -183,6 +192,7 @@ def comicsEdit(request, slg, errMsg="", msg="", warnMsg=""):
 
 # Set article's status to 1 (article editting) and go to preview page if success
 @login_required
+@permission_required('auroreformosa.add_article')
 def createarticle(request, errMsg="", msg=""):
     returnForm, language = init(request)
     returnForm = setMsg(returnForm)
@@ -229,7 +239,7 @@ def createarticle(request, errMsg="", msg=""):
     returnForm['users'] = users
     return render(request, 'admin/createArticle.html', returnForm)
 
-@login_required
+@user_passes_test(isStaff)
 def archiveEdit(request):
     returnForm, language = init(request)
     returnForm = setMsg(returnForm)
@@ -299,7 +309,7 @@ def archiveEdit(request):
         returnForm["data"].append(dist)
     return render(request, 'admin/archiveEdit.html', returnForm)
 
-@login_required
+@user_passes_test(isStaff)
 def createUser(request, msg=""):
     returnForm,language = init(request)
     returnForm = setMsg(returnForm)
@@ -318,10 +328,16 @@ def createUser(request, msg=""):
     return render(request, 'admin/createUser.html', returnForm)
 
 @login_required
+@permission_required('auroreformosa.change_article')
 def articleEdit(request, category, slg, errMsg="", msg=""):
     returnForm, language = init(request)
     returnForm = setMsg(returnForm)
     currentArticle = Article.objects.get(slg=slg)
+    try:
+        assert request.user.is_staff or request.user.userprofile in currentArticle.authors
+    except:
+        return HttpResponseRedirect(reverse('article', args=(category,slg,)))
+    
     ImageFormSet = formset_factory(form=ImgForm, extra=3, max_num=10)
     selectedLang = request.GET.get('lang',language)
     try:
@@ -371,10 +387,15 @@ def articleEdit(request, category, slg, errMsg="", msg=""):
         return render(request, 'admin/createArticle.html', returnForm)
 
 @login_required
+@permission_required('auroreformosa.change_article')
 def articleStatus(request, category, slg, errMsg="", msg=""):
     returnForm, language = init(request)
     returnForm = setMsg(returnForm)
     currentArticle = Article.objects.get(slg=slg)
+    try:
+        assert request.user.is_staff or request.user.userprofile in currentArticle.authors
+    except:
+        return HttpResponseRedirect(reverse('article', args=(category,slg,)))
     try:
         returnForm = getArticleInfo(slg,returnForm,language)
     except:
@@ -455,6 +476,7 @@ def userSettings(request,errMsg="", msg=""):
     return render(request, 'admin/settings.html',returnForm)
 
 @login_required
+@permission_required('auroreformosa.add_article')
 def articlePreview(request,category,slg):
     returnForm, language = init(request)
     returnForm = setMsg(returnForm)
@@ -472,12 +494,14 @@ def articlePreview(request,category,slg):
         return article(request,category,slg,status=1,selectedLang=selectedLang)
 
 @login_required
+@permission_required('auroreformosa.change_timelineevent')
 def timelineEdit(request):
     returnForm, language = init(request)
     returnForm = setMsg(returnForm)
     return render(request, 'admin/timelineEdit.html',returnForm)
 
 @login_required
+@permission_required('auroreformosa.add_timelineevent')
 def timelineSave(request):
     returnForm, language = init(request)
     returnForm = setMsg(returnForm)
@@ -523,15 +547,24 @@ def timelineSave(request):
     return HttpResponseRedirect('/')
 
 @login_required
+@permission_required('auroreformosa.add_article')
 def articleDelete(request):
     if request.method=="POST":
         data = json.loads(request.body.decode('utf-8'))
         if data['type'] == 'article':
             article = ArticleContent.objects.get(id=data['id'])
+            try:
+                assert request.user.is_staff or request.user.userprofile in article.authors
+            except:
+                return HttpResponseRedirect(reverse('article', args=(str(article.category),article.slg,)))
             article.status = 0
             article.save()
         else:
             comic = Comic.objects.get(id=data['id'])
+            try:
+                assert request.user.is_staff or request.user.userprofile in comic.authors
+            except:
+                return HttpResponseRedirect(reverse('comics', args=(comic.slg,)))
             comic.status = 0
             comic.save()
         return HttpResponseRedirect('/')

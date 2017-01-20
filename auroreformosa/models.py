@@ -8,12 +8,17 @@ from django.conf import settings
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, null=True, blank=True)
     name = models.CharField(max_length = 128, blank = True)
+    slg = models.SlugField(max_length=140)
 
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        self.slg = slugify(self.name)
+        super(UserProfile, self).save(*args, **kwargs)
+       
 class Img(models.Model):
     imgfile = models.FileField(upload_to='img')
     imgfile_m = models.FileField(upload_to='img/middle', null=True, blank=True)
@@ -95,7 +100,7 @@ class Article(models.Model):
     category = models.ForeignKey(Category, related_name="article", null=True)
     numero = models.ForeignKey(Numero, null=True, related_name="article", blank = True)
     title = models.CharField(max_length=128, unique=True)
-    slg = models.SlugField()
+    slg = models.SlugField(max_length=140)
     image = models.ForeignKey(Img, null = True, blank=True)
     gallery = models.ManyToManyField(Img, blank=True, related_name="galleryAricle")
     edito = models.BooleanField(default=False)

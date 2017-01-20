@@ -87,12 +87,16 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Admin </a>
               <ul class = "dropdown-menu">
                 <li><a href="/settings">Settings</a></li>
-                <li><a href="/createcomic">Add Comic</a></li>
-                <li><a href="/no/edit">Archive Detail</a></li>
+                {% if perms.auroreformosa.add_article %}
                 <li><a href="/createarticle">Create Article</a></li>
+                <li><a href="/createcomic">Add Comic</a></li>
+                {% endif %}
+                {% if user.is_staff %}
+                <li><a href="/no/edit">Archive Detail</a></li>
                 <li><a href="/createuser">Create User</a></li>
                 <li><a href="/timeline/edit">Timeline</a></li>
                 <li><a href="/upload">Upload Image</a></li>
+                {% endif %}
               </ul>
             </li>
             {% endif %}

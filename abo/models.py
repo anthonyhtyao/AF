@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 class Subscriber(models.Model):
+    owner = models.OneToOneField(User, null=True, blank=True)
     CIVILITE = {('Ms','M.'),('Ml','Mlle'),('Mm','Mme')}
     civilite = models.CharField(max_length=2, choices=CIVILITE, default='Ms')
     family_name = models.CharField(max_length=63)

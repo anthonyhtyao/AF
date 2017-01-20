@@ -7,12 +7,12 @@
 <div>
   <h3 style="color:{{category.category.color}}">{{category.title}}</h3>
   <strong><h1>{{article.title}}</h1></strong>
-  {% if user.is_authenticated %}
+  {% if user.is_staff or user.userprofile in authors %}
     <a href="{{article.article.slg}}/status"><span class="glyphicon glyphicon-info-sign"></span></a>
     <a href="{{article.article.slg}}/edit"><span class="glyphicon glyphicon-pencil"></span></a>
     <span class="glyphicon glyphicon-trash" onclick="deleteArticle('article',{{article.id}})"></span>
   {% endif %}
-  <h5>{% for author in authors %} <a href="{% url "userArticle" author.user.username %}"  style="color:black">{{author.name}} </a>{% endfor %}</h5>
+  <h5>{% for author in authors %} <a href="{% url "authorArticle" author.slg %}"  style="color:black">{{author.name}} </a>{% endfor %}</h5>
     <a href="/"><img src="{% static "img/logo_small.png" %}" width="10px" height="20px"></a> |
     <a href="/no/{{article.article.numero}}" style="color:black">{{article.article.numero|numeroBar}}</a>
     <span class="glyphicon glyphicon-time"></span> Posted on {{article.article.date}}

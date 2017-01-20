@@ -353,14 +353,10 @@ def timelinedata(request):
         return  HttpResponse(json.dumps(data), content_type="application/json")
     return HttpResponseRedirect('/')
 
-def userArticle(request, user):
+def authorArticle(request, slg):
     returnForm, language = init(request)
     try:
-        print(123)
-        usr = User.objects.get(username=user)
-        print(23)
-        usrP = UserProfile.objects.get(user=usr)
-        print(3)
+        usrP = UserProfile.objects.get(slg=slg)
         articles = []
         for a in usrP.article_set.all().order_by('-date'):
             print(a)

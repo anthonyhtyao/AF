@@ -24,7 +24,7 @@
 {% block body_block %}
 <div>
   <center><h1>{{comic.title}}</h1></center>
-  {% if user.is_authenticated %}
+  {% if user.is_staff or user.userprofile in authors %}
     <a href="/comics/{{comic.article.slg}}/edit"><span class="glyphicon glyphicon-pencil"></span></a>
     <span class="glyphicon glyphicon-trash" onclick="deleteArticle('comic',{{comic.id}})"></span>
   {% endif %}

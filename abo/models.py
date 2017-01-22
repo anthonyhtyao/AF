@@ -16,6 +16,7 @@ class Subscriber(models.Model):
 
     def __str__(self):
         return self.name + " " + self.family_name
+
 class Donation(models.Model):
     donor = models.ForeignKey(Subscriber, related_name='donations')
     amount = models.IntegerField(default=0)

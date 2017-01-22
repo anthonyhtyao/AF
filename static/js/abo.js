@@ -24,5 +24,36 @@ function searchClient(t) {
       i++;
     }
   }
-  $(".indTable").html('').load(url);
+    
+    $(".indTable").html('').load(url);
+
+}
+
+function genAdressPDF() {
+    console.log("gen adress buttom clicked");
+    
+    var idLst = [];
+    $("#clientsTable tr").each(function() {
+        var id = $(this).find("td:first").text();
+        if (id)
+            idLst.push(parseInt(id));
+    });
+    data = {'clientsLst':idLst}
+    console.log(idLst);
+    $("#clientsIDInput").val(JSON.stringify(data));
+    $("#genAdressPDFForm").submit();
+    /*$.ajax({
+        type:'POST',
+        url:'/abo/adress_pdf',
+        data:JSON.stringify(data),
+        success: function(data) {
+            console.log(data);
+            var blob=new Blob([data]);
+            var link=document.createElement('a');
+            link.href=window.URL.createObjectURL(blob);
+            link.download="Dossier_"+new Date()+".pdf";
+            link.click();
+        }
+    });
+*/
 }

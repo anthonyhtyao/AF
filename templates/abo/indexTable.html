@@ -1,4 +1,4 @@
-<table class="table table-striped table-hover">
+<table id="clientsTable" class="table table-striped table-hover">
 <tr><th>ID</th><th>NAME</th><th>EMAIL</th><th>DON</th><th>END</th></tr>
 {% for client in clients %}
 <tr onclick="console.log({{client.id}});document.location='{% url 'clientDetail' client.id %}';">

@@ -33,7 +33,14 @@
     <label>訂閱未付款</label>
     <input onchange="searchClient(this)" data-width="100%" data-toggle="toggle" data-on="尚未付款" data-off="Null" data-onstyle="danger" data-offstyle="" data-value="payment" type="checkbox">
   </div>
-  <img onclick="genAdressPDF()" src="{% static 'img/PDF.jpg' %}" width="40">
+  <div class="form-group">
+    <label>訂閱已過期</label>
+    <input onchange="searchClient(this)" data-width="100%" data-toggle="toggle" data-on="已過期" data-off="Null" data-onstyle="danger" data-offstyle="" data-value="expire" type="checkbox">
+  </div>
+  
+    <span  class="glyphicon glyphicon-save gi-max" onClick="genAdressPDF()" title="只限生成當期訂戶地址"></span>
+    <span  class="glyphicon glyphicon-send gi-max" onclick="showEmail()" title="取得訂戶信箱"></span>
+  
   <form id="genAdressPDFForm" action="adress_pdf" method="post">
     {% csrf_token %}
     <input id="clientsIDInput" type="hidden" name="clientsLst" />

@@ -1,11 +1,26 @@
 var searchData = {'email':'','family_name':'','name':''};
 
 $(document).ready( function() {
-  console.log(123456);
+
 });
 
+function showEmail() {
+    var emails = '';
+    $("#clientsTable tr").each(function() {
+        var email = $(this).find("td:nth-child(3)").text();
+        if (email)
+            emails = emails+email+',';
+    });
+    bootbox.dialog({
+        message:"<div><input id='emailInput' class='form-control underline' type='text' value="+emails.slice(0,-1)+" onclick='this.select()' /></div>",
+        backdrop: true,
+        onEscape: true,
+        closeButton: false
+    });
+}
+
 function searchClient(t) {
-  var boolLst = ['info','payment'];
+    var boolLst = ['info','payment','expire'];
   var key = $(t).data('value');
   if (boolLst.indexOf(key)>=0)
       var val = $(t).is(':checked')?1:0;

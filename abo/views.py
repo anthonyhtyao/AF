@@ -31,11 +31,12 @@ def index(request):
 def clientDetail(request,client):
     returnForm = {}
     client = Subscriber.objects.get(id=int(client))
-    dons = Donation.objects.filter(donor=client)
-    subs = Subscription.objects.filter(subscriber=client)
+    dons = Donation.objects.filter(donor=client,status__gt=0)
+    subs = Subscription.objects.filter(subscriber=client,status__gt=0)
     returnForm['client'] = client
     returnForm['dons'] = dons
     returnForm['subs'] = subs
+    returnForm['PAYMENT'] = Subscription.PAYMENT
     return render(request, 'abo/clientDetail.html',returnForm)
 
 @login_required
@@ -51,11 +52,76 @@ def clientEdit(request,client):
         return HttpResponse(1)
 
 @login_required
+def subDelete(request,client):
+    if request.method=="POST":
+        data = json.loads(request.body.decode('utf-8'))
+        subID = data['subID']
+        sub = Subscription.objects.get(id=subID)
+        assert int(client) == sub.subscriber.id
+        sub.status = 0
+        sub.save()
+        return HttpResponse(1)
+
+@login_required
+def subAdd(request,client):
+    if request.method=="POST":
+        client = Subscriber.objects.get(id=int(client))
+        data = json.loads(request.body.decode('utf-8'))
+        data['subscriber'] = client
+        Subscription.objects.create(**data)
+        return HttpResponse(1)
+
+@login_required
+def subEdit(request,client):
+    if request.method=="POST":
+        data = json.loads(request.body.decode('utf-8'))
+        subID = data.pop('id',None)
+        sub = Subscription.objects.get(id=subID)
+        assert int(client) == sub.subscriber.id
+        for key,value in data.items():
+            setattr(sub,key,value)
+        sub.save()
+        return HttpResponse(1)
+
+@login_required
+def donAdd(request,client):
+    if request.method=="POST":
+        client = Subscriber.objects.get(id=int(client))
+        data = json.loads(request.body.decode('utf-8'))
+        data['donor'] = client
+        Donation.objects.create(**data)
+        return HttpResponse(1)
+
+@login_required
+def donDelete(request,client):
+    if request.method=="POST":
+        data = json.loads(request.body.decode('utf-8'))
+        donID = data['donID']
+        don = Donation.objects.get(id=donID)
+        assert int(client) == don.donor.id
+        don.status = 0
+        don.save()
+        return HttpResponse(1)
+
+@login_required
+def donEdit(request,client):
+    if request.method=="POST":
+        data = json.loads(request.body.decode('utf-8'))
+        donID = data.pop('id',None)
+        don = Donation.objects.get(id=donID)
+        assert int(client) == don.donor.id
+        for key,value in data.items():
+            setattr(don,key,value)
+        don.save()
+        return HttpResponse(1)
+    
+@login_required
 def searchClient(request):
     if request.method == "GET":
         data = request.GET
         containsLst = ['email','family_name','name','country','info']
         filterSet = {}
+        excludeSet={}
         for o in containsLst:
             try:
                 v = data[o]
@@ -75,7 +141,13 @@ def searchClient(request):
             filterSet['subscriptions__end__gte'] = numero
         except:
             pass
-        clientsLst = Subscriber.objects.filter(**filterSet)
+        ### Expire filter
+        try:
+            assert data['expire'] == '1'
+            excludeSet['subscriptions__end__gte'] = currentNo
+        except:
+            pass
+        clientsLst = Subscriber.objects.filter(**filterSet).exclude(**excludeSet).order_by('id')
         clients = transFormClients(clientsLst) 
         return render(request, 'abo/indexTable.html',{'clients':clients})
 

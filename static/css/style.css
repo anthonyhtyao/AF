@@ -51,3 +51,7 @@ div.timeline-event-target {
 .gi-max {
     font-size: 2em;
 }
+
+.danger {
+    color: red;
+}

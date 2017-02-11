@@ -13,4 +13,5 @@ urlpatterns = [
     url(r'^client/(?P<client>[0-9]+)/don_edit', views.donEdit, name='donEdit'),
     url(r'^search_client$', views.searchClient, name='searchClient'),
     url(r'^adress_pdf', views.genAdressPDF, name='genAdressPDF'),
+    url(r'^add_client', views.addClient, name='addClient'),
 ]

@@ -12,6 +12,9 @@ from django.db.models import Max, Sum
 from operator import itemgetter
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
+from django.core.urlresolvers import reverse
+from abo.forms import *
+from django.template.defaultfilters import slugify
 
 currentNo = int(Numero.objects.all().aggregate(Max('numero'))['numero__max'])
 
@@ -215,3 +218,19 @@ def genAdressPDF(request):
         p.showPage()
         p.save()
         return response
+
+@login_required
+def addClient(request):
+    returnForm = {'CIVI':Subscriber.CIVILITE}
+    if request.method=='POST':
+        form = ClientForm(request.POST)
+        print(form)
+        if form.is_valid():
+            client = form.save()
+            username = request.POST['username']
+            email = request.POST['email']
+            u = User.objects.create_user(username,email)
+            client.owner = u
+            client.save()
+            return HttpResponseRedirect(reverse('clientDetail', args=(client.id,)))
+    return render(request,'abo/addClient.html',returnForm)

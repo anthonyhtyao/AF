@@ -16,6 +16,7 @@ class Subscriber(models.Model):
 
     def __str__(self):
         return self.name + " " + self.family_name
+
 class Donation(models.Model):
     donor = models.ForeignKey(Subscriber, related_name='donations')
     amount = models.IntegerField(default=0)
@@ -25,7 +26,7 @@ class Donation(models.Model):
     auditor = models.ForeignKey(User,null=True)
 
 class Subscription(models.Model):
-    PAYMENT = {('Y','Yes'),('N','No'),('P','Point'),('E','Exempte')}
+    PAYMENT = {('N','No'),('Y','Yes'),('P','Point'),('E','Exempte')}
     subscriber = models.ForeignKey(Subscriber, related_name='subscriptions')
     start = models.IntegerField()
     end = models.IntegerField()

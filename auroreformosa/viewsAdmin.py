@@ -490,6 +490,7 @@ def articlePreview(request,category,slg):
     returnForm = setMsg(returnForm)
     selectedLang = request.GET.get('lang',language)
     if request.method == 'POST':
+        assert request.user.is_staff
         a = Article.objects.get(slg=slg)
         try:
             tmp = a.article.get(language=selectedLang)

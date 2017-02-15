@@ -59,12 +59,19 @@
       </div>
   </div>
   <div class="col-md-12">
+    <center>
+    <br/>
     {% if article.status == 1 %}
+        <a href="{% url 'articleEdit' category.category article.article.slg %}?lang={{selectedLang}}" class="btn btn-default">Back to edit</a>
+	{% if request.user.is_staff %}
       <form method="post" action="{% url 'articlePreview' category.category article.article.slg %}?lang={{selectedLang}}">
         {% csrf_token %}
-        <a href="{% url 'articleEdit' category.category article.article.slg %}?lang={{selectedLang}}" class="btn btn-default">Back to edit</a>
         <button type="submit" class="btn btn-default">Publish</button>
       </form>
+      {% else%}
+      <p class='danger'> Please wait for approve of publish from admin </p>
+      {% endif %}
     {% endif %}
+    </center>
   </div>
 {% endblock %}

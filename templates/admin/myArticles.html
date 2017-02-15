@@ -1,0 +1,30 @@
+{% extends 'admin_base.html' %}
+{% block admin_block %}
+<div>
+  <center><b>{{request.user.userprofile}}</b></center>
+  <table class='table table-bordered table-hover'>
+    <tr><th>TITLE</th><th>DATE</th><th>STATUS</th></tr>
+  {% for a in articles %}
+    {% if a.status == 2 %}
+    <tr class='success read' data-cat='{{a.article.category}}' data-slg='{{a.article.slg}}'><td>{{a}}</td><td>{{a.article.date}}</td><td>Public</td></tr>
+    {% else  %}
+    <tr class='warning edit' data-cat='{{a.article.category}}' data-slg='{{a.article.slg}}'><td>{{a}}</td><td>{{a.article.date}}</td><td>Waiting for permit...</td></tr>
+    {% endif %}
+  {% endfor %}
+</div>
+
+<script>
+  $('.read').click(function (x) {
+     var lang='fr';
+     var cat = $(x.currentTarget).data('cat');
+     var slg = $(x.currentTarget).data('slg');
+     window.location.href = cat+'/article/'+slg;
+  });
+  $('.edit').click(function (x) {
+     var lang='fr';
+     var cat = $(x.currentTarget).data('cat');
+     var slg = $(x.currentTarget).data('slg');
+     window.location.href = cat+'/article/'+slg+'/preview';
+  });
+</script>
+{% endblock %}

@@ -695,3 +695,12 @@ def url_with_querystring(path, d):
         path = path + key + '=' + value
         i += 1
     return path
+
+@login_required
+@permission_required('auroreformosa.add_article')
+def myArticles(request):
+    returnForm, language = init(request)
+    returnForm = setMsg(returnForm)
+    articles = ArticleContent.objects.filter(status__gt = 0,language=language,article__author=request.user.userprofile).order_by('-article__date')
+    returnForm['articles'] = articles
+    return render(request,'admin/myArticles.html',returnForm)

@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^timelinedata/$', views.timelinedata, name="timelinedata"),
     url(r'^timeline/edit$', viewsAdmin.timelineEdit, name="timelineEdit"),
     url(r'^timeline/save$', viewsAdmin.timelineSave, name="timelineSave"),
+    url(r'^my_articles$', viewsAdmin.myArticles, name="myArticles"),
     url(r'^article/delete$', viewsAdmin.articleDelete, name="articleDelete"),
     url(r'^(?P<category>[a-z]+)/$', views.category, name='category'),
     url(r'^(?P<category>[a-z]+)/article/(?P<slg>.+)/edit$', viewsAdmin.articleEdit, name='articleEdit'),

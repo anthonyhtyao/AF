@@ -19,7 +19,16 @@ from operator import itemgetter
 
 def isStaff(user):
     return user.is_staff
-    
+
+def getUsersLst(user,article=None):
+    if user.is_staff:
+        users = UserProfile.objects.all().order_by('name')
+        return users
+    try:
+        return article.author.all()
+    except:
+        return [user]
+
 @user_passes_test(isStaff)
 def uploadImg(request):
     returnForm, language = init(request)
@@ -194,6 +203,7 @@ def comicsEdit(request, slg, errMsg="", msg="", warnMsg=""):
 @login_required
 @permission_required('auroreformosa.add_article')
 def createarticle(request, errMsg="", msg=""):
+    currentUser = request.user
     returnForm, language = init(request)
     returnForm = setMsg(returnForm)
     # Gallery is a imgform set
@@ -205,7 +215,7 @@ def createarticle(request, errMsg="", msg=""):
         if form.is_valid() and formset.is_valid():
             currentArticle = Article.objects.create(title=data['title'])
             try:
-                success, label = updateArticle(currentArticle,data,formset,request.FILES)
+                success, label = updateArticle(True,currentArticle,data,formset,request.FILES)
                 if not success:
                     currentArticle.delete()
                     request.method = ""
@@ -224,7 +234,7 @@ def createarticle(request, errMsg="", msg=""):
     numeros = Numero.objects.all()
     categoryFR = CategoryDetail.objects.filter(language='fr')
     categoryTW = CategoryDetail.objects.filter(language='tw')
-    users = UserProfile.objects.all().order_by('name')
+    returnForm['users'] = getUsersLst(currentUser)
     # Get no version details by get request
     try:
         no = request.GET['no']
@@ -236,7 +246,6 @@ def createarticle(request, errMsg="", msg=""):
     returnForm['form'] = articleForm
     returnForm['categoryFR'] = categoryFR
     returnForm['categoryTW'] = categoryTW
-    returnForm['users'] = users
     return render(request, 'admin/createArticle.html', returnForm)
 
 @user_passes_test(isStaff)
@@ -334,7 +343,7 @@ def articleEdit(request, category, slg, errMsg="", msg=""):
     returnForm = setMsg(returnForm)
     currentArticle = Article.objects.get(slg=slg)
     try:
-        assert request.user.is_staff or request.user.userprofile in currentArticle.authors
+        assert request.user.is_staff or (request.user.userprofile in currentArticle.author.all())
     except:
         return HttpResponseRedirect(reverse('article', args=(category,slg,)))
     
@@ -352,7 +361,7 @@ def articleEdit(request, category, slg, errMsg="", msg=""):
         files = request.FILES
         currentGallery = [{'imgfile':x.imgfile} for x in returnForm['currentGallery']]
         formset = ImageFormSet(data,files,initial=currentGallery)
-        success, label = updateArticle(currentArticle,data,formset,files,language=selectedLang)
+        success, label = updateArticle(request.user.is_staff,currentArticle,data,formset,files,language=selectedLang)
         if success:
             try:
                 articleContent = currentArticle.article.get(language=selectedLang)
@@ -376,13 +385,12 @@ def articleEdit(request, category, slg, errMsg="", msg=""):
         numeros = Numero.objects.all()
         categoryFR = CategoryDetail.objects.filter(language='fr')
         categoryTW = CategoryDetail.objects.filter(language='tw')
-        users = UserProfile.objects.all()
         returnForm['selectedLang'] = selectedLang
         returnForm['formset'] = ImageFormSet(initial=[{'imgfile':x.imgfile} for x in returnForm['currentGallery']])
         returnForm['form'] = articleForm
         returnForm['categoryFR'] = categoryFR
         returnForm['categoryTW'] = categoryTW
-        returnForm['users'] = users
+        returnForm['users'] = getUsersLst(request.user,article=currentArticle)
         returnForm['action'] = 'edit'
         return render(request, 'admin/createArticle.html', returnForm)
 
@@ -393,7 +401,7 @@ def articleStatus(request, category, slg, errMsg="", msg=""):
     returnForm = setMsg(returnForm)
     currentArticle = Article.objects.get(slg=slg)
     try:
-        assert request.user.is_staff or request.user.userprofile in currentArticle.authors
+        assert request.user.is_staff or request.user.userprofile in currentArticle.author.all()
     except:
         return HttpResponseRedirect(reverse('article', args=(category,slg,)))
     try:
@@ -407,7 +415,7 @@ def articleStatus(request, category, slg, errMsg="", msg=""):
         data = request.POST
         files = request.FILES
         formset = ImageFormSet(data,files,initial=currentGallery)
-        success, label = updateArticle(currentArticle,data,formset,files,language=language)
+        success, label = updateArticle(request.user.is_staff,currentArticle,data,formset,files,language=language)
         request.method=""
         if success:
             return articleStatus(request, category, slg, msg=label)
@@ -419,7 +427,7 @@ def articleStatus(request, category, slg, errMsg="", msg=""):
         numeros = Numero.objects.all()
         categoryFR = CategoryDetail.objects.filter(language='fr')
         categoryTW = CategoryDetail.objects.filter(language='tw')
-        users = UserProfile.objects.all()
+        users = getUsersLst(request.user,article=currentArticle)
         contentStatus = currentArticle.article.values("status","title","language").all()
         statusLst = []
         for lang in settings.LANGUAGES:
@@ -613,11 +621,12 @@ def getArticleInfo(slg,returnForm,lang=None):
         returnForm['timelineDetail'] = "Null"
     return returnForm
 
-def updateArticle(currentArticle,data,formset,files,language=None):
+def updateArticle(staff,currentArticle,data,formset,files,language=None):
     numero = Numero.objects.get(id=data['numero'])
-    for authorId in data.getlist('author'):
-        author = UserProfile.objects.get(id=int(authorId))
-        currentArticle.author.add(author)
+    if staff:
+        for authorId in data.getlist('author'):
+            author = UserProfile.objects.get(id=int(authorId))
+            currentArticle.author.add(author)
     try:
         edito = bool(data['isEdito'])
     except:

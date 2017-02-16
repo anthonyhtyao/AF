@@ -711,3 +711,18 @@ def myArticles(request):
     articles = ArticleContent.objects.filter(status__gt = 0,language=lang,article__author=request.user.userprofile).order_by('-article__date')
     returnForm['articles'] = articles
     return render(request,'admin/myArticles.html',returnForm)
+
+@user_passes_test(isStaff)
+def articlePermit(request):
+    returnForm, language = init(request)
+    try:
+        lang = request.GET['lang']
+    except:
+        lang = language
+    returnForm = setMsg(returnForm)
+    returnForm['lang'] = lang
+    returnForm['LANGUAGES'] = settings.LANGUAGES
+    articles = ArticleContent.objects.filter(status = 1,language=lang).order_by('-article__date')
+    returnForm['articles'] = articles
+    return render(request,'admin/articlePermit.html',returnForm)
+

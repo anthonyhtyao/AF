@@ -17,7 +17,7 @@
       {% if t.status == 2 %}
         <tr class="success read" data-value="{{t.language}}"> <td> {{t.language}} </td> <td> {{t.title}} </td> <td> Public </td> </tr>
       {% elif t.status == 1 %}
-        <tr class="warning edit" data-value="{{t.language}}"> <td> {{t.language}} </td> <td> {{t.title}} </td> <td> Editting </td> </tr>
+        <tr class="warning edit" data-value="{{t.language}}"> <td> {{t.language}} </td> <td> {{t.title}} </td> <td> Waiting for permit... </td> </tr>
       {% else %}
         <tr class="danger edit" data-value="{{t.language}}"> <td> {{t.language}} </td> <td> {{t.title}} </td> <td> Null </td> </tr>
       {% endif %}

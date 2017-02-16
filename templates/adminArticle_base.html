@@ -32,9 +32,9 @@
     <p>
       Author : <span id="authorList"></span><span id="toggleAuthor" class="glyphicon glyphicon-triangle-bottom"></span></p>
       <div id="authorSelectDiv" style="display:none">
-        <select name="author" multiple="multiple" id="authorSelect" name="my-select[]">
+	      <select name="author" multiple="multiple" id="authorSelect" name="my-select[]" {% if not request.user.is_staff %}disabled{% endif %}>
         {% for user in users %}
-          <option value = {{user.id}} {% if user in currentAuthors %} selected {% endif %}> {{ user }}</option>
+	<option value = {{user.id}} {% if user in currentAuthors %} selected {% elif not request.user.is_staff and user == request.user  %} selected {% endif %}> {{ user }}</option>
         {% endfor %}
         </select>
       </div>

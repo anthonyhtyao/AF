@@ -1,0 +1,32 @@
+{% extends 'admin_base.html' %}
+{% block admin_block %}
+<div>
+  <center><h2>Articles in queue</h2>
+  <select id='langSelect'>
+    {% for language in LANGUAGES %}
+    <option value='{{language.0}}' {% if lang == language.0 %} selected {% endif %}>{{language.1}}</option>
+    {% endfor %}
+ </select>
+  </center>
+  <br/>
+  <table id='articlesTable' class='table table-bordered table-hover'>
+    <tr><th>TITLE</th><th>DATE</th><th>STATUS</th></tr>
+  {% for a in articles %}
+    <tr class='edit' data-cat='{{a.article.category}}' data-slg='{{a.article.slg}}'><td>{{a}}</td><td>{{a.article.date}}</td><td>Waiting for permit...</td></tr>
+  {% endfor %}
+  </table>
+</div>
+
+<script>
+  $('#langSelect').change(function () {
+    var lang = $(this).val();
+    window.location.href = 'articlepermit?lang='+lang;
+  });
+  $('.edit').click(function (x) {
+     var lang= $('#langSelect').val();
+     var cat = $(x.currentTarget).data('cat');
+     var slg = $(x.currentTarget).data('slg');
+     window.location.href = cat+'/article/'+slg+'/preview?lang='+lang;
+  });
+</script>
+{% endblock %}

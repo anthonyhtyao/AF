@@ -20,10 +20,11 @@
   </div>
 {% endblock  %}
 {% load static %}
+{% load afTags %}
 {% block body_block %}
 <div>
   <center><h1>{{comic.title}}</h1></center>
-  {% if user.is_authenticated %}
+  {% if user.is_staff or user.userprofile in authors %}
     <a href="/comics/{{comic.article.slg}}/edit"><span class="glyphicon glyphicon-pencil"></span></a>
     <span class="glyphicon glyphicon-trash" onclick="deleteArticle('comic',{{comic.id}})"></span>
   {% endif %}
@@ -41,8 +42,8 @@
       {{comic.content|safe}}
     </div>
     <center>
-      <a href="/comics/{{beforeComic.slg}}"><span class="glyphicon glyphicon-chevron-left"></a>
-      <a href="/comics/{{nextComic.slg}}"><span class="glyphicon glyphicon-chevron-right"></a>
+	    <a href="/comics/{{beforeComic.slg}}"><span title="{{beforeComic.numero|numeroNoBar}}{{beforeComic.title}}" class="glyphicon glyphicon-chevron-left"></a>
+        <a href="/comics/{{nextComic.slg}}"><span title="{{nextComic.numero|numeroNoBar}}{{nextComic.title}}" class="glyphicon glyphicon-chevron-right"></a>
     </center>
   </div>
 </div>

@@ -38,3 +38,20 @@ div.timeline-event-target {
 }
 
 .ui-dialog { z-index: 1000 !important ;}
+
+.clientInfoEdit, .subscriptionEdit, .donationEdit {
+    display: none;
+}
+
+.underline {
+    border: none;
+    border-bottom: 2px black solid;
+}
+
+.gi-max {
+    font-size: 2em;
+}
+
+.danger {
+    color: red;
+}

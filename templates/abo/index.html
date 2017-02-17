@@ -1,0 +1,54 @@
+{% extends 'baseAbo.html' %}
+{% load static %}
+{% block side_block %}
+<div style="float:right">
+  <div class="form-group">
+    <label for="aboSearchEmail">Email</label>
+    <input oninput="searchClient(this)" class="form-control" id="aboSearchEmail" placeholder="Email" data-value="email">
+  </div>
+  <div class="form-group">
+    <label for="aboSearchFamilyName">Nom</label>
+    <input oninput="searchClient(this)" class="form-control" id="aboSearchFamilyName" placeholder="Family Name" data-value="family_name">
+  </div>
+  <div class="form-group">
+    <label for="aboSearchName">Prénom</label>
+    <input oninput="searchClient(this)" class="form-control" id="aboSearchName" placeholder="Name" data-value="name">
+  </div>
+  <div class="form-group">
+    <label for="aboSearchCountry">Pays</label>
+    <input oninput="searchClient(this)" class="form-control" id="aboSearchCountry" placeholder="France" data-value="country">
+  </div>
+  <div class="form-group">
+    <label>期刊編號</label>
+    <div class="input-group">
+      <div class="input-group-addon" id="basic-addon1"><span class=" glyphicon glyphicon-equalizer"></span></div>
+      <input oninput="searchClient(this)" type="text" class="form-control" placeholder="請輸入整數" aria-describedby="basic-addon1" data-value="numero">
+    </div>
+  </div>
+  <div class="form-group">
+    <label>Informé(e)</label>
+    <input onchange="searchClient(this)" data-width="100%" data-toggle="toggle" data-on="Être informé(e)" data-off="Null" data-onstyle="success" data-offstyle="" data-value="info" type="checkbox">
+  </div>
+  <div class="form-group">
+    <label>訂閱未付款</label>
+    <input onchange="searchClient(this)" data-width="100%" data-toggle="toggle" data-on="尚未付款" data-off="Null" data-onstyle="danger" data-offstyle="" data-value="payment" type="checkbox">
+  </div>
+  <div class="form-group">
+    <label>訂閱已過期</label>
+    <input onchange="searchClient(this)" data-width="100%" data-toggle="toggle" data-on="已過期" data-off="Null" data-onstyle="danger" data-offstyle="" data-value="expire" type="checkbox">
+  </div>
+  
+    <span  class="glyphicon glyphicon-save gi-max" onClick="genAdressPDF()" title="只限生成當期訂戶地址"></span>
+    <span  class="glyphicon glyphicon-send gi-max" onclick="showEmail()" title="取得訂戶信箱"></span>
+  <form id="genAdressPDFForm" action="adress_pdf" method="post">
+    {% csrf_token %}
+    <input id="clientsIDInput" type="hidden" name="clientsLst" />
+  </form>
+</div>
+
+{% endblock %}
+{% block body_block %}
+<div class="indTable">
+{% include 'abo/indexTable.html' %}
+</div>
+{% endblock %}

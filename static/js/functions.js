@@ -18,7 +18,70 @@ $(document).ready( function() {
             data:$("#login_form").serialize(),
         });
     });
+    $(".titleValided").hide();
+    $(".titleError").hide();
+    $('#authorSelect').multiSelect({
+        selectableHeader: "<div class='custom-header'>Selectable Users</div>",
+        selectionHeader: "<div class='custom-header'>Authors</div>",
+        afterSelect: function () {getAuthorList();},
+        afterDeselect: function () {getAuthorList();},
+    });
+    getAuthorList();
 });
+
+function getAuthorList() {
+    var lst = document.getElementById("authorList");
+    var select = document.getElementById("authorSelect");
+    var result = "";
+    var options = select && select.options;
+    var opt;
+    var n=0;
+    for (var i=0, iLen=options.length; i<iLen; i++) {
+        opt = options[i];
+        if (opt.selected) {
+          if (n!=0)
+              result += ", ";
+          result += opt.text;
+          n++;
+        }
+    }
+    $("#authorList").html(result);
+}
+
+function checkTitleValidity(x) {
+    var value = document.getElementById("title").value;
+    // Check if input is blank
+    if (value.replace(/^\s+|\s+$/g, "").length == 0) {
+      $(".titleValided").hide();
+      $("#titleInput").removeClass("has-success");
+      $(".titleError").show();
+      $("#titleInput").addClass("has-error");
+      $("#titleErrorMsg").html("Title invalid");
+    }
+    else {
+        preAjax();
+        $.ajax({
+            type:"GET",
+            url:"checktitlevalidity",
+            data:{title:value},
+            success: function(v) {
+                if (v==1) {
+                    $(".titleValided").show();
+                    $("#titleInput").addClass("has-success");
+                    $(".titleError").hide();
+                    $("#titleInput").removeClass("has-error");
+                }
+                else {
+                  $(".titleValided").hide();
+                  $("#titleInput").removeClass("has-success");
+                  $(".titleError").show();
+                  $("#titleInput").addClass("has-error");
+                  $("#titleErrorMsg").html("Title has been used");
+                }
+            }
+        });
+    }
+}
 
 function tooltipArchiveImg(x) {
     var value = $(x).attr('value');

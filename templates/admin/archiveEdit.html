@@ -1,5 +1,5 @@
-{% extends 'base.html' %}
-{% block body_block %}
+{% extends 'admin_base.html' %}
+{% block admin_block %}
 {% load static %}
 <!-- This page presents information of given numero, url for this page: /no/:id-->
 <div class="col-md-8 col-md-offset-2">
@@ -73,7 +73,7 @@
             FR :
             {% if article.articleFR != "" %}
             <a class="FR" href="/{{article.article.category}}/article/{{article.article.slg}}{% if article.article.status == 1 %}/preview{% endif %}">{{article.articleFR}}</a>
-            {% if article.articleFR.status == 2%} (published) {% elif article.articleFR.status == 1 %} (editting) {% endif %}
+            {% if article.articleFR.status == 2%} (public) {% elif article.articleFR.status == 1 %} (editting) {% endif %}
             {% else %}
             Not exists
             {% endif %}
@@ -83,7 +83,7 @@
             {% else %}
             Not exists
             {% endif %}
-            {% if article.articleTW.status == 2%} (published) {% elif article.articleTW.status == 1%} (editting) {% endif %}
+            {% if article.articleTW.status == 2%} (public) {% elif article.articleTW.status == 1%} (editting) {% endif %}
             </li>
             {% endif %}
           {% endfor %}

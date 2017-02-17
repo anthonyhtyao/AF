@@ -1,0 +1,234 @@
+{% extends 'baseAbo.html' %}
+{% load static %}
+{% load tags %}
+{% block body_block %}
+<div class="panel panel-warning">
+<div class="panel-heading">
+  <span class="glyphicon glyphicon-user"> </span> {{client.get_civilite_display}} {{client.name}} {{client.family_name|upper}}
+  <div style="float:right"><span id="editClient" class="glyphicon glyphicon-pencil"></span><span id="saveClient" class="glyphicon glyphicon-floppy-disk" style="display:none"></span></div>
+</div>
+<table id="clientTable" class="table">
+  <tr class="clientInfo"><td> EMAIL </td><td>{{client.email}}</td></tr>   
+  <tr class="clientInfo"><td> ADRESS </td><td>{{client.adress}}</td></tr>   
+  <tr class="clientInfo"><td> INFORMÉ </td><td>{{client.info}}</td></tr>   
+  <tr class="clientInfo"><td> NOTE </td><td>{{client.remark}}</td></tr>   
+  <tr class="clientInfoEdit">
+    <td> EMAIL </td>
+    <td>
+      <div class="input-group">
+      <span class="input-group-addon" id="basic-addon1">@</span>
+      <input id="clientEmail" type="text" class="form-control" value="{{client.email}}" aria-describedby="basic-addon1">
+      </div>
+    </td>
+  </tr>   
+  <tr class="clientInfoEdit">
+    <td> ADRESS </td>
+    <td><textarea id="clientAdress" class="form-control" rows="3">{{client.adress}}</textarea></td>
+  </tr> 
+  <tr class="clientInfoEdit">
+    <td> INFORMÉ </td>
+    <td>
+      <input id="clientInfo" type="checkbox" {% if client.info %}checked{% endif %}> être informé
+    </td>
+  </tr>   
+  <tr class="clientInfoEdit">
+    <td> NOTE </td>
+    <td><input id="clientRemark" class="form-control" type="text" value="{{client.remark}}"></td>
+  </tr>   
+</table>
+</div>
+<hr />
+<div class="panel panel-warning">
+<div class="panel-heading">捐款</div>
+<table id="donTable" class="table">
+<tr><th>#</th><th width='40'>金額</th><th>已付款</th><th>收據</th><th></th></tr>
+{% for don in dons %}
+<tr id="donation_{{don.id}}">
+  <td>{{forloop.counter}}</td>
+  <td>{{don.amount}}</td>
+  <td>{{don.received}}</td>
+  <td>{{don.receipt}}</td>
+  <td>
+    <span onclick="donDelete({{don.id}})" class="glyphicon glyphicon-remove"></span>
+    <span onclick="startDonEdit({{don.id}})" class="glyphicon glyphicon-pencil"></span>
+  </td>
+</tr>
+<tr id='donationEdit_{{don.id}}' class='donationEdit'>
+  <td>{{forloop.counter}}</td>
+  <td><input id='amountEdit_{{don.id}}' type='text' class='underline' value='{{don.amount}}'></td>
+  <td><input id='receivedEdit_{{don.id}}' type='checkbox' {% if don.received %} checked {% endif %}></td>
+  <td><input id='receiptEdit_{{don.id}}' type='checkbox' {% if don.receipt %} checked {% endif %}></td>
+  <td>
+    <span onclick="endDonEdit({{don.id}})" class="glyphicon glyphicon-floppy-disk"></span>
+  </td>
+</tr>
+{% endfor %}
+<tr id='donationAdd'>
+  <td>*</td>
+  <td><input id='donAmount' type='text' class='underline' value=''></td>
+  <td><input type='checkbox' id='donReceived'></td>
+  <td><input type='checkbox' id='donReceipt'></td>
+  <td>
+    <span onclick="donAdd()" class="glyphicon glyphicon-plus"></span>
+  </td>
+</tr>
+</table>
+</div>
+<hr />
+
+<div class="panel panel-warning">
+<div class="panel-heading">訂閱</div>
+<table id="subTable" class="table">
+<tr><th>#</th><th>開始</th><th>結束</th><th>數量</th><th>付款</th><th></th></tr>
+{% for sub in subs %}
+
+<tr id='subscription_{{sub.id}}' class='subscription'>
+  <td>{{forloop.counter}}</td>
+  <td>{{sub.start}}</td>
+  <td>{{sub.end}}</td>
+  <td>{{sub.quantity}}</td>
+  <td>{{sub.get_payment_display}}</td>
+  <td>
+    <span onclick="deleteSubscription({{sub.id}})" class="glyphicon glyphicon-remove"></span>
+    <span onclick="startSubEdit({{sub.id}})" class="glyphicon glyphicon-pencil"></span>
+  </td>
+</tr>
+
+<tr id='subscriptionEdit_{{sub.id}}' class='subscriptionEdit'>
+  <td>{{forloop.counter}}</td>
+  <td><input id='startEdit_{{sub.id}}' type='text' class='underline' value='{{sub.start}}'></td>
+  <td><input id='endEdit_{{sub.id}}' type='text' class='underline' value='{{sub.end}}'></td>
+  <td><input id='qtEdit_{{sub.id}}' type='text' class='underline' value='{{sub.quantity}}'></td>
+  <td>
+     <select id='payEdit_{{sub.id}}' class='underline'>
+      {% for p in PAYMENT %}
+      <option value='{{p.0}}' {% if sub.payment == p.0 %} selected {% endif %}>{{p.1}}</option>
+      {% endfor %}
+    </select>
+  </td>
+  <td>
+    <span onclick="endSubEdit({{sub.id}})" class="glyphicon glyphicon-floppy-disk"></span>
+  </td>
+</tr>
+
+
+{% endfor %}
+<tr>
+  <td> * </td>
+  <td><input id='subStart' type='text' class='underline'></td>
+  <td><input id='subEnd' type='text' class='underline'></td>
+  <td><input id='subQt' type='text' class='underline'></td>
+  <td>
+    <select id='subPay' class='underline'>
+      {% for p in PAYMENT %}
+      <option value='{{p.0}}'>{{p.1}}</option>
+      {% endfor %}
+    </select>
+  </td>
+  <td><span onclick="addSubscription()" class="glyphicon glyphicon-plus"></span></td>
+</table>
+</div>
+<style>
+  th {text-align:center}
+  td {text-align:center}
+  input {text-align:center}
+</style>
+<script>
+$(document).on('click', '#editClient', function() {
+    $("#saveClient").show();
+    $("#editClient").hide();
+    $('.clientInfo').hide();
+    $('.clientInfoEdit').show();
+});
+
+$(document).on('click', '#saveClient', function() {
+    editClient();
+    $("#editClient").show();
+    $("#saveClient").hide();
+    $('.clientInfo').show();
+    $('.clientInfoEdit').hide();
+});
+
+function refreshAfterUpdate(data,url,template) {
+  preAjax();
+    $.ajax({
+        type:"POST",
+        url: url,
+        data: JSON.stringify(data),
+        success: function(data) {
+            if (data=='1') {
+                $(template).load(' '+template);
+            }
+        }
+    });
+};
+
+function donAdd() {
+var data = {};
+data['amount'] = $('#donAmount').val();
+data['received'] = $('#donReceived').prop('checked')?1:0;
+data['receipt'] = $('#donReceipt').prop('checked')?1:0;
+refreshAfterUpdate(data,window.location+'/don_add','#donTable');
+console.log(data);
+};
+
+function donDelete(donID) {
+refreshAfterUpdate({'donID':donID},window.location+'/don_delete','#donTable')
+};
+
+function startDonEdit(id) {
+$('#donationEdit_'+id).show();
+$('#donation_'+id).hide();
+};
+
+function endDonEdit(id) {
+var data = {'id':id};
+data['amount'] = $('#amountEdit_'+id).val();
+data['received'] = $('#receivedEdit_'+id).prop('checked')?1:0;
+data['receipt'] = $('#receiptEdit_'+id).prop('checked')?1:0;
+refreshAfterUpdate(data,window.location+'/don_edit','#donTable');
+};
+
+function startSubEdit(id) {
+$('#subscriptionEdit_'+id).show();
+$('#subscription_'+id).hide();
+};
+
+function endSubEdit(id) {
+ var start = $('#startEdit_'+id).val();
+  var end = $('#endEdit_'+id).val();
+var qt = $('#qtEdit_'+id).val();
+var payment = $('#payEdit_'+id).val();
+  data = {"start":start,"end":end,"quantity":qt,"id":id,"payment":payment};
+  refreshAfterUpdate(data,window.location+'/sub_edit','#subTable');
+};
+
+function addSubscription() {
+  var start = $('#subStart').val();
+  var end = $('#subEnd').val();
+var qt = $('#subQt').val();
+var payment = $('#subPay').val();
+  data = {"start":start,"end":end,"quantity":qt,"payment":payment};
+  refreshAfterUpdate(data,window.location+'/sub_add','#subTable');
+};
+
+function deleteSubscription(subID) {
+console.log(subID);
+data={"subID":subID}
+refreshAfterUpdate(data,window.location+'/sub_delete','#subTable');
+};
+function editClient() {
+    var clientEmail = $("#clientEmail").val();
+    var clientAdress = $("#clientAdress").val();
+    var clientInfo = $("#clientInfo").is(':checked')?1:0;
+    var clientRemark = $("#clientRemark").val();
+    data = {
+        clientEmail:clientEmail,
+        clientAdress:clientAdress,
+        clientInfo:clientInfo,
+        clientRemark:clientRemark
+    }
+refreshAfterUpdate(data,window.location+'/edit','#clientTable');
+};
+</script>
+{% endblock %}

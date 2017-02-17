@@ -4,7 +4,9 @@
 {% block header_block %}
   <header  style="background-image: url({{headerImage.imgfile.url}})" class="header-index" >
 {% endblock header_block %}
-
+{% block body_min_height %}
+<div style="min-height=2%">
+{% endblock %}
 
 {% block body_block %}
 

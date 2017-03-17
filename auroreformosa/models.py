@@ -133,6 +133,7 @@ class Article(models.Model):
 class ArticleContent(models.Model):
     article = models.ForeignKey(Article, null = True, related_name='article')
     title = models.CharField(max_length = 128)
+    subtitle = models.CharField(max_length=128, blank=True,null=True)
     abstract = models.TextField(null = True, blank=True)
     content = models.TextField(null = True)
     status = models.SmallIntegerField(default = 1)

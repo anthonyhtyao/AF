@@ -15,6 +15,10 @@
     <span class="sr-only titleError">(error)</span>
     <label id="titleErrorMsg" class="control-label titleError" for="title"></label>
   </div>
+  <div id="subtitleInput" class="form-group has-feedback">
+    <label for="subtitle">Sub Title</label>
+    <input id="subtitle" type="text" name="subtitle" class="form-control"  maxlength="64" value="{{currentArticleContent.subtitle}}">
+  </div>
 {% endblock %}
 {% block adminArticle_block %}
   <div class="col-md-12">

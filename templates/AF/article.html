@@ -7,6 +7,7 @@
 <div>
   <h3 style="color:{{category.category.color}}">{{category.title}}</h3>
   <strong><h1>{{article.title}}</h1></strong>
+  <h3>{{article.subtitle}}</h3>
   {% if user.is_staff or user.userprofile in authors %}
     <a href="{{article.article.slg}}/status"><span class="glyphicon glyphicon-info-sign"></span></a>
     <a href="{{article.article.slg}}/edit"><span class="glyphicon glyphicon-pencil"></span></a>

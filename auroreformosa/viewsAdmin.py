@@ -368,6 +368,7 @@ def articleEdit(request, category, slg, errMsg="", msg=""):
             except:
                 articleContent = ArticleContent.objects.create(language=selectedLang,title=data['title'],article=currentArticle)
             articleContent.title = data['title']
+            articleContent.subtitle = data['subtitle']
             articleContent.abstract = data['abstract']
             articleContent.content = data['content']
             articleContent.status = 1

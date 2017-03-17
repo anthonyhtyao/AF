@@ -31,7 +31,15 @@
       {% endfor %} -->
       {% for article in articles %}
         <dt>{{article.catTranslate}}</dt>
-        <dd><a href="/{{article.category}}/article/{{article.slg}}" title="{{article.title}}">{{article.title}}</a></dd>
+	<dd><a
+	  href="
+	   {%if article.category == 'comics'%}
+	     {%url 'comics' article.slg%}
+	   {%else%}
+	     {%url 'article' article.category article.slg%}
+	   {%endif%}
+	     "
+	  title="{{article.title}}">{{article.title}}</a></dd>
       {% endfor %}
     </dl>
   </div>

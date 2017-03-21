@@ -89,7 +89,7 @@ class TimelineEvent(models.Model):
     end = models.DateField(null=True, blank=True)
 
     def __str__(self):
-        return "Event "+slg+" at " + self.start.strftime('%Y-%m-%d')
+        return "Event "+self.slg+" at " + self.start.strftime('%Y-%m-%d')
 
 # field image is the head image of article
 # field gallery store all images of this article, can be null

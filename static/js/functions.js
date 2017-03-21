@@ -268,6 +268,15 @@ function jsDateConvert(time) {
   return s;
 };
 
+function event_to_period(event) {
+  var s = jsDateConvert(event.start);
+  if (event.end) {
+    s += " ~ ";
+    s += jsDateConvert(event.end);
+  }
+  return s;
+}
+
 function cancelEventSelected() {
   var e = document.getElementById('mytimeline');
   e.setAttribute("data-value",0);
@@ -293,15 +302,15 @@ function drawVisualization() {
   var options = {
     "width":  "100%",
     "height": "200px",
-    "style": "box", // optional
-    "scale": links.Timeline.StepDate.SCALE.YEAR,
-    "step": 1,
-    "zoomMax": 1000 * 60 * 60 * 24 * 31 * 12 * 40,
-    "zoomMin": 1000 * 60 * 60 * 24 * 31 * 12 * 10
+    "style": "dot", // optional
+    //"scale": links.Timeline.StepDate.SCALE.YEAR,
+    //"step": 1,
+    "zoomMax": 1000 * 60 * 60 * 24 * 31 * 12 * 50,
+    "zoomMin": 1000 * 60 * 60 * 24 * 31 * 12 * 5
   };
   timeline = new links.Timeline(e);
 
-  function onselect() {
+  function onSelectEdit() {
     var sel = timeline.getSelection();
     if (sel.length) {
       if (sel[0].row != undefined) {
@@ -316,7 +325,8 @@ function drawVisualization() {
             + "<br>ID : " + eventSelected.id
             + "<br>Start : " + jsDateConvert(eventSelected.start)
             + "<br>End : " + jsDateConvert(eventSelected.end)
-            + "<br>Content : " + eventSelected.content;
+            + "<br>Content : " + eventSelected.content
+	    + "<br><a href='/events/"+eventSelected.slg+"'>Go to event page</a>";
         }
         else if (action == "select") {
           e.setAttribute("data-value", eventSelected.id);
@@ -325,11 +335,16 @@ function drawVisualization() {
           var selected = document.getElementById("eventSelected");
           selected.innerHTML = jsDateConvert(eventSelected.start) + " " + eventSelected.content + "<sup style='color:red' onclick='cancelEventSelected()'> X </sup>";
         }
+	else if (action == "read") {
+	  var info = document.getElementById('info');
+	  info.innerHTML = event_to_period(eventSelected)
+            + " <a href='/events/"+eventSelected.slg+"'>"+eventSelected.content+"</a> : "
+	    + eventSelected.abstract;
+	}
       }
     }
   };
-  if (action != "read")
-    links.events.addListener(timeline,'select',onselect);
+  links.events.addListener(timeline,'select',onSelectEdit);
   $.ajax({
       type:"GET",
       url:"/timelinedata/",
@@ -346,9 +361,15 @@ function drawVisualization() {
             event['end'] = turnToDate(events[i].fields.end);
           }
           event['content'] = details[i].fields.content;
+          event['abstract'] = details[i].fields.abstract;
+          event['slg'] = events[i].fields.slg;
           if (event.id==ind) {
             event['className'] = 'timeline-event-target';
             row=i;
+	    var info = document.getElementById('info');
+	    info.innerHTML = event_to_period(event)
+              + " <a href='/events/"+event.slg+"'>"+event.content+"</a> : "
+	      + event.abstract;
           }
           timeline_data.push(event);
           timeline.draw(timeline_data, options);

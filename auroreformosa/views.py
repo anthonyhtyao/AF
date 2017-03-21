@@ -377,3 +377,26 @@ def authorArticle(request, slg):
         return render(request, 'AF/category.html', returnForm)
     except:
         return HttpResponseRedirect('/')
+
+def event(request, slg):
+    returnForm, language=init(request)
+    timelineEvent = TimelineEvent.objects.get(slg=slg)
+    articles = []
+    for a in timelineEvent.article_set.all():
+            try:
+                d = {}
+                article = a.article.get(language=language,status=2)
+                d['title'] = article.title
+                d['abstract'] = article.abstract
+                d['slg'] = a.slg
+                d['category'] = a.category
+                d['catTranslate'] = str(a.category.detail.get(language=language))
+                d['image'] = a.image
+                articles.append(d)
+            except:
+                pass
+    returnForm['articles'] = articles
+    returnForm['event'] = timelineEvent
+    returnForm['eventDetail'] = timelineEvent.detail.get(language=language)
+    return render(request, 'AF/timeline_event.html',returnForm)
+

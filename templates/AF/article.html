@@ -20,9 +20,10 @@
   <br>
   {% if article.article.timeline %}
   <div id="mytimeline" class="col-md-10 col-md-offset-1" data-action="read" data-value="{{article.article.timeline.id}}"></div>
+  <p class='col-md-10 col-md-offset-1' id="info"></p>
   {% endif %}
+  <div class='col-md-12'>
   <br>
-  <div>
     {{article.content|safe}}
   </div>
 </div>

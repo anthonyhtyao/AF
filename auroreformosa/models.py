@@ -84,11 +84,12 @@ class Tag(models.Model):
         return self.tag
 
 class TimelineEvent(models.Model):
+    slg = models.SlugField(max_length=128)
     start = models.DateField()
     end = models.DateField(null=True, blank=True)
 
     def __str__(self):
-        return "Timeline event at " + self.start.strftime('%Y-%m-%d')
+        return "Event "+self.slg+" at " + self.start.strftime('%Y-%m-%d')
 
 # field image is the head image of article
 # field gallery store all images of this article, can be null
@@ -178,6 +179,8 @@ class TagDetail(models.Model):
 class TimelineEventDetail(models.Model):
     event = models.ForeignKey(TimelineEvent, null = True, related_name="detail")
     content = models.CharField(max_length = 20)
+    abstract = models.TextField(null=True,blank=True)
+    about = models.TextField(null=True,blank=True)
     language = models.CharField(max_length = 2, choices = settings.LANGUAGES, default = 'fr')
 
     def __str__(self):

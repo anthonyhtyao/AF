@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title_block %}Event : {{eventDetail.content}}{% endblock %}
+{% block category_block %}
+  <div class="col-md-9 col-md-offset-2">
+    <ul class="nav navbar-nav col-md-12">
+      {% for cat in categories %}
+        <li class="" style="width:10%">
+          <h4>
+            <a class = "category"
+                style="color:rgba(0,0,0,.5)"
+              onmouseover="changeColor(this,'{{cat.category.color}}')" onmouseout="returnColor(this)" href="/{{cat.category}}"> {{cat.title}} </a>
+          </h4>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock  %}
+{% block body_block %}
+{% load static %}
+<div class="col-md-8 col-md-offset-2">
+  <h1><a href="/"><img src="{% static "img/logo_small.png" %}" height="50px"></a> | 
+	  <span class="glyphicon glyphicon-bookmark"</span> 
+	  <span>{{eventDetail.content}}</span></h1>
+<br>
+<div id='mytimeline' class='col-md-12' data-action='read' data-value='{{event.id}}'>
+</div>
+<p class='col-md-12' id="info"></p>
+
+<div class="col-md-12">
+<hr/>
+<div id="instructions" class="paper">
+	<h3>ABOUT : </h3>
+	<br/>
+	{{eventDetail.about|safe}}
+</div>
+<br>
+<hr/>
+</div>
+{% for article in articles %}
+  <div class="col-sm-12 col-md-6" style="height:400px;color:black;">
+    <div style="height:200px;overflow:hidden">
+      <a href="/{{article.category}}/article/{{article.slg}}">
+        <img src="{{article.image.imgfile.url}}" height="auto" width="100%">
+      </a>
+    </div>
+      <div>
+        <h3><strong>{{article.title}}</strong></h3>
+        <h5 style="color:black">{{article.abstract}}</h5>
+        <h4 style="color:black"><strong style="color:{{article.category.color}}; ">▍</strong>{{article.catTranslate}}</h4>
+      </div>
+  </div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

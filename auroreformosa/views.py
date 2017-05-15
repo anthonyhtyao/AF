@@ -16,6 +16,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from abo.models import *
 from django.db.models import Max
+from utils import sendEmail
 
 def init(request):
     # Set default language to fr
@@ -264,18 +265,18 @@ def abonnement(request):
         form = AbonnementForm(request.POST)
         titles = {'M.':'Ms','Mme':'Mm','Mlle':'Ml'}
         currentNo = int(Numero.objects.all().aggregate(Max('numero'))['numero__max'])
+        print("haha")
         if form.is_valid():
             data = request.POST
             print(data)
             familyName = data['familyName']
             name = data['name']
-            adressClient = data['adresse']+'\r'+data['codepostal']+" "+data['city']+" "+data['country']
+            #adressClient = data['adresse']+'\r'+data['codepostal']+" "+data['city']+" "+data['country']
 ### Create client object
-            client = Subscriber.objects.create(civilite=titles[data['title']],family_name=familyName,name=name,email=data['email'],adress=adressClient,country=data['country'])
-            emailTxt = get_template('email.txt')
-            emailHtml = get_template('email.html')
+            #client = Subscriber.objects.create(civilite=titles[data['title']],family_name=familyName,name=name,email=data['email'],adress=adressClient,country=data['country'])
             adresse = data['adresse'] + " " + data['city'] + " " + data['country'] + " " + data['codepostal']
             action =""
+            """
             try:
                 if data['abonnement']:
                     action += "s'abonner , "
@@ -300,12 +301,9 @@ def abonnement(request):
                     client.save()
             except:
                 pass
-            d = Context({'title':data['title'], 'familyName':data['familyName'], 'name':data['name'], 'email':data['email'], 'adresse':adresse, 'action':action, 'message':data['message']})
-            textContent = emailTxt.render(d)
-            htmlContent = emailHtml.render(d)
-            msg = EmailMultiAlternatives("New Subscription", textContent, 'anthonyhtyao@gmail.com', ['anthonyhtyao@gmail.com', 'yulinhuang23@gmail.com', 'jhihhuang.li@gmail.com', 'sun.yujung@gmail.com', 'turtlelin1210@gmail.com'])
-            msg.attach_alternative(htmlContent, "text/html")
-    #        msg.send()
+            """
+            d = {'title':data['title'], 'familyName':data['familyName'], 'name':data['name'], 'email':data['email'], 'adresse':adresse, 'action':action, 'message':data['message']}
+            r = sendEmail(txt='email.txt',html='email.html',data=d,title='test',to=['anthonyhtyao@gmail.com'])
     form = AbonnementForm()
     returnForm['form'] = form
     return render(request,'AF/abonnement.html', returnForm)
